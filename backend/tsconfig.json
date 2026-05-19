@@ -3,7 +3,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "ignoreDeprecations": "6.0",
-    "types": ["jest"],
+    "types": ["jest", "node"],
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
