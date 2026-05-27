@@ -5,29 +5,19 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm ci
-
-COPY prisma ./prisma
-
-RUN npx prisma generate
+RUN npm install
 
 COPY . .
 
-RUN node_modules/.bin/nest build
+RUN npx prisma generate
+
+RUN npm run build
 
 # Etapa 2 — Produção
-FROM node:22-alpine AS production
+FROM nginx:alpine AS production
 
-WORKDIR /app
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-ENV NODE_ENV=production
+EXPOSE 80
 
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/generated ./generated
-
-EXPOSE 3000
-
-CMD ["node", "dist/main.js"]
+CMD ["nginx", "-g", "daemon off;"]
