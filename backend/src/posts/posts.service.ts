@@ -26,7 +26,7 @@ export class PostsService {
   }
   async findAllApproved() {
     return this.prisma.post.findMany({
-      where: { status: 'APPROVED' },
+      where: { status: PostStatus.APPROVED },
       include: {
         author: {
           select: {
@@ -47,7 +47,7 @@ export class PostsService {
   }
   async findPending() {
     return this.prisma.post.findMany({
-      where: { status: 'PENDING' },
+      where: { status: PostStatus.PENDING },
       include: {
         author: {
           select: {
@@ -68,7 +68,7 @@ export class PostsService {
       where: { id: postId },
       data: {
         ...dto,
-        status: 'PENDING',
+        status: PostStatus.PENDING,
       },
     });
   }
@@ -89,7 +89,7 @@ export class PostsService {
       throw new NotFoundException('Post não encontrado');
     }
 
-    if (post.status !== 'PENDING') {
+    if (post.status !== PostStatus.PENDING) {
       throw new BadRequestException('Apenas posts pendentes podem ser revisados');
     }
 

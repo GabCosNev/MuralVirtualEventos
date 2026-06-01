@@ -14,10 +14,15 @@ RUN npx prisma generate
 RUN npm run build
 
 # Etapa 2 — Produção
-FROM nginx:alpine AS production
+FROM node:22-alpine AS production
 
-COPY --from=builder /app/dist /usr/share/nginx/html
+WORKDIR /app
 
-EXPOSE 80
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/generated ./generated
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
 
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 3000
+
+CMD ["node", "dist/main.js"]

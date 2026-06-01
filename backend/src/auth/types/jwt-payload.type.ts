@@ -3,7 +3,6 @@ export interface JwtPayload {
   email: string;
   role: string;
 }
-
 export interface AuthenticatedRequest {
   user: JwtPayload;
 }
