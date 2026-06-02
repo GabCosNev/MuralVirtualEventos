@@ -26,11 +26,11 @@ export class PostsController {
 
   @Post()
   create(@CurrentUser() user: JwtPayload, @Body() dto: CreatePostDto) {
-    return this.postsService.create(user.sub, dto);
+    return this.postsService.create(user.id, dto);
   }
   @Get('mine')
   findMyPosts(@CurrentUser() user: JwtPayload) {
-    return this.postsService.findMyPosts(user.sub);
+    return this.postsService.findMyPosts(user.id);
   }
   @Get('pending')
   @Roles('ADMIN')
@@ -43,11 +43,11 @@ export class PostsController {
     @Param('id', ParseIntPipe) postId: number,
     @Body() dto: UpdatePostDto,
   ) {
-    return this.postsService.update(user.sub, postId, dto);
+    return this.postsService.update(user.id, postId, dto);
   }
   @Delete(':id')
   remove(@CurrentUser() user: JwtPayload, @Param('id', ParseIntPipe) postId: number) {
-    return this.postsService.remove(user.sub, postId);
+    return this.postsService.remove(user.id, postId);
   }
   @Patch(':id/review')
   @Roles('ADMIN')
