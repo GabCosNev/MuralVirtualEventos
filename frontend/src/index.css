@@ -46,6 +46,9 @@
     --radius-2xl: calc(var(--radius) * 1.8);
     --radius-3xl: calc(var(--radius) * 2.2);
     --radius-4xl: calc(var(--radius) * 2.6);
+    --color-primary: #2027B0;
+    --color-secondary: #78e493;
+
 }
 
 :root {
@@ -120,11 +123,20 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
-    }
-  body {
-    @apply bg-background text-foreground;
-    }
+  }
+ body {
+  @apply text-foreground;
+  background-color: #78e493;
+  background-image: url('/body.svg');
+  background-repeat: repeat;
+  background-size: 20px;
+}
   html {
     @apply font-sans;
-    }
+  }
+}
+.navbar-bg {
+    background-color: #2027B0;
+    background-image: url('/nav.svg');
+    background-repeat: repeat;
 }
