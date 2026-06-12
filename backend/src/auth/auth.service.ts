@@ -47,6 +47,7 @@ export class AuthService {
 
     const valid = await bcrypt.compare(dto.password, user.password);
     if (!valid) throw new UnauthorizedException('Credenciais inválidas');
+
     return this.signToken(user.id, user.email, user.role);
   }
 

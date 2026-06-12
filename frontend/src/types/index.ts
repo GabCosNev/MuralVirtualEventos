@@ -6,6 +6,22 @@ export interface User {
   avatar: string | null;
 }
 
+export interface LoginDto {
+  email: string;
+  password: string;
+}
+
+export interface RegisterDto {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string
+}
+
+export interface AuthResponse {
+  access_token: string;
+}
+
 export interface Post {
   id: number;
   title: string;
