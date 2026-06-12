@@ -7,6 +7,11 @@ export default function Navbar() {
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
+  function getAvatarColor(name: string) {
+  const colors = ['#F472B6', '#4ADE80', '#FACC15', '#F87171', '#60A5FA'];
+  const index = name.charCodeAt(0) % colors.length;
+  return colors[index];
+}
   function handleLogout() {
     logout();
     navigate('/login');
@@ -27,7 +32,9 @@ export default function Navbar() {
           {user?.avatar ? (
             <img src={user.avatar} alt="Avatar" className="w-8 h-8 rounded-full object-cover" />
           ) : (
-            <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-white text-sm font-bold cursor-pointer">
+            <div
+            style={{ backgroundColor: getAvatarColor(user?.name ?? '') }}
+            className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-white text-sm font-bold cursor-pointer">
               {user?.name?.charAt(0).toUpperCase()}
             </div>
           )}

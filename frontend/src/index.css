@@ -126,8 +126,8 @@
   }
  body {
   @apply text-foreground;
-  background-color: #129ef0;
-  background-image: url('/line-in-motion.svg');
+  background-color: #0d0d0e;
+  background-image: url('/body.svg');
   background-repeat: repeat;
   background-size: 20px;
 }
@@ -137,6 +137,5 @@
 }
 .navbar-bg {
     background-color: #2027B0;
-    background-image: url('/nav.svg');
     background-repeat: repeat;
 }
