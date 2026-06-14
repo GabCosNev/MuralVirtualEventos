@@ -12,12 +12,8 @@ import bcrypt from 'bcrypt';
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async update(currentUserId: number, targetUserId: number, dto: UpdateUserDto) {
-    await this.findUserOrThrow(targetUserId);
-
-    if (currentUserId !== targetUserId) {
-      throw new ForbiddenException('Você não tem permissão para editar esse usuário');
-    }
+  async update(currentUserId: number, dto: UpdateUserDto) {
+    await this.findUserOrThrow(currentUserId);
 
     if (dto.password) {
       if (dto.password !== dto.confirmPassword) {
@@ -26,7 +22,7 @@ export class UsersService {
       dto.password = await bcrypt.hash(dto.password, 10);
     }
     return this.prisma.user.update({
-      where: { id: targetUserId },
+      where: { id: currentUserId },
       data: {
         name: dto.name,
         avatar: dto.avatar,
@@ -62,5 +58,17 @@ export class UsersService {
     }
 
     return user;
+  }
+  async getMe(userId: number) {
+    return this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        avatar: true,
+        role: true,
+      },
+    });
   }
 }
