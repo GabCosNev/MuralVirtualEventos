@@ -1,6 +1,8 @@
 {
   "scripts": {
     "dev": "docker compose -f docker-compose.dev.yml up --build",
-    "migrate": "docker compose -f docker-compose.dev.yml exec backend npx prisma migrate deploy"
+    "migrate": "docker compose -f docker-compose.dev.yml exec backend npx prisma migrate deploy",
+    "prod": "docker compose -f docker-compose.yml up --build",
+    "migrate:prod": "docker compose -f docker-compose.yml exec backend npx prisma migrate deploy"
   }
 }
