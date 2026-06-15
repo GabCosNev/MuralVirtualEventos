@@ -8,23 +8,30 @@ export default function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   function getAvatarColor(name: string) {
-  const colors = ['#F472B6', '#4ADE80', '#FACC15', '#F87171', '#60A5FA'];
-  const index = name.charCodeAt(0) % colors.length;
-  return colors[index];
-}
+    const colors = ['#F472B6', '#4ADE80', '#FACC15', '#F87171', '#60A5FA'];
+    const index = name.charCodeAt(0) % colors.length;
+    return colors[index];
+  }
+
   function handleLogout() {
     logout();
     navigate('/login');
   }
+
   return (
     <nav className="w-full navbar-bg px-6 py-3 flex items-center justify-between">
 
+      {/* Logo e nome do projeto */}
       <Link to="/" className="flex items-center gap-2">
         <span className="text-xl font-bold text-white">MuralVirtual</span>
       </Link>
 
-      <Link to="/" className="text-base text-white hover:text-white/70 transition"> Todas as Publicações </Link>
+      {/* Link para todas as publicações */}
+      <Link to="/" className="text-base text-white hover:text-white/70 transition">
+        Todas as Publicações
+      </Link>
 
+      {/* Avatar, nome do usuário e dropdown de ações */}
       <div className="flex items-center gap-4 relative">
         <span className="text-sm text-gray-700 font-medium">{user?.name}</span>
 
@@ -33,8 +40,8 @@ export default function Navbar() {
             <img src={user.avatar} alt="Avatar" className="w-8 h-8 rounded-full object-cover" />
           ) : (
             <div
-            style={{ backgroundColor: getAvatarColor(user?.name ?? '') }}
-            className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-white text-sm font-bold cursor-pointer">
+              style={{ backgroundColor: getAvatarColor(user?.name ?? '') }}
+              className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-white text-sm font-bold cursor-pointer">
               {user?.name?.charAt(0).toUpperCase()}
             </div>
           )}
