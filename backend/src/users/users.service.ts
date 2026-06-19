@@ -13,9 +13,12 @@ export class UsersService {
   constructor(private prisma: PrismaService) {}
 
   async update(currentUserId: number, dto: UpdateUserDto) {
-    await this.findUserOrThrow(currentUserId);
+    const user = await this.findUserOrThrow(currentUserId);
 
     if (dto.password) {
+      if (!dto.actualPassword) throw new BadRequestException('Senha atual não enviada');
+      if (!(await bcrypt.compare(dto.actualPassword, user.password)))
+        throw new BadRequestException('Senha inválida');
       if (dto.password !== dto.confirmPassword) {
         throw new BadRequestException('As senhas não coincidem');
       }
