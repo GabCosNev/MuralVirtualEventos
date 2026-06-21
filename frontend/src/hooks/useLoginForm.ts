@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './useAuth';
-import { loginUser } from '@/Services/auth.service';
-import { getMe } from '@/Services/users.services'
+import { loginUser } from '../Services/auth.service';
+import { getMe } from '../Services/users.services'
 
 export function useLoginForm(){
   const { login } = useAuth();
