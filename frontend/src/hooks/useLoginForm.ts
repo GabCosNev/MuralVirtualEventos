@@ -1,37 +1,86 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from './useAuth';
-import { loginUser } from '../Services/auth.service';
-import { getMe } from '../Services/users.services'
+import { useState, useEffect } from 'react';
+import { getMe, updateMe } from '../Services/users.services';
 
-export function useLoginForm(){
-  const { login } = useAuth();
-  const navigate = useNavigate();
+export function useEditForm() {
 
-  const [email, setEmail] = useState('');
+  // Campos editáveis simples — sempre visíveis no formulário
+  const [name, setName] = useState('');
+  const [avatar, setAvatar] = useState('');
+
+  // Bloco de senha: isChangingPassword controla se os 3 campos abaixo
+  // aparecem na tela. Começam vazios pois não fazem parte da edição
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [actualPassword, setActualPassword] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  async function handleSubmit(){
+  const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
+  const [isFetching, setIsFetching] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const response = await getMe();
+        setName(response.data.name);
+        setAvatar(response.data.avatar ?? '');
+      } catch (e: unknown) {
+        const err = e as { response?: { data?: { message?: string } } };
+        setError(err.response?.data?.message ?? 'Erro ao carregar perfil');
+      } finally {
+        setIsFetching(false);
+      }
+    }
+    fetchUser();
+  }, []);
+
+  function handleTogglePasswordChange() {
+    setIsChangingPassword((prev) => !prev);
+    setActualPassword('');
+    setPassword('');
+    setConfirmPassword('');
+  }
+
+  async function handleSubmit() {
+    setError('');
+    setSuccessMessage('');
+    if (isChangingPassword && password !== confirmPassword) {
+      return setError('As senhas não coincidem');
+    }
+
     setIsLoading(true);
     try {
-      const tokenResponse = await loginUser({email, password})
-      const token = tokenResponse.data.access_token;
-      localStorage.setItem('token', token)
-      const userResponse = await getMe();
-      const user = userResponse.data;
-      login(token, user);
-      navigate('/');
+      //Dúvida
+      const payload = isChangingPassword
+        ? { name, avatar, actualPassword, password, confirmPassword }
+        : { name, avatar };
+
+      await updateMe(payload);
+      setActualPassword('');
+      setPassword('');
+      setConfirmPassword('');
+      setIsChangingPassword(false);
+      setSuccessMessage('Perfil atualizado com sucesso!');
+    } catch (e: unknown) {
+      const err = e as { response?: { data?: { message?: string } } };
+      setError(err.response?.data?.message ?? 'Erro ao atualizar perfil');
+    } finally {
+      setIsLoading(false);
     }
-    catch(e: unknown) {
-    const err = e as { response?: { data?: { message?: string } } };
-    setError(err.response?.data?.message ?? 'Erro ao fazer login');
-  }
-    finally {
-    setIsLoading(false)
   }
 
-}
-  return { email, setEmail, password, setPassword, error, isLoading, handleSubmit};
+  return {
+    name, setName,
+    avatar, setAvatar,
+    isChangingPassword, handleTogglePasswordChange,
+    actualPassword, setActualPassword,
+    password, setPassword,
+    confirmPassword, setConfirmPassword,
+    error,
+    successMessage,
+    isFetching,
+    isLoading,
+    handleSubmit,
+  };
 }

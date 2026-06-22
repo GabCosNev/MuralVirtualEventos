@@ -9,7 +9,7 @@ export default function Navbar() {
 
   function getAvatarColor(name: string) {
     const colors = ['#F472B6', '#4ADE80', '#FACC15', '#F87171', '#60A5FA'];
-    const index = name.charCodeAt(0) % colors.length;
+    const index = (name.charCodeAt(0) || 0) % colors.length;
     return colors[index];
   }
 
@@ -35,7 +35,7 @@ export default function Navbar() {
       <div className="flex items-center gap-4 relative">
         <span className="text-sm text-gray-700 font-medium">{user?.name}</span>
 
-        <button onClick={() => setDropdownOpen(!dropdownOpen)} className="focus:outline-none">
+        <button onClick={() => setDropdownOpen((prev) => !prev)} className="focus:outline-none">
           {user?.avatar ? (
             <img src={user.avatar} alt="Avatar" className="w-8 h-8 rounded-full object-cover" />
           ) : (
