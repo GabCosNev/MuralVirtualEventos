@@ -42,6 +42,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem('user');
     setAuth({ token: null, user: null });
   }
+
+  function updateUser(user: User) {
+  localStorage.setItem('user', JSON.stringify(user));
+  setAuth((prev) => ({ ...prev, user }));
+  }
+
 return (
     <AuthContext.Provider
       value={{
@@ -49,6 +55,7 @@ return (
         token: auth.token,
         login,
         logout,
+        updateUser,
         isAdmin: auth.user?.role === 'ADMIN',
       }}
     >

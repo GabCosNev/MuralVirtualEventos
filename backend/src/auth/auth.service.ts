@@ -30,9 +30,11 @@ export class AuthService {
 
     const hashed = await bcrypt.hash(dto.password, 10);
 
+    const nomeAtualizado = this.formatarNome(dto.name);
+
     const user = await this.prisma.user.create({
       data: {
-        name: dto.name,
+        name: nomeAtualizado,
         email: dto.email,
         password: hashed,
       },
@@ -55,5 +57,18 @@ export class AuthService {
     return {
       access_token: this.jwt.sign({ sub: userId, email, role }),
     };
+  }
+  private formatarNome(nome: string) {
+    const preposicoes = ['da', 'de', 'do', 'das', 'dos', 'e'];
+
+    return nome
+      .toLocaleLowerCase('pt-BR')
+      .split(' ')
+      .map((palavra) =>
+        preposicoes.includes(palavra)
+          ? palavra
+          : palavra.charAt(0).toLocaleUpperCase('pt-BR') + palavra.slice(1),
+      )
+      .join(' ');
   }
 }
