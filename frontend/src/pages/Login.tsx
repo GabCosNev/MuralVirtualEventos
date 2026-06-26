@@ -1,6 +1,6 @@
 
 import { Link } from 'react-router-dom';
-import { useLoginForm } from '@/hooks/useLoginForm';
+import { useLoginForm } from '../hooks/useLoginForm';
 
 export default function Login() {
    const { email, setEmail, password, setPassword, error, isLoading, handleSubmit } = useLoginForm();
