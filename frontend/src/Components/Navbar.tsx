@@ -19,8 +19,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="w-full navbar-bg px-6 py-3 flex items-center justify-between">
-
+    <nav className="w-full navbar-bg px-6 py-3 flex items-center justify-between fixed top-0 left-0 z-50">
       {/* Logo e nome do projeto */}
       <Link to="/" className="flex items-center gap-2">
         <span className="text-xl font-bold text-white">MuralVirtual</span>
@@ -33,7 +32,7 @@ export default function Navbar() {
 
       {/* Avatar, nome do usuário e dropdown de ações */}
       <div className="flex items-center gap-4 relative">
-        <span className="text-sm text-gray-700 font-medium">{user?.name}</span>
+        <span className="text-sm text-white font-medium">{user?.email}</span>
 
         <button onClick={() => setDropdownOpen((prev) => !prev)} className="focus:outline-none">
           {user?.avatar ? (
