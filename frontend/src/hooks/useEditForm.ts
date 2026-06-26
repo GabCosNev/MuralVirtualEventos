@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getMe, updateMe } from '../Services/users.services';
+import { useAuth } from './useAuth';
 
 export function useEditForm() {
 
@@ -15,6 +16,7 @@ export function useEditForm() {
   const [successMessage, setSuccessMessage] = useState('');
   const [isFetching, setIsFetching] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const { updateUser } = useAuth();
 
   useEffect(() => {
     async function fetchUser() {
@@ -53,13 +55,15 @@ export function useEditForm() {
         ? { name, avatar, actualPassword, password, confirmPassword }
         : { name, avatar };
 
-      await updateMe(payload);
+      const response = await updateMe(payload);
+      updateUser(response.data);
 
       setActualPassword('');
       setPassword('');
       setConfirmPassword('');
       setIsChangingPassword(false);
       setSuccessMessage('Perfil atualizado com sucesso!');
+
     } catch (e: unknown) {
       const err = e as { response?: { data?: { message?: string } } };
       setError(err.response?.data?.message ?? 'Erro ao atualizar perfil');
