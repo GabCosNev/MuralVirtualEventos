@@ -4,6 +4,8 @@ import Layout from './Components/Layout';
 import Home from './pages/Home';
 import Login from './pages/Login'
 import Register from './pages/Register'
+import { Edit } from './pages/Edit';
+
 
 
 function App() {
@@ -15,6 +17,7 @@ function App() {
           <Route path='/register' element={<Register/>}></Route>
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
+            <Route path="/edit" element={<Edit />} />
           </Route>
         </Routes>
       </AuthProvider>
