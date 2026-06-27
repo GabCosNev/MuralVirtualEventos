@@ -14,3 +14,21 @@ export interface Post {
     avatar: string | null;
   };
 }
+
+export interface CreatePost {
+  title: string;
+  content: string;
+  eventType: 'ANNOUNCEMENT' | 'EVENT' | 'CELEBRATION';
+}
+
+export interface ReviewPost {
+  status: 'APPROVED' | 'REJECTED';
+  rejectedReason?: string;
+}
+
+export interface UpdatePost {
+  title?: string;
+  content?: string;
+  eventType?: 'ANNOUNCEMENT' | 'EVENT' | 'CELEBRATION';
+}
+
