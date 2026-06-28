@@ -58,4 +58,8 @@ export class PostsController {
   findAllApproved() {
     return this.postsService.findAllApproved();
   }
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) postId: number) {
+    return this.postsService.findPostOrThrow(postId);
+  }
 }

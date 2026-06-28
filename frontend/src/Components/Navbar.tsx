@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 export default function Navbar() {
   const { user, isAdmin, logout } = useAuth();
@@ -8,14 +8,14 @@ export default function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   function getAvatarColor(name: string) {
-    const colors = ['#F472B6', '#4ADE80', '#FACC15', '#F87171', '#60A5FA'];
+    const colors = ["#F472B6", "#4ADE80", "#FACC15", "#F87171", "#60A5FA"];
     const index = (name.charCodeAt(0) || 0) % colors.length;
     return colors[index];
   }
 
   function handleLogout() {
     logout();
-    navigate('/login');
+    navigate("/login");
   }
 
   return (
@@ -26,7 +26,10 @@ export default function Navbar() {
       </Link>
 
       {/* Link para todas as publicações */}
-      <Link to="/" className="text-base text-white hover:text-white/70 transition">
+      <Link
+        to="/"
+        className="text-base text-white hover:text-white/70 transition"
+      >
         Todas as Publicações
       </Link>
 
@@ -34,13 +37,21 @@ export default function Navbar() {
       <div className="flex items-center gap-4 relative">
         <span className="text-sm text-white font-medium">{user?.email}</span>
 
-        <button onClick={() => setDropdownOpen((prev) => !prev)} className="focus:outline-none">
+        <button
+          onClick={() => setDropdownOpen((prev) => !prev)}
+          className="focus:outline-none"
+        >
           {user?.avatar ? (
-            <img src={user.avatar} alt="Avatar" className="w-8 h-8 rounded-full object-cover" />
+            <img
+              src={user.avatar}
+              alt="Avatar"
+              className="w-8 h-8 rounded-full object-cover"
+            />
           ) : (
             <div
-              style={{ backgroundColor: getAvatarColor(user?.name ?? '') }}
-              className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-white text-sm font-bold cursor-pointer">
+              style={{ backgroundColor: getAvatarColor(user?.name ?? "") }}
+              className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-white text-sm font-bold cursor-pointer"
+            >
               {user?.name?.charAt(0).toUpperCase()}
             </div>
           )}
@@ -48,18 +59,33 @@ export default function Navbar() {
 
         {dropdownOpen && (
           <div className="absolute right-0 top-10 w-48 bg-white border border-gray-200 rounded-xl shadow-lg py-2 z-50">
-            <Link to="/my-posts" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+            <Link
+              to="/my-posts"
+              onClick={() => setDropdownOpen(false)}
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+            >
               Minhas Publicações
             </Link>
-            <Link to="/edit" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+            <Link
+              to="/edit"
+              onClick={() => setDropdownOpen(false)}
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+            >
               Editar Perfil
             </Link>
             {isAdmin && (
-              <Link to="/admin" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+              <Link
+                to="/admin"
+                onClick={() => setDropdownOpen(false)}
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              >
                 Admin
               </Link>
             )}
-            <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-50">
+            <button
+              onClick={handleLogout}
+              className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-50"
+            >
               Sair
             </button>
           </div>

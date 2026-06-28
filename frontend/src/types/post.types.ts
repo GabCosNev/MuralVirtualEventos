@@ -1,9 +1,12 @@
+export type EventType = "ANNOUNCEMENT" | "EVENT" | "CELEBRATION";
+export type PostStatus = "PENDING" | "APPROVED" | "REJECTED";
+
 export interface Post {
   id: number;
   title: string;
   content: string;
-  eventType: 'ANNOUNCEMENT' | 'EVENT' | 'CELEBRATION';
-  status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  eventType: EventType;
+  status: PostStatus;
   rejectedReason: string | null;
   createdAt: string;
   updatedAt: string;
@@ -18,17 +21,16 @@ export interface Post {
 export interface CreatePost {
   title: string;
   content: string;
-  eventType: 'ANNOUNCEMENT' | 'EVENT' | 'CELEBRATION';
+  eventType: EventType;
 }
 
 export interface ReviewPost {
-  status: 'APPROVED' | 'REJECTED';
+  status: PostStatus;
   rejectedReason?: string;
 }
 
 export interface UpdatePost {
   title?: string;
   content?: string;
-  eventType?: 'ANNOUNCEMENT' | 'EVENT' | 'CELEBRATION';
+  eventType?: EventType;
 }
-

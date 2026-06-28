@@ -1,13 +1,16 @@
-import { Navigate } from 'react-router-dom';
-import type { ReactNode } from 'react';
-import { useAuth } from '../hooks/useAuth';
+import { Navigate } from "react-router-dom";
+import type { ReactNode } from "react";
+import { useAuth } from "../hooks/useAuth";
 
 interface ProtectedRouteProps {
   children: ReactNode;
   adminOnly?: boolean;
 }
 
-export function ProtectedRoute({ children, adminOnly = false }: ProtectedRouteProps) {
+export function ProtectedRoute({
+  children,
+  adminOnly = false,
+}: ProtectedRouteProps) {
   const { user, isAdmin } = useAuth();
 
   if (!user) {

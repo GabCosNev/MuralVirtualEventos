@@ -101,18 +101,26 @@ export class PostsService {
       },
     });
   }
+
+  async findPostOrThrow(postId: number) {
+    const post = await this.prisma.post.findUnique({
+      where: { id: postId },
+    });
+
+    if (!post) throw new NotFoundException('Post não encontrado');
+
+    return post;
+  }
+
   private async findPostAndVerifyOwner(postId: number, userId: number) {
     const post = await this.prisma.post.findUnique({
       where: { id: postId },
     });
 
-    if (!post) {
-      throw new NotFoundException('Post não encontrado');
-    }
+    if (!post) throw new NotFoundException('Post não encontrado');
 
-    if (post.authorId !== userId) {
+    if (post.authorId !== userId)
       throw new ForbiddenException('Você não tem permissão para realizar essa ação');
-    }
 
     return post;
   }
