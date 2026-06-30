@@ -20,7 +20,7 @@ export function useCreatePostForm() {
       setTitle("");
       setEventType("");
       setContent("");
-      setSuccessMessage("Postagem criada com sucesso!");
+      setSuccessMessage("Postagem enviada para avaliação!");
     } catch (e: unknown) {
       const err = e as { response?: { data?: { message?: string } } };
       setError(err.response?.data?.message ?? "Erro ao fazer a publicação");

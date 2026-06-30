@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { getMe, updateMe } from "../Services/users.services";
 import { useAuth } from "./useAuth";
 
-export function useEditForm() {
+export function useEditUserForm() {
   const [name, setName] = useState("");
   const [avatar, setAvatar] = useState("");
 

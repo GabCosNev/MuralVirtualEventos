@@ -1,5 +1,5 @@
 import { Loader2 } from "lucide-react";
-import { useEditForm } from "../hooks/useEditForm";
+import { useEditUserForm } from "../hooks/useEditUserForm";
 
 export function Edit() {
   const {
@@ -20,7 +20,7 @@ export function Edit() {
     isFetching,
     isLoading,
     handleSubmit,
-  } = useEditForm();
+  } = useEditUserForm();
 
   if (isFetching) {
     return (
