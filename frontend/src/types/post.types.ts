@@ -1,4 +1,4 @@
-export type EventType = "ANNOUNCEMENT" | "EVENT" | "CELEBRATION";
+export type EventType = "ANNOUNCEMENT" | "LECTURE" | "CELEBRATION";
 export type PostStatus = "PENDING" | "APPROVED" | "REJECTED";
 
 export interface Post {
@@ -8,6 +8,8 @@ export interface Post {
   eventType: EventType;
   status: PostStatus;
   rejectedReason: string | null;
+  startDate: string;
+  endDate: string;
   createdAt: string;
   updatedAt: string;
   authorId: number;
@@ -21,6 +23,10 @@ export interface Post {
 export interface CreatePost {
   title: string;
   content: string;
+  dateStart: string;
+  dateEnd: string;
+  timeStart: string;
+  timeEnd: string;
   eventType: EventType;
 }
 
@@ -33,4 +39,8 @@ export interface UpdatePost {
   title?: string;
   content?: string;
   eventType?: EventType;
+  dateStart?: string;
+  dateEnd?: string;
+  timeStart?: string;
+  timeEnd?: string;
 }
