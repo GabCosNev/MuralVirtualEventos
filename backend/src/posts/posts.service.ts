@@ -15,11 +15,17 @@ export class PostsService {
   constructor(private prisma: PrismaService) {}
 
   async create(userId: number, dto: CreatePostDto) {
+    const intervalo = this.intervaloData(dto.dateStart, dto.dateEnd, dto.timeStart, dto.timeEnd);
+
+    if (!intervalo) throw new BadRequestException('Erro ao processar as datas do evento.');
+
     return this.prisma.post.create({
       data: {
         title: dto.title,
         content: dto.content,
         eventType: dto.eventType,
+        startDate: intervalo.startDate,
+        endDate: intervalo.endDate,
         authorId: userId,
       },
     });
@@ -64,10 +70,15 @@ export class PostsService {
   async update(userId: number, postId: number, dto: UpdatePostDto) {
     await this.findPostAndVerifyOwner(postId, userId);
 
+    const intervalo = this.intervaloData(dto.dateStart, dto.dateEnd, dto.timeStart, dto.timeEnd);
+
     return this.prisma.post.update({
       where: { id: postId },
       data: {
-        ...dto,
+        title: dto.title,
+        content: dto.content,
+        eventType: dto.eventType,
+        ...(intervalo ? { startDate: intervalo.startDate, endDate: intervalo.endDate } : {}),
         status: PostStatus.PENDING,
       },
     });
@@ -85,13 +96,10 @@ export class PostsService {
       where: { id: postId },
     });
 
-    if (!post) {
-      throw new NotFoundException('Post não encontrado');
-    }
+    if (!post) throw new NotFoundException('Post não encontrado');
 
-    if (post.status !== PostStatus.PENDING) {
+    if (post.status !== PostStatus.PENDING)
       throw new BadRequestException('Apenas posts pendentes podem ser revisados');
-    }
 
     return this.prisma.post.update({
       where: { id: postId },
@@ -123,5 +131,39 @@ export class PostsService {
       throw new ForbiddenException('Você não tem permissão para realizar essa ação');
 
     return post;
+  }
+
+  private intervaloData(
+    dateStart?: string,
+    dateEnd?: string,
+    timeStart?: string,
+    timeEnd?: string,
+  ): { startDate: Date; endDate: Date } | undefined {
+    const nenhumCampoPreenchido = !dateStart && !dateEnd && !timeStart && !timeEnd;
+
+    if (nenhumCampoPreenchido) return undefined;
+
+    const todosCamposPreenchidos = dateStart && dateEnd && timeStart && timeEnd;
+
+    if (!todosCamposPreenchidos) {
+      throw new BadRequestException(
+        'Para alterar a data do evento, é necessário informar data inicio e fim juntos.',
+      );
+    }
+    const startDateCombinada = new Date(`${dateStart}T${timeStart}`);
+    const endDateCombinada = new Date(`${dateEnd}T${timeEnd}`);
+
+    const algumaDataInvalida =
+      isNaN(startDateCombinada.getTime()) || isNaN(endDateCombinada.getTime());
+
+    if (algumaDataInvalida) throw new BadRequestException('Data ou horário do evento inválido.');
+
+    if (endDateCombinada <= startDateCombinada) {
+      throw new BadRequestException(
+        'A data/hora de término do evento deve ser posterior à data/hora de início.',
+      );
+    }
+
+    return { startDate: startDateCombinada, endDate: endDateCombinada };
   }
 }
