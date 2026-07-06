@@ -23,11 +23,9 @@ export interface Post {
 export interface CreatePost {
   title: string;
   content: string;
-  dateStart: string;
-  dateEnd: string;
-  timeStart: string;
-  timeEnd: string;
   eventType: EventType;
+  startDate: string;
+  endDate: string;
 }
 
 export interface ReviewPost {
@@ -39,8 +37,6 @@ export interface UpdatePost {
   title?: string;
   content?: string;
   eventType?: EventType;
-  dateStart?: string;
-  dateEnd?: string;
-  timeStart?: string;
-  timeEnd?: string;
+  startDate?: string;
+  endDate?: string;
 }

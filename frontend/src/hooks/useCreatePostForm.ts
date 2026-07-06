@@ -6,10 +6,12 @@ export function useCreatePostForm() {
   const [title, setTitle] = useState("");
   const [eventType, setEventType] = useState<EventType | "">("");
   const [content, setContent] = useState("");
-  const [dateStart, setDateStart] = useState("");
-  const [dateEnd, setDateEnd] = useState("");
-  const [timeStart, setTimeStart] = useState("");
-  const [timeEnd, setTimeEnd] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [startDateInput, setStartDateInput] = useState("");
+  const [endDateInput, setEndDateInput] = useState("");
+  const [startTimeInput, setStartTimeInput] = useState("");
+  const [endTimeInput, setEndTimeInput] = useState("");
 
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -20,26 +22,27 @@ export function useCreatePostForm() {
     setSuccessMessage("");
     if (!eventType) return setError("Selecione um tipo de evento");
 
-    if (!dateStart || !dateEnd || !timeStart || !timeEnd)
+    if (!startDateInput || !endDateInput || !startTimeInput || !endTimeInput)
       return setError("Selecione a data completa do evento");
+
     setIsLoading(true);
     try {
       await createPost({
         title,
         eventType,
         content,
-        dateStart,
-        dateEnd,
-        timeStart,
-        timeEnd,
+        startDate,
+        endDate,
       });
       setTitle("");
       setEventType("");
       setContent("");
-      setDateStart("");
-      setDateEnd("");
-      setTimeStart("");
-      setTimeEnd("");
+      setStartDate("");
+      setStartDateInput("");
+      setEndDateInput("");
+      setStartTimeInput("");
+      setEndTimeInput("");
+      setEndDate("");
       setSuccessMessage("Postagem enviada para avaliação!");
     } catch (e: unknown) {
       const err = e as { response?: { data?: { message?: string } } };
@@ -55,14 +58,10 @@ export function useCreatePostForm() {
     setContent,
     eventType,
     setEventType,
-    dateStart,
-    setDateStart,
-    dateEnd,
-    setDateEnd,
-    timeStart,
-    setTimeStart,
-    timeEnd,
-    setTimeEnd,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
     error,
     successMessage,
     isLoading,
