@@ -9,23 +9,24 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostStatus } from '../../generated/prisma';
 import { ReviewPostDto } from './dto/review-post.dto';
+import { error } from 'console';
 
 @Injectable()
 export class PostsService {
   constructor(private prisma: PrismaService) {}
 
   async create(userId: number, dto: CreatePostDto) {
-    const intervalo = this.intervaloData(dto.dateStart, dto.dateEnd, dto.timeStart, dto.timeEnd);
+    const dates = this.validData(dto.startDate, dto.endDate);
 
-    if (!intervalo) throw new BadRequestException('Erro ao processar as datas do evento.');
+    if (!dates) throw new BadRequestException('Erro ao processar as datas do evento.');
 
     return this.prisma.post.create({
       data: {
         title: dto.title,
         content: dto.content,
         eventType: dto.eventType,
-        startDate: intervalo.startDate,
-        endDate: intervalo.endDate,
+        startDate: dates.startDate,
+        endDate: dates.endDate,
         authorId: userId,
       },
     });
@@ -70,7 +71,7 @@ export class PostsService {
   async update(userId: number, postId: number, dto: UpdatePostDto) {
     await this.findPostAndVerifyOwner(postId, userId);
 
-    const intervalo = this.intervaloData(dto.dateStart, dto.dateEnd, dto.timeStart, dto.timeEnd);
+    const dates = this.validData(dto.startDate, dto.endDate);
 
     return this.prisma.post.update({
       where: { id: postId },
@@ -78,7 +79,7 @@ export class PostsService {
         title: dto.title,
         content: dto.content,
         eventType: dto.eventType,
-        ...(intervalo ? { startDate: intervalo.startDate, endDate: intervalo.endDate } : {}),
+        ...(dates ? { startDate: dates.startDate, endDate: dates.endDate } : {}),
         status: PostStatus.PENDING,
       },
     });
@@ -133,30 +134,24 @@ export class PostsService {
     return post;
   }
 
-  private intervaloData(
-    dateStart?: string,
-    dateEnd?: string,
-    timeStart?: string,
-    timeEnd?: string,
+  private validData(
+    startDate?: string,
+    endDate?: string,
   ): { startDate: Date; endDate: Date } | undefined {
-    const nenhumCampoPreenchido = !dateStart && !dateEnd && !timeStart && !timeEnd;
+    if (!startDate && !endDate) return undefined;
 
-    if (nenhumCampoPreenchido) return undefined;
-
-    const todosCamposPreenchidos = dateStart && dateEnd && timeStart && timeEnd;
-
-    if (!todosCamposPreenchidos) {
+    if ((!startDate && endDate) || (startDate && !endDate)) {
       throw new BadRequestException(
-        'Para alterar a data do evento, é necessário informar data inicio e fim juntos.',
+        'Para alterar a data do evento, é necessário informar data início e fim juntos.',
       );
     }
-    const startDateCombinada = new Date(`${dateStart}T${timeStart}`);
-    const endDateCombinada = new Date(`${dateEnd}T${timeEnd}`);
 
-    const algumaDataInvalida =
-      isNaN(startDateCombinada.getTime()) || isNaN(endDateCombinada.getTime());
+    const startDateCombinada = new Date(startDate!);
+    const endDateCombinada = new Date(endDate!);
 
-    if (algumaDataInvalida) throw new BadRequestException('Data ou horário do evento inválido.');
+    if (isNaN(startDateCombinada.getTime()) || isNaN(endDateCombinada.getTime())) {
+      throw new BadRequestException('Data ou horário do evento inválido.');
+    }
 
     if (endDateCombinada <= startDateCombinada) {
       throw new BadRequestException(
