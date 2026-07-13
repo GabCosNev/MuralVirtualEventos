@@ -1,4 +1,20 @@
-import { type Post } from "../types";
+import { type Post, type EventType } from "../types";
+import { formatEventPeriod } from "../utils/formatDate";
+
+const eventTypeColor: Record<EventType, string> = {
+  ANNOUNCEMENT: "bg-[var(--color-announcement)]",
+  LECTURE: "bg-[var(--color-lecture)]",
+  CELEBRATION: "bg-[var(--color-celebration)]",
+};
+
+const eventTypeLabel: Record<EventType, string> = {
+  ANNOUNCEMENT: "Anúncio",
+  LECTURE: "Palestra",
+  CELEBRATION: "Celebração",
+};
+
+const positiveAction = "bg-green-600 text-white";
+const destructiveAction = "bg-red-600 text-white";
 
 interface PostCardProps {
   post: Post;
@@ -8,27 +24,84 @@ interface PostCardProps {
   onReject?: () => void;
 }
 
-export function formatEventPeriod(startDate: string, endDate: string): string {
-  const start = new Date(startDate);
-  const end = new Date(endDate);
+export function PostCard({
+  post,
+  onEdit,
+  onDelete,
+  onApprove,
+  onReject,
+}: PostCardProps) {
+  const badgeColor = eventTypeColor[post.eventType];
 
-  const startDateFormatted = start.toLocaleDateString("pt-BR");
-  const startTimeFormatted = start.toLocaleTimeString("pt-BR", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  return (
+    <div className="rounded-lg shadow-md overflow-hidden">
+      {/* Badge do eventType + título, lado a lado */}
+      <div className="p-4 flex items-center gap-2">
+        <span
+          className={`${badgeColor} text-white text-xs font-semibold px-2 py-1 rounded`}
+        >
+          {eventTypeLabel[post.eventType]}
+        </span>
+        <h3 className="text-lg font-bold">{post.title}</h3>
+      </div>
 
-  const endDateFormatted = end.toLocaleDateString("pt-BR");
-  const endTimeFormatted = end.toLocaleTimeString("pt-BR", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+      {/* Período do evento, centralizado, com borda inferior separando do conteúdo */}
+      <div className="px-4 pb-3 text-center border-b border-gray-200">
+        <span className="text-sm text-gray-500">
+          {formatEventPeriod(post.startDate, post.endDate)}
+        </span>
+      </div>
 
-  const sameDay = startDateFormatted === endDateFormatted;
+      {/* Conteúdo do post, truncado em 5 linhas independente do tamanho do texto */}
+      <div className="px-4 py-3">
+        <p className="line-clamp-5 whitespace-pre-line text-sm text-gray-700">
+          {post.content}
+        </p>
+      </div>
 
-  if (sameDay) {
-    return `${startDateFormatted}, ${startTimeFormatted} às ${endTimeFormatted}`;
-  }
+      {/* Barra de ações do dono do post (MyPosts) */}
+      {(onEdit || onDelete) && (
+        <div className="flex justify-end gap-2 bg-gray-100 p-3">
+          {onEdit && (
+            <button
+              onClick={onEdit}
+              className={`${positiveAction} px-3 py-1 rounded`}
+            >
+              Editar
+            </button>
+          )}
+          {onDelete && (
+            <button
+              onClick={onDelete}
+              className={`${destructiveAction} px-3 py-1 rounded`}
+            >
+              Excluir
+            </button>
+          )}
+        </div>
+      )}
 
-  return `${startDateFormatted} ${startTimeFormatted} até ${endDateFormatted} ${endTimeFormatted}`;
+      {/* Barra de ações do admin (Pending/Admin) */}
+      {(onApprove || onReject) && (
+        <div className="flex justify-end gap-2 bg-gray-100 p-3">
+          {onApprove && (
+            <button
+              onClick={onApprove}
+              className={`${positiveAction} px-3 py-1 rounded`}
+            >
+              Aprovar
+            </button>
+          )}
+          {onReject && (
+            <button
+              onClick={onReject}
+              className={`${destructiveAction} px-3 py-1 rounded`}
+            >
+              Rejeitar
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
 }
