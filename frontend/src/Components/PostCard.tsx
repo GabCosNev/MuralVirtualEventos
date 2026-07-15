@@ -1,17 +1,6 @@
-import { type Post, type EventType } from "../types";
+import { type Post } from "../types";
 import { formatEventPeriod } from "../utils/formatDate";
-
-const eventTypeColor: Record<EventType, string> = {
-  ANNOUNCEMENT: "bg-[var(--color-announcement)]",
-  LECTURE: "bg-[var(--color-lecture)]",
-  CELEBRATION: "bg-[var(--color-celebration)]",
-};
-
-const eventTypeLabel: Record<EventType, string> = {
-  ANNOUNCEMENT: "Anúncio",
-  LECTURE: "Palestra",
-  CELEBRATION: "Celebração",
-};
+import { eventTypeColor, eventTypeLabel } from "@/utils/eventCustom";
 
 const positiveAction = "bg-green-600 text-white";
 const destructiveAction = "bg-red-600 text-white";
