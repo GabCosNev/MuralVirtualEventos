@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Toaster } from "./components/ui/sonner";
 import { AuthProvider } from "./contexts/AuthProvider";
-import Layout from "./Components/Layout";
+import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -18,6 +19,7 @@ function App() {
             <Route path="/edit" element={<Edit />} />
           </Route>
         </Routes>
+        <Toaster />
       </AuthProvider>
     </BrowserRouter>
   );
