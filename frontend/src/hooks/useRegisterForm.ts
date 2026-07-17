@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { registerUser } from "../Services/auth.service";
+import { toast } from "sonner";
 
 export function useRegisterForm() {
   const [name, setName] = useState("");
@@ -7,7 +8,6 @@ export function useRegisterForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleSubmit() {
@@ -21,7 +21,7 @@ export function useRegisterForm() {
       setEmail("");
       setPassword("");
       setConfirmPassword("");
-      setSuccessMessage("Cadastro realizado com sucesso!");
+      toast.success("Cadastro realizado com sucesso!");
     } catch (e: unknown) {
       const err = e as { response?: { data?: { message?: string } } };
       setError(err.response?.data?.message ?? "Erro ao fazer o registro");
@@ -39,7 +39,6 @@ export function useRegisterForm() {
     confirmPassword,
     setConfirmPassword,
     error,
-    successMessage,
     isLoading,
     handleSubmit,
   };

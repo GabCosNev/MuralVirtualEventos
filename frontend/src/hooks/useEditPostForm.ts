@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { getPostById, updatePost } from "../Services/posts.service";
 import { type EventType, type UpdatePost } from "../types";
 import { dateTimeCombine } from "@/utils/formatDate";
+import { toast } from "sonner";
 
 export function useEditPostForm(postId: number) {
   const [title, setTitle] = useState("");
@@ -12,7 +13,6 @@ export function useEditPostForm(postId: number) {
   const [startTimeInput, setStartTimeInput] = useState("");
   const [endTimeInput, setEndTimeInput] = useState("");
   const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [isFetching, setIsFetching] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -55,7 +55,6 @@ export function useEditPostForm(postId: number) {
 
   async function handleSubmit() {
     setError("");
-    setSuccessMessage("");
 
     if (!startDateInput || !startTimeInput || !endDateInput || !endTimeInput)
       return setError("Todas as datas precisam estar preenchidas");
@@ -78,7 +77,7 @@ export function useEditPostForm(postId: number) {
         ...(eventType ? { eventType } : {}),
       };
       await updatePost(payload, postId);
-      setSuccessMessage("Post enviado para verificação");
+      toast.success("Post enviado para verificação");
     } catch (e: unknown) {
       const err = e as { response?: { data?: { message?: string } } };
       setError(err.response?.data?.message ?? "Erro ao atualizar post");
@@ -102,7 +101,6 @@ export function useEditPostForm(postId: number) {
     endTimeInput,
     setEndTimeInput,
     error,
-    successMessage,
     isFetching,
     isLoading,
     handleSubmit,

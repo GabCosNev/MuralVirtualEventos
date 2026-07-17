@@ -12,7 +12,6 @@ export default function Register() {
     confirmPassword,
     setConfirmPassword,
     error,
-    successMessage,
     isLoading,
     handleSubmit,
   } = useRegisterForm();
@@ -73,11 +72,8 @@ export default function Register() {
             />
           </div>
 
-          {/* Mensagens de erro e sucesso */}
+          {/* Mensagens de erro */}
           {error && <p className="text-red-500 text-sm">{error}</p>}
-          {successMessage && (
-            <p className="text-green-600 text-sm">{successMessage}</p>
-          )}
 
           {/* Botão de submit */}
           <button

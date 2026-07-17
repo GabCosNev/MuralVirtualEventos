@@ -14,7 +14,6 @@ export function useCreatePostForm() {
   const [endTimeInput, setEndTimeInput] = useState("");
 
   const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   function resetForm() {
@@ -29,7 +28,6 @@ export function useCreatePostForm() {
 
   async function handleSubmit() {
     setError("");
-    setSuccessMessage("");
     if (!eventType) return setError("Selecione um tipo de evento");
 
     if (!startDateInput || !endDateInput || !startTimeInput || !endTimeInput)
@@ -76,7 +74,6 @@ export function useCreatePostForm() {
     endTimeInput,
     setEndTimeInput,
     error,
-    successMessage,
     isLoading,
     handleSubmit,
     resetForm,

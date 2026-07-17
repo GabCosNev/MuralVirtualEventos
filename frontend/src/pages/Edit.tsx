@@ -16,7 +16,6 @@ export function Edit() {
     confirmPassword,
     setConfirmPassword,
     error,
-    successMessage,
     isFetching,
     isLoading,
     handleSubmit,
@@ -113,11 +112,6 @@ export function Edit() {
           )}
           {/* Mensagem de erro */}
           {error && <p className="text-red-500 text-sm">{error}</p>}
-
-          {/* Mensagem de sucesso */}
-          {successMessage && (
-            <p className="text-green-500 text-sm">{successMessage}</p>
-          )}
 
           {/* Botão de submit */}
           <button
