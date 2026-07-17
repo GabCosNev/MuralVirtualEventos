@@ -19,7 +19,7 @@ function App() {
             <Route path="/edit" element={<Edit />} />
           </Route>
         </Routes>
-        <Toaster />
+        <Toaster position="top-center" />
       </AuthProvider>
     </BrowserRouter>
   );
