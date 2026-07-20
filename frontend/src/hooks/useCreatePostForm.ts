@@ -24,6 +24,7 @@ export function useCreatePostForm() {
     setEndDateInput("");
     setStartTimeInput("");
     setEndTimeInput("");
+    setError("");
   }
 
   async function handleSubmit() {
