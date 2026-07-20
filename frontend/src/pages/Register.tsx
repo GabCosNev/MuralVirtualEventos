@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useRegisterForm } from "../hooks/useRegisterForm";
+import { inputStyle } from "../utils/styles";
 
 export default function Register() {
   const {
@@ -33,7 +34,7 @@ export default function Register() {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+              className={inputStyle}
             />
           </div>
 
@@ -44,7 +45,7 @@ export default function Register() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+              className={inputStyle}
             />
           </div>
 
@@ -55,7 +56,7 @@ export default function Register() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+              className={inputStyle}
             />
           </div>
 
@@ -68,7 +69,7 @@ export default function Register() {
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+              className={inputStyle}
             />
           </div>
 

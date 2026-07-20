@@ -7,7 +7,7 @@ import {
   getPageWindow,
 } from "../utils/pagination";
 import { PostCard } from "../components/PostCard";
-import { CreatePostCard } from "../components/CreatePostCardProps";
+import { CreatePostCard } from "../components/CreatePostCard";
 import { CreatePostModal } from "../components/CreatePostModal";
 
 const paginationButton =

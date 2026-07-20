@@ -1,6 +1,7 @@
 import { useCreatePostForm } from "../hooks/useCreatePostForm";
 import { eventTypeLabel } from "../utils/eventCustom";
 import type { EventType } from "../types";
+import { inputStyle } from "../utils/styles";
 import {
   Dialog,
   DialogContent,
@@ -26,10 +27,15 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-2xl pt-2 px-4 pb-4 [&_[data-slot=dialog-close]]:hidden">
         <DialogHeader>
-          <DialogTitle>Criar publicação</DialogTitle>
-          <DialogDescription>
+          <div className="bg-[var(--color-primary)] rounded-lg px-6 py-3.5 -mt-1 -mx-2">
+            <DialogTitle className="text-white text-left text-lg">
+              Criar publicação
+            </DialogTitle>
+          </div>
+
+          <DialogDescription className="mt-1">
             Preencha os dados abaixo. Sua publicação será enviada para
             aprovação.
           </DialogDescription>
@@ -53,8 +59,7 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
                   type="text"
                   value={form.title}
                   onChange={(e) => form.setTitle(e.target.value)}
-                  className="rounded-md border border-white/20 bg-white/5 px-3 py-2 text-sm
-                             focus:outline-none focus:ring-2 focus:ring-white/30"
+                  className={inputStyle}
                   placeholder="Título da publicação"
                 />
               </div>
@@ -70,8 +75,7 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
                   onChange={(e) =>
                     form.setEventType(e.target.value as EventType)
                   }
-                  className="rounded-md border border-white/20 bg-white/5 px-3 py-2 text-sm
-                             focus:outline-none focus:ring-2 focus:ring-white/30"
+                  className={inputStyle}
                 >
                   <option value="" disabled>
                     Selecione um tipo
@@ -100,8 +104,7 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
                     type="date"
                     value={form.startDateInput}
                     onChange={(e) => form.setStartDateInput(e.target.value)}
-                    className="rounded-md border border-white/20 bg-white/5 px-3 py-2 text-sm
-                               focus:outline-none focus:ring-2 focus:ring-white/30"
+                    className={inputStyle}
                   />
                 </div>
                 <div className="flex flex-col gap-1 flex-1">
@@ -116,8 +119,7 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
                     type="time"
                     value={form.startTimeInput}
                     onChange={(e) => form.setStartTimeInput(e.target.value)}
-                    className="rounded-md border border-white/20 bg-white/5 px-3 py-2 text-sm
-                               focus:outline-none focus:ring-2 focus:ring-white/30"
+                    className={inputStyle}
                   />
                 </div>
               </div>
@@ -133,8 +135,7 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
                     type="date"
                     value={form.endDateInput}
                     onChange={(e) => form.setEndDateInput(e.target.value)}
-                    className="rounded-md border border-white/20 bg-white/5 px-3 py-2 text-sm
-                               focus:outline-none focus:ring-2 focus:ring-white/30"
+                    className={inputStyle}
                   />
                 </div>
                 <div className="flex flex-col gap-1 flex-1">
@@ -146,8 +147,7 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
                     type="time"
                     value={form.endTimeInput}
                     onChange={(e) => form.setEndTimeInput(e.target.value)}
-                    className="rounded-md border border-white/20 bg-white/5 px-3 py-2 text-sm
-                               focus:outline-none focus:ring-2 focus:ring-white/30"
+                    className={inputStyle}
                   />
                 </div>
               </div>
@@ -164,8 +164,7 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
               value={form.content}
               onChange={(e) => form.setContent(e.target.value)}
               rows={4}
-              className="rounded-md border border-white/20 bg-white/5 px-3 py-2 text-sm
-                         focus:outline-none focus:ring-2 focus:ring-white/30 resize-none"
+              className={inputStyle}
               placeholder="Descreva o evento..."
             />
           </div>
@@ -180,8 +179,8 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
             <button
               type="button"
               onClick={() => handleOpenChange(false)}
-              className="bg-white/10 text-white px-4 py-2 rounded-md text-sm
-                         hover:bg-white/20 transition-colors"
+              className="bg-black/10 text-gray-900 px-4 py-2 rounded-md text-sm
+           hover:bg-black/20 transition-colors"
             >
               Cancelar
             </button>
