@@ -164,7 +164,7 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
               value={form.content}
               onChange={(e) => form.setContent(e.target.value)}
               rows={4}
-              className={inputStyle}
+              className={`${inputStyle} resize-none`}
               placeholder="Descreva o evento..."
             />
           </div>
