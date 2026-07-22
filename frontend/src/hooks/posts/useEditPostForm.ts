@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { getPostById, updatePost } from "../Services/posts.service";
-import { type EventType, type UpdatePost } from "../types";
+import { getPostById, updatePost } from "../../services/posts.service";
+import { type EventType, type UpdatePost } from "../../types";
 import { dateTimeCombine } from "@/utils/formatDate";
 import { toast } from "sonner";
 
@@ -20,11 +20,11 @@ export function useEditPostForm(postId: number) {
     async function fetchPost() {
       try {
         const response = await getPostById(postId);
-        setTitle(response.data.title);
-        setEventType(response.data.eventType);
-        setContent(response.data.content);
+        setTitle(response.title);
+        setEventType(response.eventType);
+        setContent(response.content);
 
-        const dataStart = new Date(response.data.startDate);
+        const dataStart = new Date(response.startDate);
         const yearStart = dataStart.getFullYear();
         const mounthStart = String(dataStart.getMonth() + 1).padStart(2, "0");
         const dayStart = String(dataStart.getDate()).padStart(2, "0");
@@ -34,7 +34,7 @@ export function useEditPostForm(postId: number) {
         setStartDateInput(`${yearStart}-${mounthStart}-${dayStart}`);
         setStartTimeInput(`${hourStart}:${minuteStart}`);
 
-        const dataEnd = new Date(response.data.endDate);
+        const dataEnd = new Date(response.endDate);
         const yearEnd = dataEnd.getFullYear();
         const mounthEnd = String(dataEnd.getMonth() + 1).padStart(2, "0");
         const dayEnd = String(dataEnd.getDate()).padStart(2, "0");

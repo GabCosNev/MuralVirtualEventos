@@ -1,5 +1,5 @@
 import { Loader2 } from "lucide-react";
-import { useEditUserForm } from "../hooks/useEditUserForm";
+import { useEditUserForm } from "../hooks/users/useEditUserForm";
 
 export function Edit() {
   const {

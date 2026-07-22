@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useApprovedPosts } from "../hooks/useApprovdePosts";
-import { useAuth } from "../hooks/useAuth";
+import { useApprovedPosts } from "../hooks/posts/useApprovdePosts";
+import { useAuth } from "../hooks/auth/useAuth";
 import {
   getTotalPages,
   getPageItems,

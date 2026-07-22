@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "./useAuth";
-import { loginUser } from "../Services/auth.service";
-import { getMe } from "../Services/users.services";
+import { useAuth } from "../auth/useAuth";
+import { loginUser } from "../../services/auth.service";
+import { getMe } from "../../services/users.services";
 
 export function useLoginForm() {
   const { login } = useAuth();
@@ -15,13 +15,16 @@ export function useLoginForm() {
 
   async function handleSubmit() {
     setIsLoading(true);
+    setError("");
+
     try {
-      const tokenResponse = await loginUser({ email, password });
-      const token = tokenResponse.data.access_token;
-      localStorage.setItem("token", token);
-      const userResponse = await getMe();
-      const user = userResponse.data;
-      login(token, user);
+      const { access_token } = await loginUser({ email, password });
+
+      localStorage.setItem("token", access_token);
+
+      const user = await getMe();
+
+      login(access_token, user);
       navigate("/");
     } catch (e: unknown) {
       const err = e as { response?: { data?: { message?: string } } };
@@ -30,6 +33,7 @@ export function useLoginForm() {
       setIsLoading(false);
     }
   }
+
   return {
     email,
     setEmail,

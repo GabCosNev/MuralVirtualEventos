@@ -6,34 +6,48 @@ import {
   type UpdatePost,
 } from "../types";
 
-export const createPost = (dto: CreatePost) => {
-  return api.post<Post>("/posts", dto);
+export const createPost = async (dto: CreatePost): Promise<Post> => {
+  const { data } = await api.post<Post>("/posts", dto);
+  return data;
 };
 
-export const updatePost = (dto: UpdatePost, id: number) => {
-  return api.patch<Post>(`/posts/${id}`, dto);
+export const updatePost = async (
+  dto: UpdatePost,
+  id: number,
+): Promise<Post> => {
+  const { data } = await api.patch<Post>(`/posts/${id}`, dto);
+  return data;
 };
 
-export const reviewPost = (dto: ReviewPost, id: number) => {
-  return api.patch<Post>(`/posts/${id}`, dto);
+export const reviewPost = async (
+  dto: ReviewPost,
+  id: number,
+): Promise<Post> => {
+  const { data } = await api.patch<Post>(`/posts/${id}`, dto);
+  return data;
 };
 
-export const getPostHome = () => {
-  return api.get<Post[]>("/posts");
+export const getPostHome = async (): Promise<Post[]> => {
+  const { data } = await api.get<Post[]>("/posts");
+  return data;
 };
 
-export const getPostMine = () => {
-  return api.get<Post[]>("/posts/mine");
+export const getPostMine = async (): Promise<Post[]> => {
+  const { data } = await api.get<Post[]>("/posts/mine");
+  return data;
 };
 
-export const getPostPending = () => {
-  return api.get<Post[]>("/posts/pending");
+export const getPostPending = async (): Promise<Post[]> => {
+  const { data } = await api.get<Post[]>("/posts/pending");
+  return data;
 };
 
-export const deletePost = (id: number) => {
-  return api.delete<Post>(`/posts/${id}`);
+export const deletePost = async (id: number): Promise<Post> => {
+  const { data } = await api.delete<Post>(`/posts/${id}`);
+  return data;
 };
 
-export const getPostById = (id: number) => {
-  return api.get<Post>(`/posts/${id}`);
+export const getPostById = async (id: number): Promise<Post> => {
+  const { data } = await api.get<Post>(`/posts/${id}`);
+  return data;
 };

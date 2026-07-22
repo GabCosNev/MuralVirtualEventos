@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { getMe, updateMe } from "../Services/users.services";
-import { useAuth } from "./useAuth";
+import { getMe, updateMe } from "../../services/users.services";
+import { useAuth } from "../auth/useAuth";
 import { toast } from "sonner";
 
 export function useEditUserForm() {
@@ -21,8 +21,8 @@ export function useEditUserForm() {
     async function fetchUser() {
       try {
         const response = await getMe();
-        setName(response.data.name);
-        setAvatar(response.data.avatar ?? "");
+        setName(response.name);
+        setAvatar(response.avatar ?? "");
       } catch (e: unknown) {
         const err = e as { response?: { data?: { message?: string } } };
         setError(err.response?.data?.message ?? "Erro ao carregar perfil");
@@ -54,7 +54,7 @@ export function useEditUserForm() {
         : { name, avatar };
 
       const response = await updateMe(payload);
-      updateUser(response.data);
+      updateUser(response);
 
       setActualPassword("");
       setPassword("");

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useRegisterForm } from "../hooks/useRegisterForm";
+import { useRegisterForm } from "../hooks/users/useRegisterUserForm";
 import { inputStyle } from "../utils/styles";
 
 export default function Register() {

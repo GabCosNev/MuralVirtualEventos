@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
-import { type Post } from "../types";
+import { type Post } from "../../types";
 
-export function usePostsFetch(fetchFn: () => Promise<{ data: Post[] }>) {
+export function usePostsFetch(fetchFn: () => Promise<Post[]>) {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isFetching, setIsFetching] = useState(true);
   const [error, setError] = useState("");
@@ -10,7 +10,7 @@ export function usePostsFetch(fetchFn: () => Promise<{ data: Post[] }>) {
     setIsFetching(true);
     try {
       const response = await fetchFn();
-      setPosts(response.data);
+      setPosts(response);
     } catch (e: unknown) {
       const err = e as { response?: { data?: { message?: string } } };
       setError(err.response?.data?.message ?? "Erro ao carregar publicações");

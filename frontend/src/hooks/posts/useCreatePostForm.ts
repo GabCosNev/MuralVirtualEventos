@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { createPost } from "../Services/posts.service";
-import { type EventType } from "../types/";
-import { dateTimeCombine } from "../utils/formatDate";
+import { createPost } from "../../services/posts.service";
+import { type EventType } from "../../types/";
+import { dateTimeCombine } from "../../utils/formatDate";
 import { toast } from "sonner";
 
 export function useCreatePostForm() {

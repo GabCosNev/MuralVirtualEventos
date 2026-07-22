@@ -1,4 +1,4 @@
-import { useCreatePostForm } from "../hooks/useCreatePostForm";
+import { useCreatePostForm } from "../hooks/posts/useCreatePostForm";
 import { eventTypeLabel } from "../utils/eventCustom";
 import type { EventType } from "../types";
 import { inputStyle } from "../utils/styles";

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { getPostMine } from "../Services/posts.service";
-import { type Post } from "../types";
+import { getPostMine } from "../../services/posts.service";
+import { type Post } from "../../types";
 
 export function useMyPosts() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -11,7 +11,7 @@ export function useMyPosts() {
     async function fetchPosts() {
       try {
         const response = await getPostMine();
-        setPosts(response.data);
+        setPosts(response);
       } catch (e: unknown) {
         const err = e as { response?: { data?: { message?: string } } };
         setError(err.response?.data?.message ?? "Erro ao carregar publicações");

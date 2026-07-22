@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { registerUser } from "../Services/auth.service";
+import { registerUser } from "../../services/auth.service";
 import { toast } from "sonner";
 
 export function useRegisterForm() {
