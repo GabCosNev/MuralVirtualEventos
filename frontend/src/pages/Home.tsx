@@ -39,7 +39,7 @@ export default function Home() {
             )}
 
             {postsOnPage.map((post) => (
-              <PostCard key={post.id} post={post} />
+              <PostCard key={post.id} post={post} onClick={() => {}} />
             ))}
 
             {postsOnPage.length === 0 && !(currentPage === 1 && !isAdmin) && (
