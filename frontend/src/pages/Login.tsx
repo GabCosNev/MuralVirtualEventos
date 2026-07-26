@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
 import { useLoginForm } from "../hooks/users/useLoginForm";
-import { inputStyle } from "../utils/styles";
+import {
+  buttonEffectConfirm,
+  buttonRegisterLogin,
+  inputStyle,
+} from "../utils/styles";
 
 export default function Login() {
   const {
@@ -52,7 +56,7 @@ export default function Login() {
           <button
             onClick={handleSubmit}
             disabled={isLoading}
-            className="w-full bg-[var(--color-secondary)] text-white font-semibold py-2 rounded-lg hover:opacity-90 transition disabled:opacity-50"
+            className={buttonEffectConfirm}
           >
             {isLoading ? "Entrando..." : "Entrar"}
           </button>
@@ -60,10 +64,7 @@ export default function Login() {
           {/* Link para registro */}
           <p className="text-sm text-center text-gray-500">
             Não tem conta ?{" "}
-            <Link
-              to="/register"
-              className="text-[var(--color-primary)] font-medium hover:underline"
-            >
+            <Link to="/register" className={buttonRegisterLogin}>
               Cadastre-se
             </Link>
           </p>

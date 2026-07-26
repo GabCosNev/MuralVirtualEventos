@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
 import { useRegisterForm } from "../hooks/users/useRegisterUserForm";
-import { inputStyle } from "../utils/styles";
+import {
+  buttonEffectConfirm,
+  buttonRegisterLogin,
+  inputStyle,
+} from "../utils/styles";
 
 export default function Register() {
   const {
@@ -80,7 +84,7 @@ export default function Register() {
           <button
             onClick={handleSubmit}
             disabled={isLoading}
-            className="w-full bg-[var(--color-secondary)] text-white font-semibold py-2 rounded-lg hover:opacity-90 transition disabled:opacity-50"
+            className={buttonEffectConfirm}
           >
             {isLoading ? "Cadastrando..." : "Cadastrar"}
           </button>
@@ -88,10 +92,7 @@ export default function Register() {
           {/* Link para login */}
           <p className="text-sm text-center text-gray-500">
             Tem conta ?{" "}
-            <Link
-              to="/login"
-              className="text-[var(--color-primary)] font-medium hover:underline"
-            >
+            <Link to="/login" className={buttonRegisterLogin}>
               Login
             </Link>
           </p>

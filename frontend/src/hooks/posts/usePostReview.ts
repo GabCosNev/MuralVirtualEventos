@@ -3,7 +3,7 @@ import { reviewPost } from "../../services/posts.service";
 import { toast } from "sonner";
 import type { PostStatus } from "../../types";
 
-export function usePostReview(refetch: () => void) {
+export function usePostReview(refetch?: () => void) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -12,17 +12,19 @@ export function usePostReview(refetch: () => void) {
     status: PostStatus,
     message: string,
     rejectedReason?: string,
-  ) {
+  ): Promise<boolean> {
     setIsLoading(true);
     setError("");
 
     try {
       await reviewPost({ status, rejectedReason }, id);
       toast.success(message);
-      refetch();
+      refetch?.();
+      return true;
     } catch (e: unknown) {
       const err = e as { response?: { data?: { message?: string } } };
       setError(err.response?.data?.message ?? "Erro ao revisar publicação");
+      return false;
     } finally {
       setIsLoading(false);
     }
@@ -35,8 +37,9 @@ export function usePostReview(refetch: () => void) {
   function rejectPost(id: number, reason: string) {
     if (reason.trim().length < 10) {
       setError("O motivo da rejeição deve ter no mínimo 10 caracteres.");
-      return;
+      return Promise.resolve(false);
     }
+
     return review(id, "REJECTED", "Publicação rejeitada!", reason);
   }
 

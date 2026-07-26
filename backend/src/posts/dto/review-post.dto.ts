@@ -7,6 +7,6 @@ export class ReviewPostDto {
 
   @ValidateIf((o: ReviewPostDto) => o.status === PostStatus.REJECTED)
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Digite o motivo da rejeição' })
   rejectedReason!: string;
 }

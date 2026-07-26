@@ -2,12 +2,12 @@ import { IsEnum, IsNotEmpty, IsString, IsDateString } from 'class-validator';
 import { EventType } from '../../../generated/prisma';
 
 export class CreatePostDto {
-  @IsString({ message: 'Deve ser um texto' })
-  @IsNotEmpty({ message: 'Este campo é obrigatório' })
+  @IsString({})
+  @IsNotEmpty({ message: 'Digite o título' })
   title!: string;
 
-  @IsString({ message: 'Deve ser um texto' })
-  @IsNotEmpty({ message: 'Este campo é obrigatório' })
+  @IsString({})
+  @IsNotEmpty({ message: 'Digite o conteúdo' })
   content!: string;
 
   @IsEnum(EventType, { message: 'Tipo de evento inválido' })
