@@ -17,7 +17,12 @@ export function useEditPostForm(postId: number) {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    const semPostParaBuscar = postId === null;
     async function fetchPost() {
+      if (semPostParaBuscar) {
+        setIsFetching(false);
+        return;
+      }
       try {
         const response = await getPostById(postId);
         setTitle(response.title);
@@ -54,6 +59,8 @@ export function useEditPostForm(postId: number) {
   }, [postId]);
 
   async function handleSubmit(): Promise<boolean> {
+    if (postId === null) return false;
+
     setError("");
 
     if (!startDateInput || !startTimeInput || !endDateInput || !endTimeInput) {
