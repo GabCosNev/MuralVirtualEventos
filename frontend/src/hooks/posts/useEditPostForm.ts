@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { getPostById, updatePost } from "../../services/posts.service";
 import { type EventType, type UpdatePost } from "../../types";
-import { dateTimeCombine } from "@/utils/formatDate";
+import { dateTimeCombine } from "../../utils/formatDate";
 import { toast } from "sonner";
 
 export function useEditPostForm(postId: number) {
@@ -53,11 +53,13 @@ export function useEditPostForm(postId: number) {
     fetchPost();
   }, [postId]);
 
-  async function handleSubmit() {
+  async function handleSubmit(): Promise<boolean> {
     setError("");
 
-    if (!startDateInput || !startTimeInput || !endDateInput || !endTimeInput)
-      return setError("Todas as datas precisam estar preenchidas");
+    if (!startDateInput || !startTimeInput || !endDateInput || !endTimeInput) {
+      setError("Todas as datas precisam estar preenchidas");
+      return false;
+    }
 
     const { startDate, endDate } = dateTimeCombine(
       startDateInput,
@@ -77,10 +79,12 @@ export function useEditPostForm(postId: number) {
         ...(eventType ? { eventType } : {}),
       };
       await updatePost(payload, postId);
-      toast.success("Post enviado para verificação");
+      toast.success("Postagem enviada para avaliação!");
+      return true;
     } catch (e: unknown) {
       const err = e as { response?: { data?: { message?: string } } };
       setError(err.response?.data?.message ?? "Erro ao atualizar post");
+      return false;
     } finally {
       setIsLoading(false);
     }
