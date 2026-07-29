@@ -11,7 +11,7 @@ interface PostDetailModalProps {
   post: Post | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  refetch?: () => void;
+  refetch: () => void;
   isAdmin?: boolean;
 }
 
@@ -24,7 +24,12 @@ export function PostDetailModal({
 }: PostDetailModalProps) {
   const [mode, setMode] = useState<"view" | "reject">("view");
   const rejectForm = useRejectForm();
-  const postReview = usePostReview(refetch);
+  const {
+    approvePost,
+    rejectPost,
+    isLoading: isReviewing,
+    error: reviewError,
+  } = usePostReview();
 
   function handleBack() {
     setMode("view");
@@ -40,16 +45,22 @@ export function PostDetailModal({
 
   async function handleApprove() {
     if (!post) return;
-    const success = await postReview.approvePost(post.id);
-    if (success) onOpenChange(false);
+    const success = await approvePost(post.id);
+    if (success) {
+      refetch();
+      onOpenChange(false);
+    }
   }
 
   async function handleConfirmReject() {
     if (!post) return;
     if (!rejectForm.validate()) return;
 
-    const success = await postReview.rejectPost(post.id, rejectForm.reason);
-    if (success) onOpenChange(false);
+    const success = await rejectPost(post.id, rejectForm.reason);
+    if (success) {
+      refetch();
+      onOpenChange(false);
+    }
   }
 
   if (!post) return null;
@@ -86,15 +97,15 @@ export function PostDetailModal({
               {post.content}
             </p>
 
-            {postReview.error && (
-              <p className="text-sm text-red-500">{postReview.error}</p>
+            {reviewError && (
+              <p className="text-sm text-red-500">{reviewError}</p>
             )}
 
             <div className="flex justify-end gap-2 mt-2">
               <button
                 type="button"
                 onClick={() => handleOpenChange(false)}
-                disabled={postReview.isLoading}
+                disabled={isReviewing}
                 className="bg-black/10 text-gray-900 px-4 py-2 rounded-md text-sm
                            hover:bg-black/20 transition-colors
                            disabled:opacity-50 disabled:cursor-not-allowed"
@@ -107,7 +118,7 @@ export function PostDetailModal({
                   <button
                     type="button"
                     onClick={() => setMode("reject")}
-                    disabled={postReview.isLoading}
+                    disabled={isReviewing}
                     className="bg-red-600 text-white px-4 py-2 rounded-md text-sm
                                disabled:opacity-50 disabled:cursor-not-allowed"
                   >
@@ -116,11 +127,11 @@ export function PostDetailModal({
                   <button
                     type="button"
                     onClick={handleApprove}
-                    disabled={postReview.isLoading}
+                    disabled={isReviewing}
                     className="bg-green-600 text-white px-4 py-2 rounded-md text-sm
                                disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {postReview.isLoading ? "Enviando..." : "Aprovar"}
+                    {isReviewing ? "Enviando..." : "Aprovar"}
                   </button>
                 </>
               )}
@@ -148,15 +159,15 @@ export function PostDetailModal({
               <p className="text-sm text-red-500">{rejectForm.error}</p>
             )}
 
-            {postReview.error && (
-              <p className="text-sm text-red-500">{postReview.error}</p>
+            {reviewError && (
+              <p className="text-sm text-red-500">{reviewError}</p>
             )}
 
             <div className="flex justify-end gap-2 mt-2">
               <button
                 type="button"
                 onClick={handleBack}
-                disabled={postReview.isLoading}
+                disabled={isReviewing}
                 className="bg-black/10 text-gray-900 px-4 py-2 rounded-md text-sm
                            hover:bg-black/20 transition-colors
                            disabled:opacity-50 disabled:cursor-not-allowed"
@@ -166,11 +177,11 @@ export function PostDetailModal({
               <button
                 type="button"
                 onClick={handleConfirmReject}
-                disabled={postReview.isLoading}
+                disabled={isReviewing}
                 className="bg-red-600 text-white px-4 py-2 rounded-md text-sm
                            disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {postReview.isLoading ? "Enviando..." : "Confirmar"}
+                {isReviewing ? "Enviando..." : "Confirmar"}
               </button>
             </div>
           </div>

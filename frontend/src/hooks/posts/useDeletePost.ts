@@ -2,7 +2,7 @@ import { useState } from "react";
 import { deletePost } from "../../services/posts.service";
 import { toast } from "sonner";
 
-export function useDeletePost(refetch?: () => void) {
+export function useDeletePost() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -13,7 +13,6 @@ export function useDeletePost(refetch?: () => void) {
     try {
       await deletePost(id);
       toast.success("Publicação excluída!");
-      refetch?.();
       return true;
     } catch (e: unknown) {
       const err = e as { response?: { data?: { message?: string } } };

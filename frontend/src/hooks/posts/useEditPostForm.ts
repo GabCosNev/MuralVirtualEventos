@@ -4,7 +4,7 @@ import { type EventType, type UpdatePost } from "../../types";
 import { dateTimeCombine } from "../../utils/formatDate";
 import { toast } from "sonner";
 
-export function useEditPostForm(postId: number) {
+export function useEditPostForm(postId: number | null) {
   const [title, setTitle] = useState("");
   const [eventType, setEventType] = useState<EventType | "">("");
   const [content, setContent] = useState("");

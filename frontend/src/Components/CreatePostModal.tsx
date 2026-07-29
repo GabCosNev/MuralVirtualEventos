@@ -16,11 +16,11 @@ interface CreatePostModalProps {
 }
 
 export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
-  const form = useCreatePostForm();
+  const createPost = useCreatePostForm();
 
   function handleOpenChange(nextOpen: boolean) {
     if (!nextOpen) {
-      form.resetForm();
+      createPost.resetForm();
     }
     onOpenChange(nextOpen);
   }
@@ -44,7 +44,7 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            form.handleSubmit();
+            createPost.handleSubmit();
           }}
         >
           <div className="grid grid-cols-2 gap-4">
@@ -57,8 +57,8 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
                 <input
                   id="title"
                   type="text"
-                  value={form.title}
-                  onChange={(e) => form.setTitle(e.target.value)}
+                  value={createPost.title}
+                  onChange={(e) => createPost.setTitle(e.target.value)}
                   className={inputStyle}
                   placeholder="Título da publicação"
                 />
@@ -71,9 +71,9 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
                 </label>
                 <select
                   id="eventType"
-                  value={form.eventType}
+                  value={createPost.eventType}
                   onChange={(e) =>
-                    form.setEventType(e.target.value as EventType)
+                    createPost.setEventType(e.target.value as EventType)
                   }
                   className={inputStyle}
                 >
@@ -102,8 +102,10 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
                   <input
                     id="startDateInput"
                     type="date"
-                    value={form.startDateInput}
-                    onChange={(e) => form.setStartDateInput(e.target.value)}
+                    value={createPost.startDateInput}
+                    onChange={(e) =>
+                      createPost.setStartDateInput(e.target.value)
+                    }
                     className={inputStyle}
                   />
                 </div>
@@ -117,8 +119,10 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
                   <input
                     id="startTimeInput"
                     type="time"
-                    value={form.startTimeInput}
-                    onChange={(e) => form.setStartTimeInput(e.target.value)}
+                    value={createPost.startTimeInput}
+                    onChange={(e) =>
+                      createPost.setStartTimeInput(e.target.value)
+                    }
                     className={inputStyle}
                   />
                 </div>
@@ -133,8 +137,8 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
                   <input
                     id="endDateInput"
                     type="date"
-                    value={form.endDateInput}
-                    onChange={(e) => form.setEndDateInput(e.target.value)}
+                    value={createPost.endDateInput}
+                    onChange={(e) => createPost.setEndDateInput(e.target.value)}
                     className={inputStyle}
                   />
                 </div>
@@ -145,8 +149,8 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
                   <input
                     id="endTimeInput"
                     type="time"
-                    value={form.endTimeInput}
-                    onChange={(e) => form.setEndTimeInput(e.target.value)}
+                    value={createPost.endTimeInput}
+                    onChange={(e) => createPost.setEndTimeInput(e.target.value)}
                     className={inputStyle}
                   />
                 </div>
@@ -161,8 +165,8 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
             </label>
             <textarea
               id="content"
-              value={form.content}
-              onChange={(e) => form.setContent(e.target.value)}
+              value={createPost.content}
+              onChange={(e) => createPost.setContent(e.target.value)}
               rows={4}
               className={`${inputStyle} resize-none`}
               placeholder="Descreva o evento..."
@@ -170,8 +174,8 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
           </div>
 
           {/* Erro, condicional */}
-          {form.error && (
-            <p className="text-sm text-red-500 mt-2">{form.error}</p>
+          {createPost.error && (
+            <p className="text-sm text-red-500 mt-2">{createPost.error}</p>
           )}
 
           {/* Botões, alinhados à direita */}
@@ -186,11 +190,11 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
             </button>
             <button
               type="submit"
-              disabled={form.isLoading}
+              disabled={createPost.isLoading}
               className="bg-green-600 text-white px-4 py-2 rounded-md text-sm
                          disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {form.isLoading ? "Enviando..." : "Enviar"}
+              {createPost.isLoading ? "Enviando..." : "Enviar"}
             </button>
           </div>
         </form>

@@ -3,7 +3,7 @@ import { reviewPost } from "../../services/posts.service";
 import { toast } from "sonner";
 import type { PostStatus } from "../../types";
 
-export function usePostReview(refetch?: () => void) {
+export function usePostReview() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -19,7 +19,6 @@ export function usePostReview(refetch?: () => void) {
     try {
       await reviewPost({ status, rejectedReason }, id);
       toast.success(message);
-      refetch?.();
       return true;
     } catch (e: unknown) {
       const err = e as { response?: { data?: { message?: string } } };
