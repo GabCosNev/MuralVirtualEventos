@@ -22,6 +22,9 @@ export function useDeletePost() {
       setIsLoading(false);
     }
   }
+  function resetError() {
+    setError("");
+  }
 
-  return { isLoading, error, remove };
+  return { isLoading, error, remove, resetError };
 }

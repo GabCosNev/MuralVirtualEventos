@@ -23,6 +23,8 @@ export function useEditPostForm(postId: number | null) {
         setIsFetching(false);
         return;
       }
+      setError("");
+      setIsFetching(true);
       try {
         const response = await getPostById(postId);
         setTitle(response.title);

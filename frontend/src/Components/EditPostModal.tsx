@@ -21,10 +21,16 @@ export function EditPostModal({
 }: EditPostModalProps) {
   const [mode, setMode] = useState<"edit" | "confirm-delete">("edit");
   const form = useEditPostForm(postId);
-  const { remove, isLoading: isDeleting, error: deleteError } = useDeletePost();
+  const {
+    remove,
+    isLoading: isDeleting,
+    error: deleteError,
+    resetError,
+  } = useDeletePost();
 
   function handleBack() {
     setMode("edit");
+    resetError();
   }
 
   function handleOpenChange(nextOpen: boolean) {

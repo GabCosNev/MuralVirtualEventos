@@ -27,6 +27,7 @@ export function PostDetailModal({
   const {
     approvePost,
     rejectPost,
+    resetError,
     isLoading: isReviewing,
     error: reviewError,
   } = usePostReview();
@@ -34,6 +35,7 @@ export function PostDetailModal({
   function handleBack() {
     setMode("view");
     rejectForm.resetForm();
+    resetError();
   }
 
   function handleOpenChange(nextOpen: boolean) {
@@ -63,8 +65,6 @@ export function PostDetailModal({
     }
   }
 
-  if (!post) return null;
-
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-2xl pt-2 px-4 pb-4 [&_[data-slot=dialog-close]]:hidden">
@@ -78,7 +78,7 @@ export function PostDetailModal({
           </div>
         </DialogHeader>
 
-        {mode === "view" && (
+        {mode === "view" && post && (
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2">
               <span

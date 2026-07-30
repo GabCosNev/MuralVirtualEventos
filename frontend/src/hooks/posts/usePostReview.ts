@@ -42,5 +42,9 @@ export function usePostReview() {
     return review(id, "REJECTED", "Publicação rejeitada!", reason);
   }
 
-  return { isLoading, error, approvePost, rejectPost };
+  function resetError() {
+    setError("");
+  }
+
+  return { isLoading, error, approvePost, rejectPost, resetError };
 }
