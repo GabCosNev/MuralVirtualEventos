@@ -5,11 +5,13 @@ import { useAuth } from "../hooks/auth/useAuth";
 interface ProtectedRouteProps {
   children: ReactNode;
   adminOnly?: boolean;
+  blockAdmin?: boolean;
 }
 
 export function ProtectedRoute({
   children,
   adminOnly = false,
+  blockAdmin = false,
 }: ProtectedRouteProps) {
   const { user, isAdmin } = useAuth();
 
@@ -18,6 +20,10 @@ export function ProtectedRoute({
   }
 
   if (adminOnly && !isAdmin) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (blockAdmin && isAdmin) {
     return <Navigate to="/" replace />;
   }
 

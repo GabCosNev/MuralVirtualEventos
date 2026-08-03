@@ -6,7 +6,7 @@ import {
   inputStyle,
 } from "../utils/styles";
 
-export default function Login() {
+export function Login() {
   const {
     email,
     setEmail,

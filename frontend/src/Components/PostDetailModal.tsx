@@ -11,7 +11,7 @@ interface PostDetailModalProps {
   post: Post | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  refetch: () => void;
+  refetch?: () => void;
   isAdmin?: boolean;
 }
 
@@ -49,7 +49,7 @@ export function PostDetailModal({
     if (!post) return;
     const success = await approvePost(post.id);
     if (success) {
-      refetch();
+      refetch?.();
       onOpenChange(false);
     }
   }
@@ -60,7 +60,7 @@ export function PostDetailModal({
 
     const success = await rejectPost(post.id, rejectForm.reason);
     if (success) {
-      refetch();
+      refetch?.();
       onOpenChange(false);
     }
   }

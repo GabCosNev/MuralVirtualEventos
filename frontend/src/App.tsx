@@ -1,11 +1,13 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "./components/ui/sonner";
 import { AuthProvider } from "./contexts/AuthProvider";
-import Layout from "./components/Layout";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import { Layout } from "./components/Layout";
+import { Home } from "./pages/Home";
+import { Login } from "./pages/Login";
+import { Register } from "./pages/Register";
 import { Edit } from "./pages/Edit";
+import { Pending } from "./pages/Pending";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -17,6 +19,14 @@ function App() {
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
             <Route path="/edit" element={<Edit />} />
+            <Route
+              path="/pending"
+              element={
+                <ProtectedRoute adminOnly>
+                  <Pending />
+                </ProtectedRoute>
+              }
+            />
           </Route>
         </Routes>
         <Toaster position="top-center" />

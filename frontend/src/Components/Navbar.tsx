@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/auth/useAuth";
 
-export default function Navbar() {
+export function Navbar() {
   const { user, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -59,13 +59,15 @@ export default function Navbar() {
 
         {dropdownOpen && (
           <div className="absolute right-0 top-10 w-48 bg-white border border-gray-200 rounded-xl shadow-lg py-2 z-50">
-            <Link
-              to="/my-posts"
-              onClick={() => setDropdownOpen(false)}
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-            >
-              Minhas Publicações
-            </Link>
+            {!isAdmin && (
+              <Link
+                to="/my-posts"
+                onClick={() => setDropdownOpen(false)}
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              >
+                Minhas Publicações
+              </Link>
+            )}
             <Link
               to="/edit"
               onClick={() => setDropdownOpen(false)}
@@ -75,11 +77,11 @@ export default function Navbar() {
             </Link>
             {isAdmin && (
               <Link
-                to="/admin"
+                to="/pending"
                 onClick={() => setDropdownOpen(false)}
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
               >
-                Admin
+                Publicações Pendentes
               </Link>
             )}
             <button

@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useApprovedPosts } from "../hooks/posts/useApprovdePosts";
+import { type Post } from "../types";
+import { usePendingPosts } from "../hooks/posts/usePendingPosts";
 import { useAuth } from "../hooks/auth/useAuth";
 import {
   getTotalPages,
@@ -7,18 +8,15 @@ import {
   getPageWindow,
 } from "../utils/pagination";
 import { PostCard } from "../components/PostCard";
-import { CreatePostCard } from "../components/CreatePostCardButton";
-import { CreatePostModal } from "../components/CreatePostModal";
-import { type Post } from "../types/post.types";
 import { PostDetailModal } from "../components/PostDetailModal";
 import { paginationButton } from "../utils/styles";
 
-export function Home() {
-  const { posts, isFetching, error } = useApprovedPosts();
+export function Pending() {
+  const { posts, isFetching, error, refetch } = usePendingPosts();
   const { isAdmin } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+
   const totalPages = getTotalPages(posts.length);
   const postsOnPage = getPageItems(posts, currentPage);
   const pageWindow = getPageWindow(currentPage, totalPages);
@@ -34,10 +32,6 @@ export function Home() {
       {!isFetching && !error && (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {currentPage === 1 && !isAdmin && (
-              <CreatePostCard onClick={() => setIsModalOpen(true)} />
-            )}
-
             {postsOnPage.map((post) => (
               <PostCard
                 key={post.id}
@@ -46,16 +40,15 @@ export function Home() {
               />
             ))}
 
-            {postsOnPage.length === 0 && !(currentPage === 1 && !isAdmin) && (
+            {postsOnPage.length === 0 && (
               <p className="text-center text-white/60 col-span-full">
-                Nenhuma publicação encontrada.
+                Nenhuma publicação pendente encontrada.
               </p>
             )}
           </div>
 
           {totalPages > 0 && (
             <div className="fixed bottom-0 left-0 w-full flex justify-center items-center gap-2 py-4 bg-[var(--color-dark)]">
-              {/* Ir para primeira página */}
               <button
                 onClick={() => setCurrentPage(1)}
                 disabled={currentPage === 1}
@@ -64,7 +57,6 @@ export function Home() {
                 {"<<"}
               </button>
 
-              {/* Página anterior */}
               <button
                 onClick={() => setCurrentPage((page) => page - 1)}
                 disabled={currentPage === 1}
@@ -73,7 +65,6 @@ export function Home() {
                 {"<"}
               </button>
 
-              {/* Números da janela deslizante */}
               {pageWindow.map((page) => (
                 <button
                   key={page}
@@ -88,7 +79,6 @@ export function Home() {
                 </button>
               ))}
 
-              {/* Próxima página */}
               <button
                 onClick={() => setCurrentPage((page) => page + 1)}
                 disabled={currentPage === totalPages}
@@ -97,7 +87,6 @@ export function Home() {
                 {">"}
               </button>
 
-              {/* Ir para última página */}
               <button
                 onClick={() => setCurrentPage(totalPages)}
                 disabled={currentPage === totalPages}
@@ -110,14 +99,14 @@ export function Home() {
         </>
       )}
 
-      <CreatePostModal open={isModalOpen} onOpenChange={setIsModalOpen} />
-
       <PostDetailModal
         post={selectedPost}
         open={selectedPost !== null}
         onOpenChange={(isOpen) => {
           if (!isOpen) setSelectedPost(null);
         }}
+        refetch={refetch}
+        isAdmin={isAdmin}
       />
     </div>
   );

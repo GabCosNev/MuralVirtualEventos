@@ -6,7 +6,7 @@ import {
   inputStyle,
 } from "../utils/styles";
 
-export default function Register() {
+export function Register() {
   const {
     name,
     setName,
