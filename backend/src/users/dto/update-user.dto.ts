@@ -1,4 +1,4 @@
-import { IsOptional, IsString, MinLength } from 'class-validator';
+import { IsOptional, IsString, MinLength, IsStrongPassword } from 'class-validator';
 
 export class UpdateUserDto {
   @IsOptional()
@@ -15,12 +15,22 @@ export class UpdateUserDto {
   actualPassword?: string;
 
   @IsOptional()
-  @IsString({ message: 'Deve ser um texto' })
-  @MinLength(8, { message: 'A senha deve ter no mínimo 8 caracteres' })
-  password?: string;
+  @IsStrongPassword(
+    {
+      minLength: 12,
+      minLowercase: 1,
+      minUppercase: 1,
+      minNumbers: 1,
+      minSymbols: 1,
+    },
+    {
+      message:
+        ' Mínimo 12 caracteres; caracteres especiais como # $ @ ...; pelo menos uma letra maiúscula e minúscula; e pelo menos um número',
+    },
+  )
+  password!: string;
 
   @IsOptional()
-  @IsString({ message: 'Deve ser um texto' })
-  @MinLength(8, { message: 'A senha deve ter no mínimo 8 caracteres' })
-  confirmPassword?: string;
+  @IsString()
+  confirmPassword!: string;
 }

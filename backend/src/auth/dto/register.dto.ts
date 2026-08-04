@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, IsStrongPassword } from 'class-validator';
 
 export class RegisterDto {
   @IsNotEmpty({ message: 'Nome em branco.' })
@@ -8,9 +8,22 @@ export class RegisterDto {
   @IsEmail({}, { message: ' E-mail Inválido.' })
   email!: string;
 
-  @MinLength(8, { message: ' Senha deve ter no mínimo 8 caracteres.' })
+  @IsStrongPassword(
+    {
+      minLength: 12,
+      minLowercase: 1,
+      minUppercase: 1,
+      minNumbers: 1,
+      minSymbols: 1,
+    },
+    {
+      message:
+        ' Mínimo 12 caracteres; caracteres especiais como # $ @ ...; pelo menos uma letra maiúscula e minúscula; e pelo menos um número',
+    },
+  )
   password!: string;
 
-  @MinLength(8, { message: ' ConfirmarSenha deve ter no mínimo 8 caracteres.' })
+  @IsNotEmpty({ message: 'Confirmação de senha em branco.' })
+  @IsString()
   confirmPassword!: string;
 }
