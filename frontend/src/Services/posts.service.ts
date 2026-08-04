@@ -23,7 +23,7 @@ export const reviewPost = async (
   dto: ReviewPost,
   id: number,
 ): Promise<Post> => {
-  const { data } = await api.patch<Post>(`/posts/${id}`, dto);
+  const { data } = await api.patch<Post>(`/posts/${id}/review`, dto);
   return data;
 };
 

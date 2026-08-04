@@ -1,6 +1,6 @@
 import { type Post } from "../types";
-import { formatEventPeriod } from "../utils/formatDate";
-import { eventTypeColor, eventTypeLabel } from "@/utils/eventCustom";
+import { formatEventPeriod, isEventFinished } from "../utils/formatDate";
+import { eventTypeColor, eventTypeLabel } from "../utils/eventCustom";
 
 interface PostCardProps {
   post: Post;
@@ -9,31 +9,36 @@ interface PostCardProps {
 
 export function PostCard({ post, onClick }: PostCardProps) {
   const badgeColor = eventTypeColor[post.eventType];
+  const finished = isEventFinished(post.endDate);
 
   return (
     <div
       onClick={onClick}
-      className="rounded-lg shadow-md overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
+      className={`${
+        finished ? "bg-gray-200" : "bg-white"
+      } rounded-lg shadow-md overflow-hidden cursor-pointer hover:opacity-90 transition-opacity`}
     >
-      {/* Badge do eventType + título, lado a lado */}
-      <div className="p-4 flex items-center gap-2">
+      {/* Badge centralizado + título centralizado, ambos compactos */}
+      <div className="px-3 pt-3 pb-2 flex flex-col items-center gap-1">
         <span
           className={`${badgeColor} text-white text-xs font-semibold px-2 py-1 rounded`}
         >
           {eventTypeLabel[post.eventType]}
         </span>
-        <h3 className="text-lg font-bold">{post.title}</h3>
+        <h3 className="text-base font-bold text-gray-900 text-center">
+          {post.title}
+        </h3>
       </div>
 
       {/* Período do evento, centralizado, com borda inferior separando do conteúdo */}
-      <div className="px-4 pb-3 text-center border-b border-gray-200">
+      <div className="px-3 pb-2 text-center border-b border-gray-200">
         <span className="text-sm text-gray-500">
           {formatEventPeriod(post.startDate, post.endDate)}
         </span>
       </div>
 
       {/* Conteúdo do post, truncado em 5 linhas independente do tamanho do texto */}
-      <div className="px-4 py-3">
+      <div className="px-3 py-5">
         <p className="line-clamp-5 whitespace-pre-line text-sm text-gray-700">
           {post.content}
         </p>

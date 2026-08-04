@@ -80,9 +80,9 @@ export function PostDetailModal({
 
         {mode === "view" && post && (
           <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col items-center gap-2">
               <span
-                className={`${eventTypeColor[post.eventType]} text-white text-xs font-semibold px-2 py-1 rounded`}
+                className={`${eventTypeColor[post.eventType]} text-white text-xs font-semibold px-2 py-1 rounded w-fit`}
               >
                 {eventTypeLabel[post.eventType]}
               </span>
