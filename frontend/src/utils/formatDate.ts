@@ -55,3 +55,13 @@ export function formatEventPeriod(startDate: string, endDate: string): string {
 
   return `${startDateFormatted} ${startTimeFormatted} até ${endDateFormatted} ${endTimeFormatted}`;
 }
+
+export function isEventFinished(endDate: string): boolean {
+  const end = new Date(endDate);
+  const today = new Date();
+
+  today.setHours(0, 0, 0, 0);
+  end.setHours(0, 0, 0, 0);
+
+  return today > end;
+}
