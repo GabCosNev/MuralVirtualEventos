@@ -7,6 +7,7 @@ import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { Edit } from "./pages/Edit";
 import { Pending } from "./pages/Pending";
+import { MyPosts } from "./pages/MyPosts";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
 function App() {
@@ -24,6 +25,14 @@ function App() {
               element={
                 <ProtectedRoute adminOnly>
                   <Pending />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/my-posts"
+              element={
+                <ProtectedRoute blockAdmin>
+                  <MyPosts />
                 </ProtectedRoute>
               }
             />
