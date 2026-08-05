@@ -68,13 +68,6 @@ export function Navbar() {
                 Minhas Publicações
               </Link>
             )}
-            <Link
-              to="/edit"
-              onClick={() => setDropdownOpen(false)}
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-            >
-              Editar Perfil
-            </Link>
             {isAdmin && (
               <Link
                 to="/pending"
@@ -84,6 +77,13 @@ export function Navbar() {
                 Publicações Pendentes
               </Link>
             )}
+            <Link
+              to="/edit"
+              onClick={() => setDropdownOpen(false)}
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+            >
+              Editar Perfil
+            </Link>
             <button
               onClick={handleLogout}
               className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-50"
