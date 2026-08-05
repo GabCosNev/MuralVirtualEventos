@@ -32,7 +32,10 @@ export class PostsService {
   }
   async findAllApproved() {
     return this.prisma.post.findMany({
-      where: { status: PostStatus.APPROVED },
+      where: {
+        status: PostStatus.APPROVED,
+        endDate: { gte: new Date() },
+      },
       include: {
         author: {
           select: {
@@ -42,7 +45,7 @@ export class PostsService {
           },
         },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { startDate: 'asc' },
     });
   }
   async findMyPosts(userId: number) {
@@ -154,8 +157,11 @@ export class PostsService {
 
     if (endDateCombinada <= startDateCombinada) {
       throw new BadRequestException(
-        'A data/hora de término do evento deve ser posterior à data/hora de início.',
+        'A data do término do evento deve ser posterior à data de início.',
       );
+    }
+    if (endDateCombinada < new Date()) {
+      throw new BadRequestException('A data de término não pode ser no passado');
     }
 
     return { startDate: startDateCombinada, endDate: endDateCombinada };

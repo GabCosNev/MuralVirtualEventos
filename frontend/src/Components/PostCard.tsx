@@ -5,19 +5,65 @@ import { eventTypeColor, eventTypeLabel } from "../utils/eventCustom";
 interface PostCardProps {
   post: Post;
   onClick: () => void;
+  showStatusBanner?: boolean;
 }
 
-export function PostCard({ post, onClick }: PostCardProps) {
+export function PostCard({
+  post,
+  onClick,
+  showStatusBanner = true,
+}: PostCardProps) {
   const badgeColor = eventTypeColor[post.eventType];
   const finished = isEventFinished(post.endDate);
+
+  function renderStatusBanner() {
+    if (!showStatusBanner) return null;
+
+    if (post.status === "REJECTED") {
+      return (
+        <div className="bg-red-600 text-white text-xs font-semibold px-3 py-1.5 text-center">
+          Rejeitado
+          {post.rejectedReason && (
+            <span className="font-normal"> — {post.rejectedReason}</span>
+          )}
+        </div>
+      );
+    }
+
+    if (finished) {
+      return (
+        <div className="bg-yellow-600 text-white text-xs font-semibold px-3 py-1.5 text-center">
+          Evento Expirado
+        </div>
+      );
+    }
+
+    if (post.status === "APPROVED") {
+      return (
+        <div className="bg-green-600 text-white text-xs font-semibold px-3 py-1.5 text-center">
+          Aprovado
+        </div>
+      );
+    }
+
+    if (post.status === "PENDING") {
+      return (
+        <div className="bg-yellow-600 text-white text-xs font-semibold px-3 py-1.5 text-center">
+          Pendente
+        </div>
+      );
+    }
+
+    return null;
+  }
 
   return (
     <div
       onClick={onClick}
-      className={`${
-        finished ? "bg-gray-200" : "bg-white"
-      } rounded-lg shadow-md overflow-hidden cursor-pointer hover:opacity-90 transition-opacity`}
+      className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
     >
+      {renderStatusBanner()}
+
       {/* Badge centralizado + título centralizado, ambos compactos */}
       <div className="px-3 pt-3 pb-2 flex flex-col items-center gap-1">
         <span
