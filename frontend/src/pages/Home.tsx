@@ -43,6 +43,7 @@ export function Home() {
                 key={post.id}
                 post={post}
                 onClick={() => setSelectedPost(post)}
+                showStatusBanner={false}
               />
             ))}
 
