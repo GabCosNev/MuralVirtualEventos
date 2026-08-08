@@ -22,6 +22,6 @@
     "noFallthroughCasesInSwitch": false,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src"],
+  "include": ["src", "../frontend/src/turnstile"],
   "exclude": ["node_modules", "dist", "generated", "test", "**/*spec.ts"]
 }
