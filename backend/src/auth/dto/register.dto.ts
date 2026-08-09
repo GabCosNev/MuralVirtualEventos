@@ -26,4 +26,8 @@ export class RegisterDto {
   @IsNotEmpty({ message: 'Confirmação de senha em branco.' })
   @IsString()
   confirmPassword!: string;
+
+  @IsNotEmpty({ message: 'Token de verificação ausente.' })
+  @IsString()
+  turnstileToken!: string;
 }
