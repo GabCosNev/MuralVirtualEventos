@@ -7,6 +7,7 @@ export function useRegisterForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -14,17 +15,30 @@ export function useRegisterForm() {
     if (password !== confirmPassword)
       return setError("As senhas não coincidem");
 
+    if (!turnstileToken)
+      return setError(
+        "Verificação de segurança pendente. Aguarde ou recarregue a página.",
+      );
+
     setIsLoading(true);
     try {
-      await registerUser({ name, email, password, confirmPassword });
+      await registerUser({
+        name,
+        email,
+        password,
+        confirmPassword,
+        turnstileToken,
+      });
       setName("");
       setEmail("");
       setPassword("");
       setConfirmPassword("");
+      setTurnstileToken(null);
       toast.success("Cadastro realizado com sucesso!");
     } catch (e: unknown) {
       const err = e as { response?: { data?: { message?: string } } };
       setError(err.response?.data?.message ?? "Erro ao fazer o registro");
+      setTurnstileToken(null);
     } finally {
       setIsLoading(false);
     }
@@ -38,6 +52,8 @@ export function useRegisterForm() {
     setPassword,
     confirmPassword,
     setConfirmPassword,
+    turnstileToken,
+    setTurnstileToken,
     error,
     isLoading,
     handleSubmit,

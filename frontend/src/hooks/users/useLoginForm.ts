@@ -10,15 +10,25 @@ export function useLoginForm() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleSubmit() {
+    if (!turnstileToken)
+      return setError(
+        "Verificação de segurança pendente. Aguarde ou recarregue a página.",
+      );
+
     setIsLoading(true);
     setError("");
 
     try {
-      const { access_token } = await loginUser({ email, password });
+      const { access_token } = await loginUser({
+        email,
+        password,
+        turnstileToken,
+      });
 
       localStorage.setItem("token", access_token);
 
@@ -29,6 +39,7 @@ export function useLoginForm() {
     } catch (e: unknown) {
       const err = e as { response?: { data?: { message?: string } } };
       setError(err.response?.data?.message ?? "Erro ao fazer login");
+      setTurnstileToken(null);
     } finally {
       setIsLoading(false);
     }
@@ -39,6 +50,7 @@ export function useLoginForm() {
     setEmail,
     password,
     setPassword,
+    setTurnstileToken,
     error,
     isLoading,
     handleSubmit,
