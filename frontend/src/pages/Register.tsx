@@ -5,6 +5,8 @@ import {
   buttonRegisterLogin,
   inputStyle,
 } from "../utils/styles";
+import { Turnstile } from "@marsidev/react-turnstile";
+import { PasswordInput } from "../components/PasswordInput";
 
 export function Register() {
   const {
@@ -19,6 +21,7 @@ export function Register() {
     error,
     isLoading,
     handleSubmit,
+    setTurnstileToken,
   } = useRegisterForm();
 
   return (
@@ -56,11 +59,9 @@ export function Register() {
           {/* Campo senha */}
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700">Senha</label>
-            <input
-              type="password"
+            <PasswordInput
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className={inputStyle}
             />
           </div>
 
@@ -69,13 +70,18 @@ export function Register() {
             <label className="text-sm font-medium text-gray-700">
               Confirmar Senha
             </label>
-            <input
-              type="password"
+            <PasswordInput
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className={inputStyle}
             />
           </div>
+          {/* Verificação Turnstile */}
+          <Turnstile
+            siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY_REGISTER}
+            onSuccess={(token: string) => setTurnstileToken(token)}
+            onExpire={() => setTurnstileToken(null)}
+            options={{ size: "flexible" }}
+          />
 
           {/* Mensagens de erro */}
           {error && <p className="text-red-500 text-sm">{error}</p>}

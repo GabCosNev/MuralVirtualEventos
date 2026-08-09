@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
+import { Turnstile } from "@marsidev/react-turnstile";
 import { useLoginForm } from "../hooks/users/useLoginForm";
 import {
   buttonEffectConfirm,
   buttonRegisterLogin,
   inputStyle,
 } from "../utils/styles";
+import { PasswordInput } from "../components/PasswordInput";
 
 export function Login() {
   const {
@@ -12,6 +14,7 @@ export function Login() {
     setEmail,
     password,
     setPassword,
+    setTurnstileToken,
     error,
     isLoading,
     handleSubmit,
@@ -41,11 +44,19 @@ export function Login() {
           {/* Campo senha */}
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700">Senha</label>
-            <input
-              type="password"
+            <PasswordInput
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className={inputStyle}
+            />
+          </div>
+
+          {/* Verificação Turnstile */}
+          <div className="w-full">
+            <Turnstile
+              siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY_LOGIN}
+              onSuccess={(token: string) => setTurnstileToken(token)}
+              onExpire={() => setTurnstileToken(null)}
+              options={{ size: "flexible" }}
             />
           </div>
 
