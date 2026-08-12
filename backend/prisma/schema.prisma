@@ -17,6 +17,10 @@ model User {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   posts     Post[]
+
+  emailVerified               Boolean   @default(false)
+  verificationToken           String?
+  verificationTokenExpiresAt  DateTime?
 }
 
 model Post {
