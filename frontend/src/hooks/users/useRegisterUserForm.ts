@@ -34,7 +34,7 @@ export function useRegisterForm() {
       setPassword("");
       setConfirmPassword("");
       setTurnstileToken(null);
-      toast.success("Cadastro realizado com sucesso!");
+      toast.success("Cadastro realizado! Verifique seu e-mail.");
     } catch (e: unknown) {
       const err = e as { response?: { data?: { message?: string } } };
       setError(err.response?.data?.message ?? "Erro ao fazer o registro");
