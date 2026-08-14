@@ -22,7 +22,7 @@ export function Navbar() {
     <nav className="w-full navbar-bg px-6 py-3 flex items-center justify-between fixed top-0 left-0 z-50">
       {/* Logo e nome do projeto */}
       <Link to="/" className="flex items-center gap-2">
-        <span className="text-xl font-bold text-white">MuralVirtual</span>
+        <span className="text-xl font-bold text-white">MuraliX</span>
       </Link>
 
       {/* Link para todas as publicações */}
