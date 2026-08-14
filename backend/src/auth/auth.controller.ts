@@ -4,6 +4,8 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { TurnstileGuard } from '../turnstile/turnstile.guard';
 import { TurnstileSecret } from '../turnstile/turnstile-secret.decorator';
+import { Res } from '@nestjs/common';
+import type { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -19,7 +21,7 @@ export class AuthController {
   @Post('login')
   @UseGuards(TurnstileGuard)
   @TurnstileSecret('TURNSTILE_SECRET_KEY_LOGIN')
-  login(@Body() dto: LoginDto) {
+  login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
     return this.authService.login(dto);
   }
 }

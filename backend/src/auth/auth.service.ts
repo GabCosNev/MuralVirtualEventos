@@ -10,6 +10,7 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -32,14 +33,13 @@ export class AuthService {
 
     const nomeAtualizado = this.formatarNome(dto.name);
 
-    const user = await this.prisma.user.create({
+    await this.prisma.user.create({
       data: {
         name: nomeAtualizado,
         email: dto.email,
         password: hashed,
       },
     });
-    return this.signToken(user.id, user.email, user.role);
   }
   async login(dto: LoginDto) {
     const user = await this.prisma.user.findUnique({
@@ -70,5 +70,12 @@ export class AuthService {
           : palavra.charAt(0).toLocaleUpperCase('pt-BR') + palavra.slice(1),
       )
       .join(' ');
+  }
+  private generateRefreshToken(): string {
+    return crypto.randomBytes(64).toString('hex');
+  }
+
+  private hashToken(token: string): string {
+    return crypto.createHash('sha256').update(token).digest('hex');
   }
 }
