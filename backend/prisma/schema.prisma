@@ -17,6 +17,8 @@ model User {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   posts     Post[]
+  refreshTokens RefreshToken[]
+
 
   emailVerified               Boolean   @default(false)
   verificationToken           String?
@@ -38,6 +40,16 @@ model Post {
   author         User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
 }
 
+model RefreshToken {
+  id         Int       @id @default(autoincrement())
+  tokenHash  String    @unique
+  userId     Int
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt  DateTime
+  revoked    Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+}
+
 enum Role {
   USER
   ADMIN
@@ -54,3 +66,5 @@ enum PostStatus {
   APPROVED
   REJECTED
 }
+
+
