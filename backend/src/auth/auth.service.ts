@@ -1,3 +1,5 @@
+import * as crypto from 'crypto';
+
 import {
   Injectable,
   ConflictException,
@@ -10,7 +12,6 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import * as crypto from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -50,13 +51,27 @@ export class AuthService {
     const valid = await bcrypt.compare(dto.password, user.password);
     if (!valid) throw new UnauthorizedException('Credenciais inválidas');
 
-    return this.signToken(user.id, user.email, user.role);
+    const accessToken = this.signAccessToken(user.id, user.email, user.role);
+    const refreshToken = await this.createRefreshToken(user.id);
+
+    const safeUser = await this.prisma.user.findUnique({
+      where: { id: user.id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        avatar: true,
+      },
+    });
+
+    if (!safeUser) throw new UnauthorizedException('Credenciais inválidas');
+
+    return { accessToken, refreshToken, user: safeUser };
   }
 
-  private signToken(userId: number, email: string, role: string) {
-    return {
-      access_token: this.jwt.sign({ sub: userId, email, role }),
-    };
+  private signAccessToken(userId: number, email: string, role: string) {
+    return this.jwt.sign({ sub: userId, email, role }, { expiresIn: '15m' });
   }
   private formatarNome(nome: string) {
     const preposicoes = ['da', 'de', 'do', 'das', 'dos', 'e'];
@@ -77,5 +92,23 @@ export class AuthService {
 
   private hashToken(token: string): string {
     return crypto.createHash('sha256').update(token).digest('hex');
+  }
+
+  private async createRefreshToken(userId: number): Promise<string> {
+    const token = this.generateRefreshToken();
+    const tokenHash = this.hashToken(token);
+
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7);
+
+    await this.prisma.refreshToken.create({
+      data: {
+        tokenHash,
+        userId,
+        expiresAt,
+      },
+    });
+
+    return token;
   }
 }
