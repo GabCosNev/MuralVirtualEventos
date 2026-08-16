@@ -111,4 +111,42 @@ export class AuthService {
 
     return token;
   }
+  async refresh(refreshTokenValue: string) {
+    const tokenHash = this.hashToken(refreshTokenValue);
+
+    const stored = await this.prisma.refreshToken.findUnique({
+      where: { tokenHash },
+    });
+
+    if (!stored || stored.expiresAt < new Date()) {
+      throw new UnauthorizedException('Sessão inválida');
+    }
+
+    if (stored.revoked) {
+      await this.revokeAllUserTokens(stored.userId);
+      throw new UnauthorizedException('Sessão inválida');
+    }
+
+    await this.prisma.refreshToken.update({
+      where: { id: stored.id },
+      data: { revoked: true },
+    });
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: stored.userId },
+    });
+    if (!user) throw new UnauthorizedException('Sessão inválida');
+
+    const accessToken = this.signAccessToken(user.id, user.email, user.role);
+    const newRefreshToken = await this.createRefreshToken(user.id);
+
+    return { accessToken, refreshToken: newRefreshToken };
+  }
+
+  private async revokeAllUserTokens(userId: number) {
+    await this.prisma.refreshToken.updateMany({
+      where: { userId, revoked: false },
+      data: { revoked: true },
+    });
+  }
 }

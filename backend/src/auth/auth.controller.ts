@@ -1,5 +1,5 @@
-import { Controller, Post, Body, Res, UseGuards } from '@nestjs/common';
-import type { Response } from 'express';
+import { Controller, Post, Body, Req, Res, UseGuards, UnauthorizedException } from '@nestjs/common';
+import type { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -20,6 +20,15 @@ export class AuthController {
     };
   }
 
+  private setAuthCookies(res: Response, accessToken: string, refreshToken: string) {
+    res.cookie('access_token', accessToken, this.getCookieOptions(15 * 60 * 1000, '/'));
+    res.cookie(
+      'refresh_token',
+      refreshToken,
+      this.getCookieOptions(7 * 24 * 60 * 60 * 1000, '/auth/refresh'),
+    );
+  }
+
   @Post('register')
   @UseGuards(TurnstileGuard)
   @TurnstileSecret('TURNSTILE_SECRET_KEY_REGISTER')
@@ -33,13 +42,22 @@ export class AuthController {
   async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
     const { accessToken, refreshToken, user } = await this.authService.login(dto);
 
-    res.cookie('access_token', accessToken, this.getCookieOptions(15 * 60 * 1000, '/'));
-    res.cookie(
-      'refresh_token',
-      refreshToken,
-      this.getCookieOptions(7 * 24 * 60 * 60 * 1000, '/auth/refresh'),
-    );
+    this.setAuthCookies(res, accessToken, refreshToken);
 
     return { user };
+  }
+  @Post('refresh')
+  async refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    const refreshTokenValue = req.cookies?.refresh_token as string | undefined;
+
+    if (!refreshTokenValue) {
+      throw new UnauthorizedException('Sessão inválida');
+    }
+
+    const { accessToken, refreshToken } = await this.authService.refresh(refreshTokenValue);
+
+    this.setAuthCookies(res, accessToken, refreshToken);
+
+    return { success: true };
   }
 }
