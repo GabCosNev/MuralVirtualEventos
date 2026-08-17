@@ -149,4 +149,12 @@ export class AuthService {
       data: { revoked: true },
     });
   }
+  async logout(refreshTokenValue: string) {
+    const tokenHash = this.hashToken(refreshTokenValue);
+
+    await this.prisma.refreshToken.updateMany({
+      where: { tokenHash, revoked: false },
+      data: { revoked: true },
+    });
+  }
 }

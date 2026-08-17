@@ -60,4 +60,17 @@ export class AuthController {
 
     return { success: true };
   }
+  @Post('logout')
+  async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    const refreshTokenValue = req.cookies?.refresh_token as string | undefined;
+
+    if (refreshTokenValue) {
+      await this.authService.logout(refreshTokenValue);
+    }
+
+    res.clearCookie('access_token', { path: '/' });
+    res.clearCookie('refresh_token', { path: '/auth/refresh' });
+
+    return { success: true };
+  }
 }
