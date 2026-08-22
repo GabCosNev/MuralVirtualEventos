@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { Turnstile } from "@marsidev/react-turnstile";
 import { useLoginForm } from "../hooks/users/useLoginForm";
 import {
   buttonEffectConfirm,
@@ -7,6 +6,7 @@ import {
   inputStyle,
 } from "../utils/styles";
 import { PasswordInput } from "../components/PasswordInput";
+import { TurnstileWidget } from "../components/TurnstileWidget";
 
 export function Login() {
   const {
@@ -18,6 +18,7 @@ export function Login() {
     error,
     isLoading,
     handleSubmit,
+    turnstileRef,
   } = useLoginForm();
 
   return (
@@ -51,14 +52,12 @@ export function Login() {
           </div>
 
           {/* Verificação Turnstile */}
-          <div className="w-full">
-            <Turnstile
-              siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY_LOGIN}
-              onSuccess={(token: string) => setTurnstileToken(token)}
-              onExpire={() => setTurnstileToken(null)}
-              options={{ size: "flexible" }}
-            />
-          </div>
+          <TurnstileWidget
+            ref={turnstileRef}
+            siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY_LOGIN}
+            onSuccess={(token: string) => setTurnstileToken(token)}
+            onExpire={() => setTurnstileToken(null)}
+          />
 
           {/* Mensagem de erro */}
           {error && <p className="text-red-500 text-sm">{error}</p>}

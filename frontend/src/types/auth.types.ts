@@ -1,3 +1,5 @@
+import type { User } from "./user.types";
+
 export interface Login {
   email: string;
   password: string;
@@ -13,5 +15,5 @@ export interface Register {
 }
 
 export interface AuthResponse {
-  access_token: string;
+  user: User;
 }

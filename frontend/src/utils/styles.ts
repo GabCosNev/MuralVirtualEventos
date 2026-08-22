@@ -11,3 +11,9 @@ export const buttonEffectConfirm =
 
 export const paginationButton =
   "px-2 py-1 rounded-md text-sm text-white bg-[var(--color-dark)] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/10 transition-colors";
+
+export function getAvatarColor(name: string) {
+  const colors = ["#F472B6", "#4ADE80", "#FACC15", "#F87171", "#60A5FA"];
+  const index = (name.charCodeAt(0) || 0) % colors.length;
+  return colors[index];
+}

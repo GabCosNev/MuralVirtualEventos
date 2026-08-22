@@ -5,8 +5,8 @@ import {
   buttonRegisterLogin,
   inputStyle,
 } from "../utils/styles";
-import { Turnstile } from "@marsidev/react-turnstile";
 import { PasswordInput } from "../components/PasswordInput";
+import { TurnstileWidget } from "../components/TurnstileWidget";
 
 export function Register() {
   const {
@@ -22,6 +22,7 @@ export function Register() {
     isLoading,
     handleSubmit,
     setTurnstileToken,
+    turnstileRef,
   } = useRegisterForm();
 
   return (
@@ -76,11 +77,12 @@ export function Register() {
             />
           </div>
           {/* Verificação Turnstile */}
-          <Turnstile
+
+          <TurnstileWidget
+            ref={turnstileRef}
             siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY_REGISTER}
             onSuccess={(token: string) => setTurnstileToken(token)}
             onExpire={() => setTurnstileToken(null)}
-            options={{ size: "flexible" }}
           />
 
           {/* Mensagens de erro */}

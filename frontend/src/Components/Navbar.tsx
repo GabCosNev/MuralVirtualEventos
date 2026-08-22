@@ -1,21 +1,17 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/auth/useAuth";
+import { getAvatarColor } from "../utils/styles";
 
 export function Navbar() {
   const { user, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  function getAvatarColor(name: string) {
-    const colors = ["#F472B6", "#4ADE80", "#FACC15", "#F87171", "#60A5FA"];
-    const index = (name.charCodeAt(0) || 0) % colors.length;
-    return colors[index];
-  }
-
   function handleLogout() {
     logout();
     navigate("/login");
+    setDropdownOpen(false);
   }
 
   return (

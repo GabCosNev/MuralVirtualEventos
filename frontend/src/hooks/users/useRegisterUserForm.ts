@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { registerUser } from "../../services/auth.service";
 import { toast } from "sonner";
+import type { TurnstileInstance } from "@marsidev/react-turnstile";
 
 export function useRegisterForm() {
   const [name, setName] = useState("");
@@ -10,6 +11,7 @@ export function useRegisterForm() {
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const turnstileRef = useRef<TurnstileInstance>(null);
 
   async function handleSubmit() {
     if (password !== confirmPassword)
@@ -39,6 +41,7 @@ export function useRegisterForm() {
       const err = e as { response?: { data?: { message?: string } } };
       setError(err.response?.data?.message ?? "Erro ao fazer o registro");
       setTurnstileToken(null);
+      turnstileRef.current?.reset();
     } finally {
       setIsLoading(false);
     }
@@ -54,6 +57,7 @@ export function useRegisterForm() {
     setConfirmPassword,
     turnstileToken,
     setTurnstileToken,
+    turnstileRef,
     error,
     isLoading,
     handleSubmit,

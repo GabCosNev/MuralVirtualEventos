@@ -1,52 +1,50 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import type { User } from "../types/user.types";
 import { AuthContext } from "./AuthContext";
+import { api } from "../services/api";
+import { registerLogoutHandler } from "../services/authEvents";
 
 interface AuthState {
   user: User | null;
-  token: string | null;
+  isLoading: boolean;
 }
 
-function getInitialAuth(): AuthState {
-  const storedToken = localStorage.getItem("token");
-  const storedUser = localStorage.getItem("user");
-
-  if (storedToken && storedUser) {
-    const payload = JSON.parse(atob(storedToken.split(".")[1])) as {
-      exp: number;
-    };
-    const isExpired = payload.exp * 1000 < Date.now();
-
-    if (isExpired) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      return { token: null, user: null };
-    }
-    return {
-      token: storedToken,
-      user: JSON.parse(storedUser) as User,
-    };
-  }
-  return { token: null, user: null };
-}
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [auth, setAuth] = useState<AuthState>(getInitialAuth);
+  const [auth, setAuth] = useState<AuthState>({ user: null, isLoading: true });
 
-  function login(token: string, user: User) {
-    localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(user));
-    setAuth({ token, user });
+  useEffect(() => {
+    async function fetchCurrentUser() {
+      try {
+        const response = await api.get<User>("/users/me");
+        setAuth({ user: response.data, isLoading: false });
+      } catch {
+        setAuth({ user: null, isLoading: false });
+      }
+    }
+
+    fetchCurrentUser();
+  }, []);
+
+  useEffect(() => {
+    registerLogoutHandler(() => {
+      setAuth({ user: null, isLoading: false });
+    });
+  }, []);
+
+  function login(user: User) {
+    setAuth({ user, isLoading: false });
   }
 
-  function logout() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setAuth({ token: null, user: null });
+  async function logout() {
+    try {
+      await api.post("/auth/logout");
+    } finally {
+      setAuth({ user: null, isLoading: false });
+    }
   }
 
   function updateUser(user: User) {
-    localStorage.setItem("user", JSON.stringify(user));
     setAuth((prev) => ({ ...prev, user }));
   }
 
@@ -54,7 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     <AuthContext.Provider
       value={{
         user: auth.user,
-        token: auth.token,
+        isLoading: auth.isLoading,
         login,
         logout,
         updateUser,

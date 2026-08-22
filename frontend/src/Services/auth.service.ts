@@ -1,4 +1,4 @@
-import api from "./api";
+import { api } from "./api";
 import { type Login, type Register, type AuthResponse } from "../types";
 
 export const loginUser = async (dto: Login): Promise<AuthResponse> => {
@@ -6,7 +6,6 @@ export const loginUser = async (dto: Login): Promise<AuthResponse> => {
   return data;
 };
 
-export const registerUser = async (dto: Register): Promise<AuthResponse> => {
-  const { data } = await api.post<AuthResponse>("/auth/register", dto);
-  return data;
+export const registerUser = async (dto: Register): Promise<void> => {
+  await api.post("/auth/register", dto);
 };

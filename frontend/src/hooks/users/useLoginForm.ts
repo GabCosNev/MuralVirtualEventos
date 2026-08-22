@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/useAuth";
 import { loginUser } from "../../services/auth.service";
-import { getMe } from "../../services/users.services";
+import type { TurnstileInstance } from "@marsidev/react-turnstile";
 
 export function useLoginForm() {
   const { login } = useAuth();
@@ -13,6 +13,7 @@ export function useLoginForm() {
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const turnstileRef = useRef<TurnstileInstance>(null);
 
   async function handleSubmit() {
     if (!turnstileToken)
@@ -24,22 +25,15 @@ export function useLoginForm() {
     setError("");
 
     try {
-      const { access_token } = await loginUser({
-        email,
-        password,
-        turnstileToken,
-      });
+      const { user } = await loginUser({ email, password, turnstileToken });
 
-      localStorage.setItem("token", access_token);
-
-      const user = await getMe();
-
-      login(access_token, user);
+      login(user);
       navigate("/");
     } catch (e: unknown) {
       const err = e as { response?: { data?: { message?: string } } };
       setError(err.response?.data?.message ?? "Erro ao fazer login");
       setTurnstileToken(null);
+      turnstileRef.current?.reset();
     } finally {
       setIsLoading(false);
     }
@@ -51,6 +45,7 @@ export function useLoginForm() {
     password,
     setPassword,
     setTurnstileToken,
+    turnstileRef,
     error,
     isLoading,
     handleSubmit,

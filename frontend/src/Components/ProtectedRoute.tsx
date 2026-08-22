@@ -13,7 +13,11 @@ export function ProtectedRoute({
   adminOnly = false,
   blockAdmin = false,
 }: ProtectedRouteProps) {
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, isLoading } = useAuth();
+
+  if (isLoading) {
+    return null;
+  }
 
   if (!user) {
     return <Navigate to="/login" replace />;
