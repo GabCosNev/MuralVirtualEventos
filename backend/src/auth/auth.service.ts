@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
+import { EmailService } from '../email/email.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
@@ -18,6 +19,7 @@ export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwt: JwtService,
+    private emailService: EmailService,
   ) {}
 
   async register(dto: RegisterDto) {
@@ -34,13 +36,14 @@ export class AuthService {
 
     const nomeAtualizado = this.formatarNome(dto.name);
 
-    await this.prisma.user.create({
+    const user = await this.prisma.user.create({
       data: {
         name: nomeAtualizado,
         email: dto.email,
         password: hashed,
       },
     });
+    await this.sendVerificationEmail(user.id);
   }
   async login(dto: LoginDto) {
     const user = await this.prisma.user.findUnique({
@@ -49,7 +52,15 @@ export class AuthService {
     if (!user) throw new UnauthorizedException('Credenciais inválidas');
 
     const valid = await bcrypt.compare(dto.password, user.password);
+
     if (!valid) throw new UnauthorizedException('Credenciais inválidas');
+
+    if (!user.emailVerified) {
+      throw new UnauthorizedException({
+        message: 'E-mail não verificado',
+        errorCode: 'EMAIL_NOT_VERIFIED',
+      });
+    }
 
     const accessToken = this.signAccessToken(user.id, user.email, user.role);
     const refreshToken = await this.createRefreshToken(user.id);
@@ -86,7 +97,7 @@ export class AuthService {
       )
       .join(' ');
   }
-  private generateRefreshToken(): string {
+  private generateOpaqueToken(): string {
     return crypto.randomBytes(64).toString('hex');
   }
 
@@ -95,7 +106,7 @@ export class AuthService {
   }
 
   private async createRefreshToken(userId: number): Promise<string> {
-    const token = this.generateRefreshToken();
+    const token = this.generateOpaqueToken();
     const tokenHash = this.hashToken(token);
 
     const expiresAt = new Date();
@@ -156,5 +167,29 @@ export class AuthService {
       where: { tokenHash, revoked: false },
       data: { revoked: true },
     });
+  }
+  async sendVerificationEmail(userId: number): Promise<boolean> {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) return false;
+
+    const token = this.generateOpaqueToken();
+    const tokenHash = this.hashToken(token);
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 1);
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        verificationToken: tokenHash,
+        verificationTokenExpiresAt: expiresAt,
+      },
+    });
+
+    try {
+      await this.emailService.sendVerificationEmail(user.email, token);
+      return true;
+    } catch {
+      return false;
+    }
   }
 }
