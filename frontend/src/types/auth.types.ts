@@ -1,5 +1,7 @@
 import type { User } from "./user.types";
 
+export type LoginViewMode = "login" | "emailNotVerified";
+
 export interface Login {
   email: string;
   password: string;
