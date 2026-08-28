@@ -9,3 +9,11 @@ export const loginUser = async (dto: Login): Promise<AuthResponse> => {
 export const registerUser = async (dto: Register): Promise<void> => {
   await api.post("/auth/register", dto);
 };
+
+export const verifyEmail = async (token: string): Promise<void> => {
+  await api.post("/auth/verify-email", { token });
+};
+
+export const resendVerificationEmail = async (email: string): Promise<void> => {
+  await api.post("/auth/resend-verification", { email });
+};

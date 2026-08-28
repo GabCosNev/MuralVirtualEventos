@@ -18,10 +18,8 @@ model User {
   updatedAt DateTime   @updatedAt
   posts     Post[]
   refreshTokens RefreshToken[]
-
-
   emailVerified               Boolean   @default(false)
-  verificationToken           String?
+  verificationToken           String? @unique
   verificationTokenExpiresAt  DateTime?
 }
 

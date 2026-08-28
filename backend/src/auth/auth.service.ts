@@ -172,6 +172,16 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) return false;
 
+    if (user.emailVerified) return false;
+
+    if (user.verificationTokenExpiresAt) {
+      const lastSentAt = new Date(user.verificationTokenExpiresAt);
+      lastSentAt.setDate(lastSentAt.getDate() - 1);
+
+      const cooldownMs = 60 * 1000;
+      if (Date.now() - lastSentAt.getTime() < cooldownMs) return false;
+    }
+
     const token = this.generateOpaqueToken();
     const tokenHash = this.hashToken(token);
     const expiresAt = new Date();
@@ -191,5 +201,42 @@ export class AuthService {
     } catch {
       return false;
     }
+  }
+  async resendVerificationEmail(email: string): Promise<void> {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    if (!user) return;
+
+    await this.sendVerificationEmail(user.id);
+  }
+
+  async verifyEmail(token: string): Promise<void> {
+    const tokenHash = this.hashToken(token);
+
+    const user = await this.prisma.user.findUnique({
+      where: { verificationToken: tokenHash },
+    });
+
+    if (!user || !user.verificationTokenExpiresAt) {
+      throw new BadRequestException({
+        message: 'Link inválido',
+        errorCode: 'INVALID_TOKEN',
+      });
+    }
+
+    if (user.verificationTokenExpiresAt < new Date()) {
+      throw new BadRequestException({
+        message: 'Link expirado, solicite um novo',
+        errorCode: 'TOKEN_EXPIRED',
+      });
+    }
+
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: {
+        emailVerified: true,
+        verificationToken: null,
+        verificationTokenExpiresAt: null,
+      },
+    });
   }
 }

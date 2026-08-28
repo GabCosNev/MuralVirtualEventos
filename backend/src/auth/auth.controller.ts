@@ -3,6 +3,8 @@ import type { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { ResendVerificationDto } from './dto/resend-verification.dto';
+import { VerifyEmailDto } from './dto/verify-email.dto';
 import { TurnstileGuard } from '../turnstile/turnstile.guard';
 import { TurnstileSecret } from '../turnstile/turnstile-secret.decorator';
 
@@ -57,8 +59,6 @@ export class AuthController {
     const { accessToken, refreshToken } = await this.authService.refresh(refreshTokenValue);
 
     this.setAuthCookies(res, accessToken, refreshToken);
-
-    return { success: true };
   }
   @Post('logout')
   async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
@@ -70,7 +70,14 @@ export class AuthController {
 
     res.clearCookie('access_token', { path: '/' });
     res.clearCookie('refresh_token', { path: '/auth/refresh' });
+  }
 
-    return { success: true };
+  @Post('resend-verification')
+  async resendVerification(@Body() dto: ResendVerificationDto) {
+    await this.authService.resendVerificationEmail(dto.email);
+  }
+  @Post('verify-email')
+  async verifyEmail(@Body() dto: VerifyEmailDto) {
+    await this.authService.verifyEmail(dto.token);
   }
 }

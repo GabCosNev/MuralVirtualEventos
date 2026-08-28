@@ -1,6 +1,7 @@
 import type { User } from "./user.types";
 
 export type LoginViewMode = "login" | "emailNotVerified";
+export type VerifyStatus = "loading" | "invalid" | "expired" | "success";
 
 export interface Login {
   email: string;
