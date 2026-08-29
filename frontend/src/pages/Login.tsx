@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useLoginForm } from "../hooks/users/useLoginForm";
 import {
@@ -8,6 +9,8 @@ import {
 import { PasswordInput } from "../components/PasswordInput";
 import { TurnstileWidget } from "../components/TurnstileWidget";
 
+const RESEND_COOLDOWN_SECONDS = 60;
+
 export function Login() {
   const {
     email,
@@ -17,21 +20,76 @@ export function Login() {
     setTurnstileToken,
     error,
     isLoading,
+    viewMode,
+    resendError,
+    resendVerification,
+    backToLogin,
     handleSubmit,
     turnstileRef,
   } = useLoginForm();
 
+  const [cooldown, setCooldown] = useState(0);
+
+  useEffect(() => {
+    if (cooldown === 0) return;
+
+    const interval = setInterval(() => {
+      setCooldown((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [cooldown]);
+
+  function handleResendClick() {
+    setCooldown(RESEND_COOLDOWN_SECONDS);
+    void resendVerification();
+  }
+
+  if (viewMode === "emailNotVerified") {
+    return (
+      <div className="min-h-screen bg-[var(--color-dark)] flex items-center justify-center">
+        <div className="w-full max-w-md bg-white rounded-xl shadow-lg border-2 border-white">
+          <div className="bg-[var(--color-primary)] px-6 py-4 rounded-tl-xl rounded-tr-xl">
+            <h1 className="text-white text-xl font-bold">
+              Verifique seu e-mail
+            </h1>
+          </div>
+
+          <div className="px-6 py-8 flex flex-col gap-5 items-center text-center">
+            <p className="text-gray-700">
+              Sua conta ainda não foi verificada. Verifique sua caixa de
+              entrada, ou solicite um novo e-mail de verificação.
+            </p>
+
+            {resendError && (
+              <p className="text-red-500 text-sm">{resendError}</p>
+            )}
+
+            <button
+              onClick={handleResendClick}
+              disabled={cooldown > 0}
+              className={buttonEffectConfirm}
+            >
+              {cooldown > 0 ? `Reenviar (${cooldown}s)` : "Reenviar e-mail"}
+            </button>
+
+            <button onClick={backToLogin} className={buttonRegisterLogin}>
+              Voltar
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[var(--color-dark)] flex items-center justify-center">
       <div className="w-full max-w-md bg-white rounded-xl shadow-lg border-2 border-white">
-        {/* Barra do título */}
         <div className="bg-[var(--color-primary)] px-6 py-4 rounded-tl-xl rounded-tr-xl">
           <h1 className="text-white text-xl font-bold">Login</h1>
         </div>
 
-        {/* Formulário */}
         <div className="px-6 py-8 flex flex-col gap-5">
-          {/* Campo email */}
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700">Email</label>
             <input
@@ -42,7 +100,6 @@ export function Login() {
             />
           </div>
 
-          {/* Campo senha */}
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700">Senha</label>
             <PasswordInput
@@ -51,7 +108,6 @@ export function Login() {
             />
           </div>
 
-          {/* Verificação Turnstile */}
           <TurnstileWidget
             ref={turnstileRef}
             siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY_LOGIN}
@@ -59,10 +115,8 @@ export function Login() {
             onExpire={() => setTurnstileToken(null)}
           />
 
-          {/* Mensagem de erro */}
           {error && <p className="text-red-500 text-sm">{error}</p>}
 
-          {/* Botão de submit */}
           <button
             onClick={handleSubmit}
             disabled={isLoading}
@@ -71,7 +125,6 @@ export function Login() {
             {isLoading ? "Entrando..." : "Entrar"}
           </button>
 
-          {/* Link para registro */}
           <p className="text-sm text-center text-gray-500">
             Não tem conta ?{" "}
             <Link to="/register" className={buttonRegisterLogin}>

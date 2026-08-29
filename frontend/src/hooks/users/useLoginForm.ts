@@ -1,7 +1,10 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/useAuth";
-import { loginUser } from "../../services/auth.service";
+import {
+  loginUser,
+  resendVerificationEmail,
+} from "../../services/auth.service";
 import type { TurnstileInstance } from "@marsidev/react-turnstile";
 import type { LoginViewMode } from "../../types/auth.types";
 
@@ -15,6 +18,7 @@ export function useLoginForm() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [viewMode, setViewMode] = useState<LoginViewMode>("login");
+  const [resendError, setResendError] = useState("");
   const turnstileRef = useRef<TurnstileInstance>(null);
 
   async function handleSubmit() {
@@ -51,8 +55,19 @@ export function useLoginForm() {
     }
   }
 
+  async function resendVerification() {
+    setResendError("");
+
+    try {
+      await resendVerificationEmail(email);
+    } catch {
+      setResendError("Verificação de e-mail fora do ar, tente mais tarde.");
+    }
+  }
+
   function backToLogin() {
     setViewMode("login");
+    setResendError("");
   }
 
   return {
@@ -65,6 +80,8 @@ export function useLoginForm() {
     error,
     isLoading,
     viewMode,
+    resendError,
+    resendVerification,
     backToLogin,
     handleSubmit,
   };
