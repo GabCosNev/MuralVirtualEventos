@@ -11,6 +11,8 @@ import { PrismaService } from '../prisma/prisma.service';
 import { EmailService } from '../email/email.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 
@@ -238,5 +240,75 @@ export class AuthService {
         verificationTokenExpiresAt: null,
       },
     });
+  }
+  async forgotPassword(email: string): Promise<boolean> {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    if (!user) return false;
+
+    if (user.passwordResetTokenExpiresAt) {
+      const lastSentAt = new Date(user.passwordResetTokenExpiresAt);
+      lastSentAt.setHours(lastSentAt.getHours() - 1);
+
+      const cooldownMs = 60 * 1000;
+      if (Date.now() - lastSentAt.getTime() < cooldownMs) return false;
+    }
+
+    const token = this.generateOpaqueToken();
+    const tokenHash = this.hashToken(token);
+    const expiresAt = new Date();
+    expiresAt.setHours(expiresAt.getHours() + 1);
+
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: {
+        passwordResetToken: tokenHash,
+        passwordResetTokenExpiresAt: expiresAt,
+      },
+    });
+
+    try {
+      await this.emailService.sendPasswordResetEmail(user.email, token);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+  async resetPassword(dto: ResetPasswordDto): Promise<void> {
+    if (dto.newPassword !== dto.confirmPassword) {
+      throw new BadRequestException('As senhas não coincidem');
+    }
+
+    const tokenHash = this.hashToken(dto.token);
+
+    const user = await this.prisma.user.findUnique({
+      where: { passwordResetToken: tokenHash },
+    });
+
+    if (!user || !user.passwordResetTokenExpiresAt) {
+      throw new BadRequestException({
+        message: 'Link inválido',
+        errorCode: 'INVALID_TOKEN',
+      });
+    }
+
+    if (user.passwordResetTokenExpiresAt < new Date()) {
+      throw new BadRequestException({
+        message: 'Link expirado, solicite um novo',
+        errorCode: 'TOKEN_EXPIRED',
+      });
+    }
+
+    const hashed = await bcrypt.hash(dto.newPassword, 10);
+
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashed,
+        passwordResetToken: null,
+        passwordResetTokenExpiresAt: null,
+      },
+    });
+
+    await this.revokeAllUserTokens(user.id);
   }
 }
