@@ -4,6 +4,7 @@ import { useAuth } from "../auth/useAuth";
 import {
   loginUser,
   resendVerificationEmail,
+  forgotPassword,
 } from "../../services/auth.service";
 import type { TurnstileInstance } from "@marsidev/react-turnstile";
 import type { LoginViewMode } from "../../types/auth.types";
@@ -19,6 +20,7 @@ export function useLoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [viewMode, setViewMode] = useState<LoginViewMode>("login");
   const [resendError, setResendError] = useState("");
+  const [forgotPasswordError, setForgotPasswordError] = useState("");
   const turnstileRef = useRef<TurnstileInstance>(null);
 
   async function handleSubmit() {
@@ -65,9 +67,41 @@ export function useLoginForm() {
     }
   }
 
+  async function handleForgotPassword() {
+    if (!turnstileToken)
+      return setForgotPasswordError(
+        "Verificação de segurança pendente. Aguarde ou recarregue a página.",
+      );
+
+    setIsLoading(true);
+    setForgotPasswordError("");
+
+    try {
+      await forgotPassword({ email, turnstileToken });
+      setViewMode("forgotPasswordSent");
+    } catch {
+      setForgotPasswordError(
+        "Não foi possível processar sua solicitação, tente novamente.",
+      );
+      setTurnstileToken(null);
+      turnstileRef.current?.reset();
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  function goToForgotPassword() {
+    setViewMode("forgotPassword");
+    setError("");
+    setForgotPasswordError("");
+    setTurnstileToken(null);
+  }
+
   function backToLogin() {
     setViewMode("login");
     setResendError("");
+    setForgotPasswordError("");
+    setTurnstileToken(null);
   }
 
   return {
@@ -82,6 +116,9 @@ export function useLoginForm() {
     viewMode,
     resendError,
     resendVerification,
+    forgotPasswordError,
+    handleForgotPassword,
+    goToForgotPassword,
     backToLogin,
     handleSubmit,
   };

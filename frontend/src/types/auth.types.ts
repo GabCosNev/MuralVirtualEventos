@@ -1,6 +1,10 @@
 import type { User } from "./user.types";
 
-export type LoginViewMode = "login" | "emailNotVerified";
+export type LoginViewMode =
+  | "login"
+  | "emailNotVerified"
+  | "forgotPassword"
+  | "forgotPasswordSent";
 export type VerifyStatus = "loading" | "invalid" | "expired" | "success";
 
 export interface Login {
@@ -19,4 +23,15 @@ export interface Register {
 
 export interface AuthResponse {
   user: User;
+}
+
+export interface ForgotPassword {
+  email: string;
+  turnstileToken: string;
+}
+
+export interface ResetPassword {
+  token: string;
+  newPassword: string;
+  confirmPassword: string;
 }

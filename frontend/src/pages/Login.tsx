@@ -23,6 +23,9 @@ export function Login() {
     viewMode,
     resendError,
     resendVerification,
+    forgotPasswordError,
+    handleForgotPassword,
+    goToForgotPassword,
     backToLogin,
     handleSubmit,
     turnstileRef,
@@ -81,6 +84,80 @@ export function Login() {
       </div>
     );
   }
+  if (viewMode === "forgotPassword") {
+    return (
+      <div className="min-h-screen bg-[var(--color-dark)] flex items-center justify-center">
+        <div className="w-full max-w-md bg-white rounded-xl shadow-lg border-2 border-white">
+          <div className="bg-[var(--color-primary)] px-6 py-4 rounded-tl-xl rounded-tr-xl">
+            <h1 className="text-white text-xl font-bold">Redefinir senha</h1>
+          </div>
+
+          <div className="px-6 py-8 flex flex-col gap-5">
+            <p className="text-gray-700 text-sm">
+              Informe seu e-mail para receber um link de redefinição de senha.
+            </p>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className={inputStyle}
+              />
+            </div>
+
+            <TurnstileWidget
+              ref={turnstileRef}
+              siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY_FORGOT_PASSWORD}
+              onSuccess={(token: string) => setTurnstileToken(token)}
+              onExpire={() => setTurnstileToken(null)}
+            />
+
+            {forgotPasswordError && (
+              <p className="text-red-500 text-sm">{forgotPasswordError}</p>
+            )}
+
+            <button
+              onClick={handleForgotPassword}
+              disabled={isLoading}
+              className={buttonEffectConfirm}
+            >
+              {isLoading ? "Enviando..." : "Enviar link"}
+            </button>
+
+            <button onClick={backToLogin} className={buttonRegisterLogin}>
+              Voltar para o login
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  if (viewMode === "forgotPasswordSent") {
+    return (
+      <div className="min-h-screen bg-[var(--color-dark)] flex items-center justify-center">
+        <div className="w-full max-w-md bg-white rounded-xl shadow-lg border-2 border-white">
+          <div className="bg-[var(--color-primary)] px-6 py-4 rounded-tl-xl rounded-tr-xl">
+            <h1 className="text-white text-xl font-bold">
+              Verifique seu e-mail
+            </h1>
+          </div>
+
+          <div className="px-6 py-8 flex flex-col gap-5 items-center text-center">
+            <p className="text-gray-700">
+              Se esse e-mail estiver cadastrado, enviamos um link para
+              redefinição de senha. Verifique sua caixa de entrada.
+            </p>
+
+            <button onClick={backToLogin} className={buttonRegisterLogin}>
+              Voltar para o login
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[var(--color-dark)] flex items-center justify-center">
@@ -130,6 +207,15 @@ export function Login() {
             <Link to="/register" className={buttonRegisterLogin}>
               Cadastre-se
             </Link>
+          </p>
+
+          <p className="text-sm text-center text-gray-500">
+            <button
+              onClick={goToForgotPassword}
+              className={buttonRegisterLogin}
+            >
+              Esqueceu a senha?
+            </button>
           </p>
         </div>
       </div>

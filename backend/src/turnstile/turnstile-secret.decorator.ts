@@ -1,4 +1,3 @@
-// src/turnstile/turnstile-secret.decorator.ts
 import { SetMetadata } from '@nestjs/common';
 
 export const TURNSTILE_SECRET_KEY = 'turnstile_secret_key';

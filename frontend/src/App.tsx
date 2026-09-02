@@ -28,7 +28,7 @@ function App() {
                   <Edit />
                 </ProtectedRoute>
               }
-            />{" "}
+            />
             <Route
               path="/pending"
               element={
