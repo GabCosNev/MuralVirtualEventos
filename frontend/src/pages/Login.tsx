@@ -84,6 +84,32 @@ export function Login() {
       </div>
     );
   }
+
+  if (viewMode === "forgotPasswordSent") {
+    return (
+      <div className="min-h-screen bg-[var(--color-dark)] flex items-center justify-center">
+        <div className="w-full max-w-md bg-white rounded-xl shadow-lg border-2 border-white">
+          <div className="bg-[var(--color-primary)] px-6 py-4 rounded-tl-xl rounded-tr-xl">
+            <h1 className="text-white text-xl font-bold">
+              Verifique seu e-mail
+            </h1>
+          </div>
+
+          <div className="px-6 py-8 flex flex-col gap-5 items-center text-center">
+            <p className="text-gray-700">
+              Se esse e-mail estiver cadastrado, enviamos um link para
+              redefinição de senha. Verifique sua caixa de entrada.
+            </p>
+
+            <button onClick={backToLogin} className={buttonRegisterLogin}>
+              Voltar para o login
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (viewMode === "forgotPassword") {
     return (
       <div className="min-h-screen bg-[var(--color-dark)] flex items-center justify-center">
@@ -126,31 +152,10 @@ export function Login() {
               {isLoading ? "Enviando..." : "Enviar link"}
             </button>
 
-            <button onClick={backToLogin} className={buttonRegisterLogin}>
-              Voltar para o login
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-  if (viewMode === "forgotPasswordSent") {
-    return (
-      <div className="min-h-screen bg-[var(--color-dark)] flex items-center justify-center">
-        <div className="w-full max-w-md bg-white rounded-xl shadow-lg border-2 border-white">
-          <div className="bg-[var(--color-primary)] px-6 py-4 rounded-tl-xl rounded-tr-xl">
-            <h1 className="text-white text-xl font-bold">
-              Verifique seu e-mail
-            </h1>
-          </div>
-
-          <div className="px-6 py-8 flex flex-col gap-5 items-center text-center">
-            <p className="text-gray-700">
-              Se esse e-mail estiver cadastrado, enviamos um link para
-              redefinição de senha. Verifique sua caixa de entrada.
-            </p>
-
-            <button onClick={backToLogin} className={buttonRegisterLogin}>
+            <button
+              onClick={backToLogin}
+              className={`${buttonRegisterLogin} !cursor-pointer`}
+            >
               Voltar para o login
             </button>
           </div>
@@ -212,7 +217,7 @@ export function Login() {
           <p className="text-sm text-center text-gray-500">
             <button
               onClick={goToForgotPassword}
-              className={buttonRegisterLogin}
+              className={`${buttonRegisterLogin} cursor-pointer`}
             >
               Esqueceu a senha?
             </button>

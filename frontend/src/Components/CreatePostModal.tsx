@@ -1,7 +1,11 @@
 import { useCreatePostForm } from "../hooks/posts/useCreatePostForm";
 import { eventTypeLabel } from "../utils/eventCustom";
 import type { EventType } from "../types";
-import { inputStyle } from "../utils/styles";
+import {
+  inputStyle,
+  buttonModalConfirm,
+  buttonModalReturn,
+} from "../utils/styles";
 import {
   Dialog,
   DialogContent,
@@ -183,16 +187,14 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
             <button
               type="button"
               onClick={() => handleOpenChange(false)}
-              className="bg-black/10 text-gray-900 px-4 py-2 rounded-md text-sm
-           hover:bg-black/20 transition-colors"
+              className={buttonModalReturn}
             >
-              Cancelar
+              Voltar
             </button>
             <button
               type="submit"
               disabled={createPost.isLoading}
-              className="bg-green-600 text-white px-4 py-2 rounded-md text-sm
-                         disabled:opacity-50 disabled:cursor-not-allowed"
+              className={buttonModalConfirm}
             >
               {createPost.isLoading ? "Enviando..." : "Enviar"}
             </button>

@@ -1,5 +1,6 @@
 import { Loader2 } from "lucide-react";
 import { useEditUserForm } from "../hooks/users/useEditUserForm";
+import { buttonEffectConfirm } from "../utils/styles";
 
 export function Edit() {
   const {
@@ -65,7 +66,7 @@ export function Edit() {
           <button
             type="button"
             onClick={handleTogglePasswordChange}
-            className="text-sm text-[var(--color-primary)] font-medium hover:underline text-left"
+            className="text-sm text-[var(--color-primary)] font-medium  cursor-pointer hover:underline text-left"
           >
             {isChangingPassword ? "Cancelar troca de senha" : "Alterar senha"}
           </button>
@@ -118,7 +119,7 @@ export function Edit() {
             type="button"
             onClick={handleSubmit}
             disabled={isLoading}
-            className="w-full bg-[var(--color-secondary)] text-white font-semibold py-2 rounded-lg hover:opacity-90 transition disabled:opacity-50"
+            className={buttonEffectConfirm}
           >
             {isLoading ? "Salvando..." : "Salvar alterações"}
           </button>

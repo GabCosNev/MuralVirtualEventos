@@ -2,7 +2,12 @@ import { useState } from "react";
 import { useEditPostForm } from "../hooks/posts/useEditPostForm";
 import { useDeletePost } from "../hooks/posts/useDeletePost";
 import { eventTypeLabel } from "../utils/eventCustom";
-import { inputStyle } from "../utils/styles";
+import {
+  inputStyle,
+  buttonModalReturn,
+  buttonModalConfirm,
+  buttonModalDenied,
+} from "../utils/styles";
 import type { EventType } from "../types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 
@@ -203,26 +208,22 @@ export function EditPostModal({
                 type="button"
                 onClick={() => handleOpenChange(false)}
                 disabled={form.isLoading}
-                className="bg-black/10 text-gray-900 px-4 py-2 rounded-md text-sm
-                           hover:bg-black/20 transition-colors
-                           disabled:opacity-50 disabled:cursor-not-allowed"
+                className={buttonModalReturn}
               >
-                Cancelar
+                Voltar
               </button>
               <button
                 type="button"
                 onClick={() => setMode("confirm-delete")}
                 disabled={form.isLoading}
-                className="bg-red-600 text-white px-4 py-2 rounded-md text-sm
-                           disabled:opacity-50 disabled:cursor-not-allowed"
+                className={buttonModalDenied}
               >
                 Excluir
               </button>
               <button
                 type="submit"
                 disabled={form.isLoading}
-                className="bg-green-600 text-white px-4 py-2 rounded-md text-sm
-                           disabled:opacity-50 disabled:cursor-not-allowed"
+                className={buttonModalConfirm}
               >
                 {form.isLoading ? "Salvando..." : "Salvar"}
               </button>
@@ -245,9 +246,7 @@ export function EditPostModal({
                 type="button"
                 onClick={handleBack}
                 disabled={isDeleting}
-                className="bg-black/10 text-gray-900 px-4 py-2 rounded-md text-sm
-                   hover:bg-black/20 transition-colors
-                   disabled:opacity-50 disabled:cursor-not-allowed"
+                className={buttonModalReturn}
               >
                 Voltar
               </button>
@@ -255,8 +254,7 @@ export function EditPostModal({
                 type="button"
                 onClick={handleConfirmDelete}
                 disabled={isDeleting}
-                className="bg-red-600 text-white px-4 py-2 rounded-md text-sm
-                   disabled:opacity-50 disabled:cursor-not-allowed"
+                className={buttonModalConfirm}
               >
                 {isDeleting ? "Excluindo..." : "Confirmar"}
               </button>

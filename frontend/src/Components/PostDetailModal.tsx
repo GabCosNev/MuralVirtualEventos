@@ -4,7 +4,12 @@ import { usePostReview } from "../hooks/posts/usePostReview";
 import { useRejectForm } from "../hooks/posts/useRejectForm";
 import { eventTypeColor, eventTypeLabel } from "../utils/eventCustom";
 import { formatEventPeriod } from "../utils/formatDate";
-import { inputStyle } from "../utils/styles";
+import {
+  inputStyle,
+  buttonModalConfirm,
+  buttonModalDenied,
+  buttonModalReturn,
+} from "../utils/styles";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 
 interface PostDetailModalProps {
@@ -106,11 +111,9 @@ export function PostDetailModal({
                 type="button"
                 onClick={() => handleOpenChange(false)}
                 disabled={isReviewing}
-                className="bg-black/10 text-gray-900 px-4 py-2 rounded-md text-sm
-                           hover:bg-black/20 transition-colors
-                           disabled:opacity-50 disabled:cursor-not-allowed"
+                className={buttonModalReturn}
               >
-                Cancelar
+                Voltar
               </button>
 
               {isAdmin && (
@@ -119,8 +122,7 @@ export function PostDetailModal({
                     type="button"
                     onClick={() => setMode("reject")}
                     disabled={isReviewing}
-                    className="bg-red-600 text-white px-4 py-2 rounded-md text-sm
-                               disabled:opacity-50 disabled:cursor-not-allowed"
+                    className={buttonModalDenied}
                   >
                     Rejeitar
                   </button>
@@ -128,8 +130,7 @@ export function PostDetailModal({
                     type="button"
                     onClick={handleApprove}
                     disabled={isReviewing}
-                    className="bg-green-600 text-white px-4 py-2 rounded-md text-sm
-                               disabled:opacity-50 disabled:cursor-not-allowed"
+                    className={buttonModalConfirm}
                   >
                     {isReviewing ? "Enviando..." : "Aprovar"}
                   </button>
@@ -168,9 +169,7 @@ export function PostDetailModal({
                 type="button"
                 onClick={handleBack}
                 disabled={isReviewing}
-                className="bg-black/10 text-gray-900 px-4 py-2 rounded-md text-sm
-                           hover:bg-black/20 transition-colors
-                           disabled:opacity-50 disabled:cursor-not-allowed"
+                className={buttonModalReturn}
               >
                 Voltar
               </button>
@@ -178,8 +177,7 @@ export function PostDetailModal({
                 type="button"
                 onClick={handleConfirmReject}
                 disabled={isReviewing}
-                className="bg-red-600 text-white px-4 py-2 rounded-md text-sm
-                           disabled:opacity-50 disabled:cursor-not-allowed"
+                className={buttonModalConfirm}
               >
                 {isReviewing ? "Enviando..." : "Confirmar"}
               </button>
