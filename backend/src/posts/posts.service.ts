@@ -9,6 +9,7 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostStatus } from '../../generated/prisma';
 import { ReviewPostDto } from './dto/review-post.dto';
+import { JwtPayload } from '../auth/types/jwt-payload.type';
 
 @Injectable()
 export class PostsService {
@@ -113,7 +114,7 @@ export class PostsService {
     });
   }
 
-  async findPostOrThrow(postId: number) {
+  private async findPostOrThrow(postId: number) {
     const post = await this.prisma.post.findUnique({
       where: { id: postId },
     });
@@ -165,5 +166,19 @@ export class PostsService {
     }
 
     return { startDate: startDateCombinada, endDate: endDateCombinada };
+  }
+
+  async findOneForUser(user: JwtPayload, postId: number) {
+    const post = await this.findPostOrThrow(postId);
+
+    const isOwner = post.authorId === user.id;
+    const isAdmin = user.role === 'ADMIN';
+    const isApproved = post.status === 'APPROVED';
+
+    if (!isApproved && !isOwner && !isAdmin) {
+      throw new NotFoundException('Post não encontrado');
+    }
+
+    return post;
   }
 }

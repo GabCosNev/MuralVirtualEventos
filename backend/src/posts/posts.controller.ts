@@ -59,7 +59,7 @@ export class PostsController {
     return this.postsService.findAllApproved();
   }
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) postId: number) {
-    return this.postsService.findPostOrThrow(postId);
+  findOne(@CurrentUser() user: JwtPayload, @Param('id', ParseIntPipe) postId: number) {
+    return this.postsService.findOneForUser(user, postId);
   }
 }

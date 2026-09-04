@@ -20,7 +20,14 @@ function App() {
           <Route path="/register" element={<Register />}></Route>
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route element={<Layout />}>
-            <Route path="/" element={<Home />} />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <Home />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/edit"
               element={

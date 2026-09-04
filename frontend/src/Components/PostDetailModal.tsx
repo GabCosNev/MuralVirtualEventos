@@ -28,6 +28,12 @@ export function PostDetailModal({
   isAdmin,
 }: PostDetailModalProps) {
   const [mode, setMode] = useState<"view" | "reject">("view");
+  const [displayPost, setDisplayPost] = useState<Post | null>(post);
+
+  if (post && post !== displayPost) {
+    setDisplayPost(post);
+  }
+
   const rejectForm = useRejectForm();
   const {
     approvePost,
@@ -51,8 +57,8 @@ export function PostDetailModal({
   }
 
   async function handleApprove() {
-    if (!post) return;
-    const success = await approvePost(post.id);
+    if (!displayPost) return;
+    const success = await approvePost(displayPost.id);
     if (success) {
       refetch?.();
       onOpenChange(false);
@@ -60,10 +66,10 @@ export function PostDetailModal({
   }
 
   async function handleConfirmReject() {
-    if (!post) return;
+    if (!displayPost) return;
     if (!rejectForm.validate()) return;
 
-    const success = await rejectPost(post.id, rejectForm.reason);
+    const success = await rejectPost(displayPost.id, rejectForm.reason);
     if (success) {
       refetch?.();
       onOpenChange(false);
@@ -83,23 +89,23 @@ export function PostDetailModal({
           </div>
         </DialogHeader>
 
-        {mode === "view" && post && (
+        {mode === "view" && displayPost && (
           <div className="flex flex-col gap-3">
             <div className="flex flex-col items-center gap-2">
               <span
-                className={`${eventTypeColor[post.eventType]} text-white text-xs font-semibold px-2 py-1 rounded w-fit`}
+                className={`${eventTypeColor[displayPost.eventType]} text-white text-xs font-semibold px-2 py-1 rounded w-fit`}
               >
-                {eventTypeLabel[post.eventType]}
+                {eventTypeLabel[displayPost.eventType]}
               </span>
-              <h3 className="text-lg font-bold">{post.title}</h3>
+              <h3 className="text-lg font-bold">{displayPost.title}</h3>
             </div>
 
             <p className="text-sm text-gray-500 text-center border-b border-gray-200 pb-3">
-              {formatEventPeriod(post.startDate, post.endDate)}
+              {formatEventPeriod(displayPost.startDate, displayPost.endDate)}
             </p>
 
             <p className="whitespace-pre-line text-sm text-gray-700">
-              {post.content}
+              {displayPost.content}
             </p>
 
             {reviewError && (
