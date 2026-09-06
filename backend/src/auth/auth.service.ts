@@ -16,6 +16,10 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 
+const VERIFICATION_TOKEN_TTL_DAYS = 1;
+const PASSWORD_RESET_TOKEN_TTL_HOURS = 1;
+const RESEND_COOLDOWN_MS = 60 * 1000;
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -178,16 +182,15 @@ export class AuthService {
 
     if (user.verificationTokenExpiresAt) {
       const lastSentAt = new Date(user.verificationTokenExpiresAt);
-      lastSentAt.setDate(lastSentAt.getDate() - 1);
+      lastSentAt.setDate(lastSentAt.getDate() - VERIFICATION_TOKEN_TTL_DAYS);
 
-      const cooldownMs = 60 * 1000;
-      if (Date.now() - lastSentAt.getTime() < cooldownMs) return false;
+      if (Date.now() - lastSentAt.getTime() < RESEND_COOLDOWN_MS) return false;
     }
 
     const token = this.generateOpaqueToken();
     const tokenHash = this.hashToken(token);
     const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 1);
+    expiresAt.setDate(expiresAt.getDate() + VERIFICATION_TOKEN_TTL_DAYS);
 
     await this.prisma.user.update({
       where: { id: userId },
@@ -247,16 +250,15 @@ export class AuthService {
 
     if (user.passwordResetTokenExpiresAt) {
       const lastSentAt = new Date(user.passwordResetTokenExpiresAt);
-      lastSentAt.setHours(lastSentAt.getHours() - 1);
+      lastSentAt.setHours(lastSentAt.getHours() - PASSWORD_RESET_TOKEN_TTL_HOURS);
 
-      const cooldownMs = 60 * 1000;
-      if (Date.now() - lastSentAt.getTime() < cooldownMs) return false;
+      if (Date.now() - lastSentAt.getTime() < RESEND_COOLDOWN_MS) return false;
     }
 
     const token = this.generateOpaqueToken();
     const tokenHash = this.hashToken(token);
     const expiresAt = new Date();
-    expiresAt.setHours(expiresAt.getHours() + 1);
+    expiresAt.setHours(expiresAt.getHours() + PASSWORD_RESET_TOKEN_TTL_HOURS);
 
     await this.prisma.user.update({
       where: { id: user.id },
@@ -306,6 +308,7 @@ export class AuthService {
         password: hashed,
         passwordResetToken: null,
         passwordResetTokenExpiresAt: null,
+        passwordChangedAt: new Date(),
       },
     });
 

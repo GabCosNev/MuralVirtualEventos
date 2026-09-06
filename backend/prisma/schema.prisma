@@ -23,6 +23,7 @@ model User {
   verificationTokenExpiresAt  DateTime?
   passwordResetToken          String? @unique
   passwordResetTokenExpiresAt DateTime?
+  passwordChangedAt DateTime?
 }
 model Post {
   id             Int        @id @default(autoincrement())
