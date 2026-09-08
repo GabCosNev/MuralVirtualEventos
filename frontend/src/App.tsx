@@ -10,6 +10,7 @@ import { Pending } from "./pages/Pending";
 import { MyPosts } from "./pages/MyPosts";
 import { VerifyEmail } from "./pages/VerifyEmail";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { ResetPassword } from "./pages/ResetPassword";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/login" element={<Login />}></Route>
           <Route path="/register" element={<Register />}></Route>
           <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route element={<Layout />}>
             <Route
               path="/"

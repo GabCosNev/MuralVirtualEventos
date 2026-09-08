@@ -40,7 +40,7 @@ export class EmailService {
     await this.resend.emails.send({
       from: fromEmail,
       to,
-      subject: 'Confirme seu e-mail — Mural Virtual de Eventos',
+      subject: 'Confirme seu e-mail — Muralix',
       html: `
       <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #ffffff; padding: 40px 0;">
         <tr>
@@ -89,9 +89,9 @@ export class EmailService {
     await this.resend.emails.send({
       from: fromEmail,
       to,
-      subject: 'Redefinição de senha — Mural Virtual de Eventos',
+      subject: 'Redefinição de senha — Muralix',
       html: `
-      <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #0d0d0e; padding: 40px 0;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #ffffff; padding: 40px 0;">
         <tr>
           <td align="center">
             <table width="400" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid #2027b0;">

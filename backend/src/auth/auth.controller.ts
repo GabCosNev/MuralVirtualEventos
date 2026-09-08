@@ -85,7 +85,7 @@ export class AuthController {
 
   @Post('forgot-password')
   @UseGuards(TurnstileGuard)
-  @TurnstileSecret('TURNSTILE_SECRET_KEY_FORGOT')
+  @TurnstileSecret('TURNSTILE_SECRET_KEY_FORGOT_PASSWORD')
   async forgotPassword(@Body() dto: ForgotPasswordDto) {
     await this.authService.forgotPassword(dto.email);
   }
