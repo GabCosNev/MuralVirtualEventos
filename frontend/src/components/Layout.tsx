@@ -1,7 +1,14 @@
 import { Outlet } from "react-router-dom";
 import { Navbar } from "./Navbar";
+import { useAuth } from "../hooks/auth/useAuth";
 
 export function Layout() {
+  const { isLoading } = useAuth();
+
+  if (isLoading) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen">
       <Navbar />
