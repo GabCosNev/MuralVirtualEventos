@@ -29,6 +29,13 @@ export class AuthService {
   ) {}
 
   async register(dto: RegisterDto) {
+    if (dto.inviteCode !== process.env.INVITE_CODE) {
+      throw new UnauthorizedException('Código de convite inválido');
+    }
+
+    if (dto.password !== dto.confirmPassword) {
+      throw new BadRequestException('As senhas não coincidem');
+    }
     if (dto.password !== dto.confirmPassword) {
       throw new BadRequestException('As senhas não coincidem');
     }

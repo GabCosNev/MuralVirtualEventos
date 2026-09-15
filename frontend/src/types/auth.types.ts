@@ -19,6 +19,7 @@ export interface Register {
   password: string;
   confirmPassword: string;
   turnstileToken: string;
+  inviteCode: string;
 }
 
 export interface AuthResponse {

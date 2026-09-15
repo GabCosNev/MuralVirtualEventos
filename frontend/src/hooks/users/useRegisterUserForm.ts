@@ -8,6 +8,7 @@ export function useRegisterForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [inviteCode, setInviteCode] = useState("");
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -29,12 +30,14 @@ export function useRegisterForm() {
         email,
         password,
         confirmPassword,
+        inviteCode,
         turnstileToken,
       });
       setName("");
       setEmail("");
       setPassword("");
       setConfirmPassword("");
+      setInviteCode("");
       setTurnstileToken(null);
       toast.success("Cadastro realizado! Verifique seu e-mail.");
     } catch (e: unknown) {
@@ -55,6 +58,8 @@ export function useRegisterForm() {
     setPassword,
     confirmPassword,
     setConfirmPassword,
+    inviteCode,
+    setInviteCode,
     turnstileToken,
     setTurnstileToken,
     turnstileRef,

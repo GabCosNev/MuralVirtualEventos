@@ -18,6 +18,8 @@ export function Register() {
     setPassword,
     confirmPassword,
     setConfirmPassword,
+    inviteCode,
+    setInviteCode,
     error,
     isLoading,
     handleSubmit,
@@ -45,7 +47,6 @@ export function Register() {
               className={inputStyle}
             />
           </div>
-
           {/* Campo email */}
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700">Email</label>
@@ -56,7 +57,6 @@ export function Register() {
               className={inputStyle}
             />
           </div>
-
           {/* Campo senha */}
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700">Senha</label>
@@ -65,7 +65,6 @@ export function Register() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-
           {/* Campo confirmar senha */}
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700">
@@ -76,18 +75,27 @@ export function Register() {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </div>
+          {/* Campo código de convite */}
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-gray-700">
+              Código de convite
+            </label>
+            <input
+              type="text"
+              value={inviteCode}
+              onChange={(e) => setInviteCode(e.target.value)}
+              className={inputStyle}
+            />
+          </div>
           {/* Verificação Turnstile */}
-
           <TurnstileWidget
             ref={turnstileRef}
             siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY_REGISTER}
             onSuccess={(token: string) => setTurnstileToken(token)}
             onExpire={() => setTurnstileToken(null)}
           />
-
           {/* Mensagens de erro */}
           {error && <p className="text-red-500 text-sm">{error}</p>}
-
           {/* Botão de submit */}
           <button
             onClick={handleSubmit}
@@ -96,7 +104,6 @@ export function Register() {
           >
             {isLoading ? "Cadastrando..." : "Cadastrar"}
           </button>
-
           {/* Link para login */}
           <p className="text-sm text-center text-gray-500">
             Tem conta ?{" "}

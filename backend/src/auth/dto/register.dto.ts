@@ -30,4 +30,8 @@ export class RegisterDto {
   @IsNotEmpty({ message: ' Token de verificação ausente.' })
   @IsString()
   turnstileToken!: string;
+
+  @IsNotEmpty({ message: 'Código de convite em branco.' })
+  @IsString()
+  inviteCode!: string;
 }
