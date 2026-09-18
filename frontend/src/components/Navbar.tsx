@@ -15,16 +15,16 @@ export function Navbar() {
   }
 
   return (
-    <nav className="w-full navbar-bg px-6 py-3 flex items-center justify-between fixed top-0 left-0 z-50">
+    <nav className="w-full navbar-bg px-6 py-3 flex items-center justify-between fixed top-0 left-0 z-50 relative">
       {/* Logo e nome do projeto */}
       <Link to="/" className="flex items-center gap-2">
-        <span className="text-xl font-bold text-white">MuraliX</span>
+        <span className="text-xl font-bold text-white">Muralix</span>
       </Link>
 
-      {/* Link para todas as publicações */}
+      {/* Link para todas as publicações - centralizado em relação à navbar */}
       <Link
         to="/"
-        className="text-base text-white hover:text-white/70 transition"
+        className="absolute left-1/2 -translate-x-1/2 text-lg tracking-widest text-white hover:text-white/70 transition"
       >
         Todas as Publicações
       </Link>

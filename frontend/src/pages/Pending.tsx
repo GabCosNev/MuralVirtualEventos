@@ -14,6 +14,7 @@ import { paginationButton } from "../utils/styles";
 export function Pending() {
   const { posts, isFetching, error, refetch } = usePendingPosts();
   const { isAdmin } = useAuth();
+
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
@@ -48,7 +49,8 @@ export function Pending() {
           </div>
 
           {totalPages > 0 && (
-            <div className="fixed bottom-0 left-0 w-full flex justify-center items-center gap-2 py-4 bg-[var(--color-dark)]">
+            <div className="fixed bottom-0 left-0 w-full flex justify-center items-center gap-2 py-4 bg-[#0b1026]/80 backdrop-blur-md">
+              {/* Primeira página */}
               <button
                 onClick={() => setCurrentPage(1)}
                 disabled={currentPage === 1}
@@ -57,6 +59,7 @@ export function Pending() {
                 {"<<"}
               </button>
 
+              {/* Página anterior */}
               <button
                 onClick={() => setCurrentPage((page) => page - 1)}
                 disabled={currentPage === 1}
@@ -65,6 +68,7 @@ export function Pending() {
                 {"<"}
               </button>
 
+              {/* Páginas */}
               {pageWindow.map((page) => (
                 <button
                   key={page}
@@ -79,6 +83,7 @@ export function Pending() {
                 </button>
               ))}
 
+              {/* Próxima página */}
               <button
                 onClick={() => setCurrentPage((page) => page + 1)}
                 disabled={currentPage === totalPages}
@@ -87,6 +92,7 @@ export function Pending() {
                 {">"}
               </button>
 
+              {/* Última página */}
               <button
                 onClick={() => setCurrentPage(totalPages)}
                 disabled={currentPage === totalPages}

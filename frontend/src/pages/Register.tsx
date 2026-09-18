@@ -28,7 +28,7 @@ export function Register() {
   } = useRegisterForm();
 
   return (
-    <div className="min-h-screen bg-[var(--color-dark)] flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="w-full max-w-md bg-white rounded-xl shadow-lg border-2 border-white">
         {/* Barra do título */}
         <div className="bg-[var(--color-primary)] px-6 py-4 rounded-tl-xl rounded-tr-xl">
@@ -40,6 +40,7 @@ export function Register() {
           {/* Campo nome */}
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700">Nome</label>
+
             <input
               type="text"
               value={name}
@@ -47,9 +48,11 @@ export function Register() {
               className={inputStyle}
             />
           </div>
+
           {/* Campo email */}
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700">Email</label>
+
             <input
               type="email"
               value={email}
@@ -57,29 +60,35 @@ export function Register() {
               className={inputStyle}
             />
           </div>
+
           {/* Campo senha */}
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700">Senha</label>
+
             <PasswordInput
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
+
           {/* Campo confirmar senha */}
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700">
               Confirmar Senha
             </label>
+
             <PasswordInput
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </div>
+
           {/* Campo código de convite */}
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700">
               Código de convite
             </label>
+
             <input
               type="text"
               value={inviteCode}
@@ -87,6 +96,7 @@ export function Register() {
               className={inputStyle}
             />
           </div>
+
           {/* Verificação Turnstile */}
           <TurnstileWidget
             ref={turnstileRef}
@@ -94,9 +104,11 @@ export function Register() {
             onSuccess={(token: string) => setTurnstileToken(token)}
             onExpire={() => setTurnstileToken(null)}
           />
-          {/* Mensagens de erro */}
+
+          {/* Mensagem de erro */}
           {error && <p className="text-red-500 text-sm">{error}</p>}
-          {/* Botão de submit */}
+
+          {/* Botão de cadastro */}
           <button
             onClick={handleSubmit}
             disabled={isLoading}
@@ -104,9 +116,10 @@ export function Register() {
           >
             {isLoading ? "Cadastrando..." : "Cadastrar"}
           </button>
+
           {/* Link para login */}
           <p className="text-sm text-center text-gray-500">
-            Tem conta ?{" "}
+            Tem conta?{" "}
             <Link to="/login" className={buttonRegisterLogin}>
               Login
             </Link>

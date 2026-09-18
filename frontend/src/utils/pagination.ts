@@ -1,4 +1,4 @@
-export const POSTS_PER_PAGE = 5;
+export const POSTS_PER_PAGE = 6;
 
 export function getTotalPages(totalItems: number): number {
   return Math.ceil(totalItems / POSTS_PER_PAGE);

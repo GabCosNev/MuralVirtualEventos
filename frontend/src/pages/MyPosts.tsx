@@ -11,8 +11,10 @@ import { paginationButton } from "../utils/styles";
 
 export function MyPosts() {
   const { posts, isFetching, error, refetch } = useMyPosts();
+
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
+
   const totalPages = getTotalPages(posts.length);
   const postsOnPage = getPageItems(posts, currentPage);
   const pageWindow = getPageWindow(currentPage, totalPages);
@@ -44,7 +46,7 @@ export function MyPosts() {
           </div>
 
           {totalPages > 0 && (
-            <div className="fixed bottom-0 left-0 w-full flex justify-center items-center gap-2 py-4 bg-[var(--color-dark)]">
+            <div className="fixed bottom-0 left-0 w-full flex justify-center items-center gap-2 py-4 bg-[#0b1026]/80 backdrop-blur-md">
               <button
                 onClick={() => setCurrentPage(1)}
                 disabled={currentPage === 1}

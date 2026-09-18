@@ -24,24 +24,25 @@ export function Edit() {
 
   if (isFetching) {
     return (
-      <div className="min-h-screen bg-[var(--color-dark)] flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="animate-spin text-white w-8 h-8" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[var(--color-dark)] flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="w-full max-w-lg bg-white rounded-xl shadow-lg border-2 border-white">
         {/* Barra do título */}
         <div className="bg-[var(--color-primary)] px-6 py-4 rounded-tl-xl rounded-tr-xl">
           <h1 className="text-white text-xl font-bold">Editar Perfil</h1>
         </div>
 
-        {/* Formulário  */}
+        {/* Formulário */}
         <div className="px-6 py-8 flex flex-col gap-5">
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700">Nome</label>
+
             <input
               type="text"
               value={name}
@@ -49,11 +50,13 @@ export function Edit() {
               className="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
             />
           </div>
+
           {/* Campo avatar */}
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700">
               Avatar (URL)
             </label>
+
             <input
               type="text"
               value={avatar}
@@ -62,22 +65,24 @@ export function Edit() {
               className="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
             />
           </div>
-          {/* Botão toggle de senha */}
+
+          {/* Botão para alterar senha */}
           <button
             type="button"
             onClick={handleTogglePasswordChange}
-            className="text-sm text-[var(--color-primary)] font-medium  cursor-pointer hover:underline text-left"
+            className="text-sm text-[var(--color-primary)] font-medium cursor-pointer hover:underline text-left"
           >
             {isChangingPassword ? "Cancelar troca de senha" : "Alterar senha"}
           </button>
 
-          {/* Campos de senha — só aparecem quando toggle está ativo */}
+          {/* Campos de senha */}
           {isChangingPassword && (
             <div className="flex flex-col gap-5">
               <div className="flex flex-col gap-1">
                 <label className="text-sm font-medium text-gray-700">
                   Senha atual
                 </label>
+
                 <input
                   type="password"
                   value={actualPassword}
@@ -90,6 +95,7 @@ export function Edit() {
                 <label className="text-sm font-medium text-gray-700">
                   Nova senha
                 </label>
+
                 <input
                   type="password"
                   value={password}
@@ -102,6 +108,7 @@ export function Edit() {
                 <label className="text-sm font-medium text-gray-700">
                   Confirmar nova senha
                 </label>
+
                 <input
                   type="password"
                   value={confirmPassword}
@@ -111,6 +118,7 @@ export function Edit() {
               </div>
             </div>
           )}
+
           {/* Mensagem de erro */}
           {error && <p className="text-red-500 text-sm">{error}</p>}
 

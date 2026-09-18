@@ -129,10 +129,45 @@
   }
   body {
     @apply text-foreground;
-    background-color: #0d0d0e;
-    background-image: url("/body.svg");
-    background-repeat: repeat;
-    background-size: 20px;
+
+    min-height: 100vh;
+    background-color: #0b1026;
+
+    background-image:
+      radial-gradient(
+        circle at 20% 20%,
+        rgba(32, 39, 176, 0.3),
+        transparent 35%
+      ),
+      radial-gradient(
+        circle at 80% 70%,
+        rgba(48, 57, 185, 0.2),
+        transparent 35%
+      ),
+      radial-gradient(circle, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+
+    background-size:
+      100% 100%,
+      100% 100%,
+      24px 24px;
+
+    animation: mural-background 12s ease-in-out infinite alternate;
+  }
+
+  @keyframes mural-background {
+    0% {
+      background-position:
+        0% 0%,
+        0% 0%,
+        0 0;
+    }
+
+    100% {
+      background-position:
+        8% 5%,
+        -8% -5%,
+        24px 24px;
+    }
   }
   html {
     @apply font-sans;

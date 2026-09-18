@@ -6,7 +6,7 @@ export function VerifyEmail() {
   const { status } = useVerifyEmail();
 
   return (
-    <div className="min-h-screen bg-[var(--color-dark)] flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="w-full max-w-md bg-white rounded-xl shadow-lg border-2 border-white">
         {/* Barra do título */}
         <div className="bg-[var(--color-primary)] px-6 py-4 rounded-tl-xl rounded-tr-xl">

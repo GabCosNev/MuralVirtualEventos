@@ -48,9 +48,10 @@ export function Login() {
     void resendVerification();
   }
 
+  // E-mail ainda não verificado
   if (viewMode === "emailNotVerified") {
     return (
-      <div className="min-h-screen bg-[var(--color-dark)] flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="w-full max-w-md bg-white rounded-xl shadow-lg border-2 border-white">
           <div className="bg-[var(--color-primary)] px-6 py-4 rounded-tl-xl rounded-tr-xl">
             <h1 className="text-white text-xl font-bold">
@@ -85,9 +86,10 @@ export function Login() {
     );
   }
 
+  // E-mail de recuperação enviado
   if (viewMode === "forgotPasswordSent") {
     return (
-      <div className="min-h-screen bg-[var(--color-dark)] flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="w-full max-w-md bg-white rounded-xl shadow-lg border-2 border-white">
           <div className="bg-[var(--color-primary)] px-6 py-4 rounded-tl-xl rounded-tr-xl">
             <h1 className="text-white text-xl font-bold">
@@ -110,9 +112,10 @@ export function Login() {
     );
   }
 
+  // Esqueci minha senha
   if (viewMode === "forgotPassword") {
     return (
-      <div className="min-h-screen bg-[var(--color-dark)] flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="w-full max-w-md bg-white rounded-xl shadow-lg border-2 border-white">
           <div className="bg-[var(--color-primary)] px-6 py-4 rounded-tl-xl rounded-tr-xl">
             <h1 className="text-white text-xl font-bold">Redefinir senha</h1>
@@ -125,6 +128,7 @@ export function Login() {
 
             <div className="flex flex-col gap-1">
               <label className="text-sm font-medium text-gray-700">Email</label>
+
               <input
                 type="email"
                 value={email}
@@ -164,8 +168,9 @@ export function Login() {
     );
   }
 
+  // Login padrão
   return (
-    <div className="min-h-screen bg-[var(--color-dark)] flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="w-full max-w-md bg-white rounded-xl shadow-lg border-2 border-white">
         <div className="bg-[var(--color-primary)] px-6 py-4 rounded-tl-xl rounded-tr-xl">
           <h1 className="text-white text-xl font-bold">Login</h1>
@@ -174,6 +179,7 @@ export function Login() {
         <div className="px-6 py-8 flex flex-col gap-5">
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700">Email</label>
+
             <input
               type="email"
               value={email}
@@ -184,6 +190,7 @@ export function Login() {
 
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700">Senha</label>
+
             <PasswordInput
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -208,7 +215,7 @@ export function Login() {
           </button>
 
           <p className="text-sm text-center text-gray-500">
-            Não tem conta ?{" "}
+            Não tem conta?{" "}
             <Link to="/register" className={buttonRegisterLogin}>
               Cadastre-se
             </Link>
