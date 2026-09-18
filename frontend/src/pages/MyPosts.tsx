@@ -46,7 +46,8 @@ export function MyPosts() {
           </div>
 
           {totalPages > 0 && (
-            <div className="fixed bottom-0 left-0 w-full flex justify-center items-center gap-2 py-4 bg-[#0b1026]/80 backdrop-blur-md">
+            <div className="fixed bottom-0 left-0 w-full flex justify-center items-center gap-2 py-4 bg-[#0b1026]/70 backdrop-blur-md border-t border-white/5">
+              {" "}
               <button
                 onClick={() => setCurrentPage(1)}
                 disabled={currentPage === 1}
@@ -54,7 +55,6 @@ export function MyPosts() {
               >
                 {"<<"}
               </button>
-
               <button
                 onClick={() => setCurrentPage((page) => page - 1)}
                 disabled={currentPage === 1}
@@ -62,7 +62,6 @@ export function MyPosts() {
               >
                 {"<"}
               </button>
-
               {pageWindow.map((page) => (
                 <button
                   key={page}
@@ -76,7 +75,6 @@ export function MyPosts() {
                   {page}
                 </button>
               ))}
-
               <button
                 onClick={() => setCurrentPage((page) => page + 1)}
                 disabled={currentPage === totalPages}
@@ -84,7 +82,6 @@ export function MyPosts() {
               >
                 {">"}
               </button>
-
               <button
                 onClick={() => setCurrentPage(totalPages)}
                 disabled={currentPage === totalPages}
