@@ -15,23 +15,26 @@ export function Navbar() {
   }
 
   return (
-    <nav className="w-full navbar-bg px-6 py-3 flex items-center justify-between fixed top-0 left-0 z-50 relative">
+    <nav className="w-full navbar-bg px-4 sm:px-6 py-3 flex items-center justify-between fixed top-0 left-0 z-50 relative">
       {/* Logo e nome do projeto */}
       <Link to="/" className="flex items-center gap-2">
-        <span className="text-xl font-bold text-white">Muralix</span>
+        <span className="text-lg sm:text-xl font-bold text-white">Muralix</span>
       </Link>
 
-      {/* Link para todas as publicações - centralizado em relação à navbar */}
+      {/* Link para todas as publicações - só aparece em telas maiores */}
       <Link
         to="/"
-        className="absolute left-1/2 -translate-x-1/2 text-lg tracking-widest text-white hover:text-white/70 transition"
+        className="hidden sm:block absolute left-1/2 -translate-x-1/2 text-lg tracking-widest text-white hover:text-white/70 transition"
       >
         Todas as Publicações
       </Link>
 
       {/* Avatar, nome do usuário e dropdown de ações */}
-      <div className="flex items-center gap-4 relative">
-        <span className="text-sm text-white font-medium">{user?.email}</span>
+      <div className="flex items-center gap-2 sm:gap-4 relative">
+        {/* Email só aparece em telas maiores */}
+        <span className="hidden sm:inline text-sm text-white font-medium">
+          {user?.email}
+        </span>
 
         <button
           onClick={() => setDropdownOpen((prev) => !prev)}
