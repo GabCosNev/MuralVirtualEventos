@@ -33,7 +33,7 @@ function App() {
             <Route
               path="/edit"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute blockAdmin>
                   <Edit />
                 </ProtectedRoute>
               }

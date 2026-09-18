@@ -15,6 +15,10 @@ export class UsersService {
   async update(currentUserId: number, dto: UpdateUserDto) {
     const user = await this.findUserOrThrow(currentUserId);
 
+    if (user.role === 'ADMIN') {
+      throw new ForbiddenException('Conta de demonstração não pode ser editada');
+    }
+
     if (dto.password) {
       if (!dto.actualPassword) throw new BadRequestException('Senha atual não enviada');
       if (!(await bcrypt.compare(dto.actualPassword, user.password)))
