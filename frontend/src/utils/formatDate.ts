@@ -65,3 +65,25 @@ export function isEventFinished(endDate: string): boolean {
 
   return today > end;
 }
+
+function formatLocal(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+export function getTodayLocal() {
+  return formatLocal(new Date());
+}
+
+export function getOneMonthAgo() {
+  const now = new Date();
+  const lastDayPrevMonth = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    0,
+  ).getDate();
+  const day = Math.min(now.getDate(), lastDayPrevMonth);
+  return formatLocal(new Date(now.getFullYear(), now.getMonth() - 1, day));
+}

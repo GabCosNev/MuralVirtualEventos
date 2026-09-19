@@ -30,14 +30,11 @@ export function Register() {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="w-full max-w-md bg-white rounded-xl shadow-lg border-2 border-white">
-        {/* Barra do título */}
         <div className="bg-[var(--color-primary)] px-6 py-4 rounded-tl-xl rounded-tr-xl">
           <h1 className="text-white text-xl font-bold">Cadastro</h1>
         </div>
 
-        {/* Formulário */}
         <div className="px-6 py-8 flex flex-col gap-5">
-          {/* Campo nome */}
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700">Nome</label>
 
@@ -49,7 +46,6 @@ export function Register() {
             />
           </div>
 
-          {/* Campo email */}
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700">Email</label>
 
@@ -61,7 +57,6 @@ export function Register() {
             />
           </div>
 
-          {/* Campo senha */}
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700">Senha</label>
 
@@ -71,7 +66,6 @@ export function Register() {
             />
           </div>
 
-          {/* Campo confirmar senha */}
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700">
               Confirmar Senha
@@ -83,7 +77,6 @@ export function Register() {
             />
           </div>
 
-          {/* Campo código de convite */}
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700">
               Código de convite
@@ -97,7 +90,6 @@ export function Register() {
             />
           </div>
 
-          {/* Verificação Turnstile */}
           <TurnstileWidget
             ref={turnstileRef}
             siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY_REGISTER}
@@ -105,10 +97,8 @@ export function Register() {
             onExpire={() => setTurnstileToken(null)}
           />
 
-          {/* Mensagem de erro */}
           {error && <p className="text-red-500 text-sm">{error}</p>}
 
-          {/* Botão de cadastro */}
           <button
             onClick={handleSubmit}
             disabled={isLoading}
@@ -117,7 +107,6 @@ export function Register() {
             {isLoading ? "Cadastrando..." : "Cadastrar"}
           </button>
 
-          {/* Link para login */}
           <p className="text-sm text-center text-gray-500">
             Tem conta?{" "}
             <Link to="/login" className={buttonRegisterLogin}>

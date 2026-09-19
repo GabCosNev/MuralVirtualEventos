@@ -48,7 +48,6 @@ export function Login() {
     void resendVerification();
   }
 
-  // E-mail ainda não verificado
   if (viewMode === "emailNotVerified") {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -86,7 +85,6 @@ export function Login() {
     );
   }
 
-  // E-mail de recuperação enviado
   if (viewMode === "forgotPasswordSent") {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -112,7 +110,6 @@ export function Login() {
     );
   }
 
-  // Esqueci minha senha
   if (viewMode === "forgotPassword") {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -168,7 +165,6 @@ export function Login() {
     );
   }
 
-  // Login padrão
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="w-full max-w-md bg-white rounded-xl shadow-lg border-2 border-white">

@@ -8,14 +8,12 @@ export function VerifyEmail() {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="w-full max-w-md bg-white rounded-xl shadow-lg border-2 border-white">
-        {/* Barra do título */}
         <div className="bg-[var(--color-primary)] px-6 py-4 rounded-tl-xl rounded-tr-xl">
           <h1 className="text-white text-xl font-bold">
             Verificação de e-mail
           </h1>
         </div>
 
-        {/* Conteúdo */}
         <div className="px-6 py-8 flex flex-col gap-5 items-center text-center">
           {status === "loading" && (
             <p className="text-gray-700">Verificando seu e-mail...</p>

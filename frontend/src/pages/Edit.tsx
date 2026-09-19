@@ -33,12 +33,10 @@ export function Edit() {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="w-full max-w-lg bg-white rounded-xl shadow-lg border-2 border-white">
-        {/* Barra do título */}
         <div className="bg-[var(--color-primary)] px-6 py-4 rounded-tl-xl rounded-tr-xl">
           <h1 className="text-white text-xl font-bold">Editar Perfil</h1>
         </div>
 
-        {/* Formulário */}
         <div className="px-6 py-8 flex flex-col gap-5">
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700">Nome</label>
@@ -51,7 +49,6 @@ export function Edit() {
             />
           </div>
 
-          {/* Campo avatar */}
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700">
               Avatar (URL)
@@ -66,7 +63,6 @@ export function Edit() {
             />
           </div>
 
-          {/* Botão para alterar senha */}
           <button
             type="button"
             onClick={handleTogglePasswordChange}
@@ -75,7 +71,6 @@ export function Edit() {
             {isChangingPassword ? "Cancelar troca de senha" : "Alterar senha"}
           </button>
 
-          {/* Campos de senha */}
           {isChangingPassword && (
             <div className="flex flex-col gap-5">
               <div className="flex flex-col gap-1">
@@ -119,10 +114,8 @@ export function Edit() {
             </div>
           )}
 
-          {/* Mensagem de erro */}
           {error && <p className="text-red-500 text-sm">{error}</p>}
 
-          {/* Botão de submit */}
           <button
             type="button"
             onClick={handleSubmit}

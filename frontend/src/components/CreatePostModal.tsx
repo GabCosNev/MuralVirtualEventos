@@ -1,6 +1,8 @@
 import { useCreatePostForm } from "../hooks/posts/useCreatePostForm";
 import { eventTypeLabel } from "../utils/eventCustom";
 import type { EventType } from "../types";
+import { getOneMonthAgo } from "../utils/formatDate";
+
 import {
   inputStyle,
   buttonModalConfirm,
@@ -18,6 +20,8 @@ interface CreatePostModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
+
+const minDate = getOneMonthAgo();
 
 export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
   const createPost = useCreatePostForm();
@@ -54,7 +58,6 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex flex-col gap-3 min-w-0">
-              {/* Title */}
               <div className="flex flex-col gap-1">
                 <label htmlFor="title" className="text-sm font-medium">
                   Título
@@ -69,7 +72,6 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
                 />
               </div>
 
-              {/* Event type */}
               <div className="flex flex-col gap-1">
                 <label htmlFor="eventType" className="text-sm font-medium">
                   Tipo de evento
@@ -95,7 +97,6 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
             </div>
 
             <div className="flex flex-col gap-3 min-w-0">
-              {/* Data e horário de início */}
               <div className="flex flex-col sm:flex-row gap-2">
                 <div className="flex flex-col gap-1 sm:flex-1 min-w-0">
                   <label
@@ -107,6 +108,7 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
                   <input
                     id="startDateInput"
                     type="date"
+                    min={minDate}
                     value={createPost.startDateInput}
                     onChange={(e) =>
                       createPost.setStartDateInput(e.target.value)
@@ -133,7 +135,6 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
                 </div>
               </div>
 
-              {/* Data e horário de finalização */}
               <div className="flex flex-col sm:flex-row gap-2">
                 <div className="flex flex-col gap-1 sm:flex-1 min-w-0">
                   <label htmlFor="endDateInput" className="text-sm font-medium">
@@ -163,7 +164,6 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
             </div>
           </div>
 
-          {/* Content, fora do grid, largura total */}
           <div className="flex flex-col gap-1 mt-4">
             <label htmlFor="content" className="text-sm font-medium">
               Conteúdo
@@ -178,12 +178,10 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
             />
           </div>
 
-          {/* Erro, condicional */}
           {createPost.error && (
             <p className="text-sm text-red-500 mt-2">{createPost.error}</p>
           )}
 
-          {/* Botões, alinhados à direita */}
           <div className="flex justify-end gap-2 mt-4">
             <button
               type="button"

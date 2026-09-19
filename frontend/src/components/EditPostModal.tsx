@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useEditPostForm } from "../hooks/posts/useEditPostForm";
 import { useDeletePost } from "../hooks/posts/useDeletePost";
 import { eventTypeLabel } from "../utils/eventCustom";
+import { getOneMonthAgo } from "../utils/formatDate";
 import {
   inputStyle,
   buttonModalReturn,
@@ -17,6 +18,8 @@ interface EditPostModalProps {
   onOpenChange: (open: boolean) => void;
   refetch: () => void;
 }
+
+const minDate = getOneMonthAgo();
 
 export function EditPostModal({
   postId,
@@ -119,7 +122,6 @@ export function EditPostModal({
               </div>
 
               <div className="flex flex-col gap-3 min-w-0">
-                {/* Data e horário de início */}
                 <div className="flex flex-col sm:flex-row gap-2">
                   <div className="flex flex-col gap-1 sm:flex-1 min-w-0">
                     <label
@@ -131,6 +133,7 @@ export function EditPostModal({
                     <input
                       id="startDateInput"
                       type="date"
+                      min={minDate}
                       value={form.startDateInput}
                       onChange={(e) => form.setStartDateInput(e.target.value)}
                       className={inputStyle}
@@ -153,7 +156,6 @@ export function EditPostModal({
                   </div>
                 </div>
 
-                {/* Data e horário de finalização */}
                 <div className="flex flex-col sm:flex-row gap-2">
                   <div className="flex flex-col gap-1 sm:flex-1 min-w-0">
                     <label

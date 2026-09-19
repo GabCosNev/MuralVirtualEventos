@@ -137,6 +137,16 @@ export class PostsService {
     return post;
   }
 
+  private getDataMinima(): Date {
+    const agora = new Date();
+
+    const ultimoDiaMesAnterior = new Date(agora.getFullYear(), agora.getMonth(), 0).getDate();
+
+    const dia = Math.min(agora.getDate(), ultimoDiaMesAnterior);
+
+    return new Date(agora.getFullYear(), agora.getMonth() - 1, dia, 0, 0, 0, 0);
+  }
+
   private validData(
     startDate?: string,
     endDate?: string,
@@ -156,11 +166,16 @@ export class PostsService {
       throw new BadRequestException('Data ou horário do evento inválido.');
     }
 
+    if (startDateCombinada < this.getDataMinima()) {
+      throw new BadRequestException('A data de início não pode ser anterior a 1 mês atrás.');
+    }
+
     if (endDateCombinada <= startDateCombinada) {
       throw new BadRequestException(
         'A data do término do evento deve ser posterior à data de início.',
       );
     }
+
     if (endDateCombinada < new Date()) {
       throw new BadRequestException('A data de término não pode ser no passado');
     }
