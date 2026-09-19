@@ -61,7 +61,7 @@ export function EditPostModal({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-2xl pt-2 px-4 pb-4 [&_[data-slot=dialog-close]]:hidden">
+      <DialogContent className="sm:max-w-2xl pt-2 px-4 pb-4 max-h-[90dvh] overflow-y-auto [&_[data-slot=dialog-close]]:hidden">
         <DialogHeader>
           <div className="bg-[var(--color-primary)] rounded-lg px-6 py-3.5 -mt-1 -mx-2">
             <DialogTitle className="text-white text-left text-lg">
@@ -69,15 +69,17 @@ export function EditPostModal({
             </DialogTitle>
           </div>
         </DialogHeader>
+
         {mode === "edit" && (
           <form
+            className="min-w-0"
             onSubmit={(e) => {
               e.preventDefault();
               handleSave();
             }}
           >
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-3 min-w-0">
                 <div className="flex flex-col gap-1">
                   <label htmlFor="title" className="text-sm font-medium">
                     Título
@@ -116,9 +118,10 @@ export function EditPostModal({
                 </div>
               </div>
 
-              <div className="flex flex-col gap-3">
-                <div className="flex gap-2">
-                  <div className="flex flex-col gap-1 flex-1">
+              <div className="flex flex-col gap-3 min-w-0">
+                {/* Data e horário de início */}
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <div className="flex flex-col gap-1 sm:flex-1 min-w-0">
                     <label
                       htmlFor="startDateInput"
                       className="text-sm font-medium"
@@ -133,7 +136,7 @@ export function EditPostModal({
                       className={inputStyle}
                     />
                   </div>
-                  <div className="flex flex-col gap-1 flex-1">
+                  <div className="flex flex-col gap-1 sm:flex-1 min-w-0">
                     <label
                       htmlFor="startTimeInput"
                       className="text-sm font-medium"
@@ -150,8 +153,9 @@ export function EditPostModal({
                   </div>
                 </div>
 
-                <div className="flex gap-2">
-                  <div className="flex flex-col gap-1 flex-1">
+                {/* Data e horário de finalização */}
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <div className="flex flex-col gap-1 sm:flex-1 min-w-0">
                     <label
                       htmlFor="endDateInput"
                       className="text-sm font-medium"
@@ -166,7 +170,7 @@ export function EditPostModal({
                       className={inputStyle}
                     />
                   </div>
-                  <div className="flex flex-col gap-1 flex-1">
+                  <div className="flex flex-col gap-1 sm:flex-1 min-w-0">
                     <label
                       htmlFor="endTimeInput"
                       className="text-sm font-medium"
@@ -230,6 +234,7 @@ export function EditPostModal({
             </div>
           </form>
         )}
+
         {mode === "confirm-delete" && (
           <div className="flex flex-col gap-3">
             <p className="text-sm text-gray-700">
@@ -260,7 +265,7 @@ export function EditPostModal({
               </button>
             </div>
           </div>
-        )}{" "}
+        )}
       </DialogContent>
     </Dialog>
   );
