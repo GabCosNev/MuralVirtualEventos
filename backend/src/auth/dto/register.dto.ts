@@ -7,7 +7,7 @@ export class RegisterDto {
   @Matches(/^[a-zA-ZÀ-ÖØ-öø-ÿ'\- ]+$/, {
     message: 'Nome contém caracteres inválidos.',
   })
-  @Matches(/^(?!.*(.)\1{3,}).*$/, {
+  @Matches(/^(?!.*(.)\1{2,}).*$/, {
     message: 'Nome inválido.',
   })
   @Matches(/[aeiouáéíóúâêîôûãõAEIOUÁÉÍÓÚÂÊÎÔÛÃÕ]/, {
