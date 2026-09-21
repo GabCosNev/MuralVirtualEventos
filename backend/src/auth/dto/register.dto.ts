@@ -1,8 +1,18 @@
-import { IsEmail, IsNotEmpty, IsString, IsStrongPassword } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, IsStrongPassword, Length, Matches } from 'class-validator';
 
 export class RegisterDto {
   @IsNotEmpty({ message: 'Nome em branco.' })
-  @IsString({})
+  @IsString()
+  @Length(2, 100, { message: 'Nome deve ter entre 2 e 100 caracteres.' })
+  @Matches(/^[a-zA-ZÀ-ÖØ-öø-ÿ'\- ]+$/, {
+    message: 'Nome contém caracteres inválidos.',
+  })
+  @Matches(/^(?!.*(.)\1{3,}).*$/, {
+    message: 'Nome inválido.',
+  })
+  @Matches(/[aeiouáéíóúâêîôûãõAEIOUÁÉÍÓÚÂÊÎÔÛÃÕ]/, {
+    message: 'Nome inválido.',
+  })
   name!: string;
 
   @IsEmail({}, { message: ' E-mail Inválido.' })

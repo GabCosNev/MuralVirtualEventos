@@ -16,13 +16,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     async function fetchCurrentUser() {
       try {
-        const response = await api.get<User>("/users/me");
+        const response = await api.get<User>("/users/me", {
+          headers: { "X-Silent-Auth-Check": "true" },
+        });
         setAuth({ user: response.data, isLoading: false });
       } catch {
         setAuth({ user: null, isLoading: false });
       }
     }
-
     fetchCurrentUser();
   }, []);
 

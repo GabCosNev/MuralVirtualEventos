@@ -18,6 +18,8 @@ api.interceptors.response.use(
     const originalRequest = error.config as RetryConfig;
 
     const isAuthRoute = originalRequest.url?.includes("/auth/");
+    const isSilent =
+      originalRequest.headers?.["X-Silent-Auth-Check"] === "true"; // 👈 novo
 
     if (
       error.response?.status === 401 &&
@@ -36,7 +38,7 @@ api.interceptors.response.use(
         await refreshPromise;
         return api(originalRequest);
       } catch (refreshError) {
-        notifySessionExpired();
+        if (!isSilent) notifySessionExpired();
         return Promise.reject(refreshError);
       }
     }
