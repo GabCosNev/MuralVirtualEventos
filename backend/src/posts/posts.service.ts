@@ -7,7 +7,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { PostStatus } from '../../generated/prisma';
+import { EventType, PostStatus } from '../../generated/prisma';
 import { ReviewPostDto } from './dto/review-post.dto';
 import { JwtPayload } from '../auth/types/jwt-payload.type';
 
@@ -31,11 +31,12 @@ export class PostsService {
       },
     });
   }
-  async findAllApproved() {
+  async findAllApproved(eventType?: EventType) {
     return this.prisma.post.findMany({
       where: {
         status: PostStatus.APPROVED,
         endDate: { gte: new Date() },
+        ...(eventType && { eventType }),
       },
       include: {
         author: {

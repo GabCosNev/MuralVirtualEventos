@@ -7,7 +7,9 @@ import {
   Body,
   Param,
   ParseIntPipe,
+  ParseEnumPipe,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -18,6 +20,7 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { JwtPayload } from '../auth/types/jwt-payload.type';
+import { EventType } from '../../generated/prisma';
 
 @UseGuards(JwtGuard, RolesGuard)
 @Controller('posts')
@@ -55,8 +58,11 @@ export class PostsController {
     return this.postsService.review(postId, dto);
   }
   @Get()
-  findAllApproved() {
-    return this.postsService.findAllApproved();
+  findAllApproved(
+    @Query('eventType', new ParseEnumPipe(EventType, { optional: true }))
+    eventType?: EventType,
+  ) {
+    return this.postsService.findAllApproved(eventType);
   }
   @Get(':id')
   findOne(@CurrentUser() user: JwtPayload, @Param('id', ParseIntPipe) postId: number) {

@@ -9,20 +9,29 @@ import {
 import { PostCard } from "../components/PostCard";
 import { CreatePostCard } from "../components/CreatePostCardButton";
 import { CreatePostModal } from "../components/CreatePostModal";
-import { type Post } from "../types/post.types";
+import { type EventType, type Post } from "../types/post.types";
 import { PostDetailModal } from "../components/PostDetailModal";
 import { paginationButton } from "../utils/styles";
+import { EventTypeFilter } from "@/components/EventTypeFilter";
 
 export function Home() {
-  const { posts, isFetching, error } = useApprovedPosts();
   const { isAdmin } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [filtroAtivo, setFiltroAtivo] = useState<EventType | undefined>(
+    undefined,
+  );
+  const [filtroAnterior, setFiltroAnterior] = useState(filtroAtivo);
+  const { posts, isFetching, error } = useApprovedPosts(filtroAtivo);
   const totalPages = getTotalPages(posts.length);
   const postsOnPage = getPageItems(posts, currentPage);
   const pageWindow = getPageWindow(currentPage, totalPages);
 
+  if (filtroAtivo !== filtroAnterior) {
+    setFiltroAnterior(filtroAtivo);
+    setCurrentPage(1);
+  }
   return (
     <div className="p-6 pb-20">
       {isFetching && (
@@ -33,6 +42,10 @@ export function Home() {
 
       {!isFetching && !error && (
         <>
+          <EventTypeFilter
+            filtroAtivo={filtroAtivo}
+            onChange={setFiltroAtivo}
+          />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
             {currentPage === 1 && !isAdmin && (
               <CreatePostCard onClick={() => setIsModalOpen(true)} />
