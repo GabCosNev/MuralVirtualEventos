@@ -9,7 +9,7 @@ const filtros: { label: string; value: EventType | undefined }[] = [
   { label: "Todos", value: undefined },
   { label: "Avisos", value: "ANNOUNCEMENT" },
   { label: "Palestras", value: "LECTURE" },
-  { label: "Comemorações", value: "CELEBRATION" },
+  { label: "Celebrações", value: "CELEBRATION" },
 ];
 
 export function EventTypeFilter({
