@@ -22,7 +22,7 @@ export function EventTypeFilter({
         <button
           key={filtro.label}
           onClick={() => onChange(filtro.value)}
-          className={`px-3 py-1 rounded-md text-sm transition-colors ${
+          className={`px-3 py-1 rounded-md text-sm cursor-pointer transition-colors ${
             filtro.value === filtroAtivo
               ? "bg-white/20 font-semibold text-white"
               : "hover:bg-white/10 text-white"
