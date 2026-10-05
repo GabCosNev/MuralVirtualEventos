@@ -11,7 +11,7 @@ import {
   UseGuards,
   Query,
 } from '@nestjs/common';
-import { PostsService } from './posts.service';
+import { Periodo, PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { ReviewPostDto } from './dto/review-post.dto';
@@ -61,8 +61,10 @@ export class PostsController {
   findAllApproved(
     @Query('eventType', new ParseEnumPipe(EventType, { optional: true }))
     eventType?: EventType,
+    @Query('periodo', new ParseEnumPipe(Periodo, { optional: true }))
+    periodo?: Periodo,
   ) {
-    return this.postsService.findAllApproved(eventType);
+    return this.postsService.findAllApproved(eventType, periodo);
   }
   @Get(':id')
   findOne(@CurrentUser() user: JwtPayload, @Param('id', ParseIntPipe) postId: number) {

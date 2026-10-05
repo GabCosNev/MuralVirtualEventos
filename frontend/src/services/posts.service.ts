@@ -5,6 +5,7 @@ import {
   type ReviewPost,
   type UpdatePost,
   type EventType,
+  type Periodo,
 } from "../types";
 
 export const createPost = async (dto: CreatePost): Promise<Post> => {
@@ -28,9 +29,12 @@ export const reviewPost = async (
   return data;
 };
 
-export const getPostHome = async (eventType?: EventType): Promise<Post[]> => {
+export const getPostHome = async (
+  eventType?: EventType,
+  periodo?: Periodo,
+): Promise<Post[]> => {
   const { data } = await api.get<Post[]>("/posts", {
-    params: { eventType },
+    params: { eventType, periodo },
   });
   return data;
 };

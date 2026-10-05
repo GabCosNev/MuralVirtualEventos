@@ -1,5 +1,6 @@
 export type EventType = "ANNOUNCEMENT" | "LECTURE" | "CELEBRATION";
 export type PostStatus = "PENDING" | "APPROVED" | "REJECTED";
+export type Periodo = "HOJE" | "SEMANA" | "MES";
 
 export interface Post {
   id: number;

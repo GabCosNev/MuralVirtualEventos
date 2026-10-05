@@ -1,19 +1,19 @@
 import { type EventType } from "../types/post.types";
 
 interface EventTypeFilterProps {
-  filtroAtivo: EventType | undefined;
+  filtroEvento: EventType | undefined;
   onChange: (eventType: EventType | undefined) => void;
 }
 
 const filtros: { label: string; value: EventType | undefined }[] = [
-  { label: "Todos", value: undefined },
+  { label: "Todos os Eventos", value: undefined },
   { label: "Avisos", value: "ANNOUNCEMENT" },
   { label: "Palestras", value: "LECTURE" },
   { label: "Celebrações", value: "CELEBRATION" },
 ];
 
 export function EventTypeFilter({
-  filtroAtivo,
+  filtroEvento,
   onChange,
 }: EventTypeFilterProps) {
   return (
@@ -22,9 +22,9 @@ export function EventTypeFilter({
         <button
           key={filtro.label}
           onClick={() => onChange(filtro.value)}
-          className={`px-3 py-1 rounded-md text-sm cursor-pointer transition-colors ${
-            filtro.value === filtroAtivo
-              ? "bg-white/20 font-semibold text-white"
+          className={`px-4 py-2 rounded-full text-sm cursor-pointer transition-colors ${
+            filtro.value === filtroEvento
+              ? "bg-[var(--color-primary)] font-semibold text-white"
               : "hover:bg-white/10 text-white"
           }`}
         >

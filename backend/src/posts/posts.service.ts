@@ -11,6 +11,14 @@ import { EventType, PostStatus } from '../../generated/prisma';
 import { ReviewPostDto } from './dto/review-post.dto';
 import { JwtPayload } from '../auth/types/jwt-payload.type';
 
+export const Periodo = {
+  HOJE: 'HOJE',
+  SEMANA: 'SEMANA',
+  MES: 'MES',
+} as const;
+
+export type Periodo = (typeof Periodo)[keyof typeof Periodo];
+
 @Injectable()
 export class PostsService {
   constructor(private prisma: PrismaService) {}
@@ -31,12 +39,15 @@ export class PostsService {
       },
     });
   }
-  async findAllApproved(eventType?: EventType) {
+  async findAllApproved(eventType?: EventType, periodo?: Periodo) {
+    const intervaloPeriodo = periodo ? this.calcularIntervaloPeriodo(periodo) : undefined;
+
     return this.prisma.post.findMany({
       where: {
         status: PostStatus.APPROVED,
         endDate: { gte: new Date() },
         ...(eventType && { eventType }),
+        ...(intervaloPeriodo && { startDate: intervaloPeriodo }),
       },
       include: {
         author: {
@@ -196,5 +207,20 @@ export class PostsService {
     }
 
     return post;
+  }
+  private calcularIntervaloPeriodo(periodo: Periodo) {
+    const inicio = new Date();
+    const fim = new Date();
+
+    if (periodo === 'HOJE') {
+      inicio.setHours(0, 0, 0, 0);
+      fim.setHours(23, 59, 59, 999);
+    } else if (periodo === 'SEMANA') {
+      fim.setDate(fim.getDate() + 7);
+    } else {
+      fim.setDate(fim.getDate() + 30);
+    }
+
+    return { gte: inicio, lte: fim };
   }
 }
