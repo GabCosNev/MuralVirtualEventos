@@ -1,7 +1,7 @@
 import { useCreatePostForm } from "../hooks/posts/useCreatePostForm";
 import { eventTypeLabel } from "../utils/eventCustom";
 import type { EventType } from "../types";
-import { getOneMonthAgo } from "../utils/formatDate";
+import { minDate, getMaxEndDate } from "../utils/formatDate";
 
 import {
   inputStyle,
@@ -20,8 +20,6 @@ interface CreatePostModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
-
-const minDate = getOneMonthAgo();
 
 export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
   const createPost = useCreatePostForm();
@@ -110,9 +108,10 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
                     type="date"
                     min={minDate}
                     value={createPost.startDateInput}
-                    onChange={(e) =>
-                      createPost.setStartDateInput(e.target.value)
-                    }
+                    onChange={(e) => {
+                      createPost.setStartDateInput(e.target.value);
+                      createPost.setEndDateInput("");
+                    }}
                     className={inputStyle}
                   />
                 </div>
@@ -143,6 +142,13 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
                   <input
                     id="endDateInput"
                     type="date"
+                    disabled={!createPost.startDateInput}
+                    min={createPost.startDateInput}
+                    max={
+                      createPost.startDateInput
+                        ? getMaxEndDate(createPost.startDateInput)
+                        : undefined
+                    }
                     value={createPost.endDateInput}
                     onChange={(e) => createPost.setEndDateInput(e.target.value)}
                     className={inputStyle}

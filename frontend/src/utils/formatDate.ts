@@ -1,3 +1,7 @@
+// Espelha MAX_RANGE_OFFSET_DAYS do backend (posts.service.ts).
+// Se mudar a janela lá, mudar aqui também.
+export const MAX_RANGE_OFFSET_DAYS = 2;
+
 export function dateTimeCombine(
   startDateInput: string,
   startTimeInput: string,
@@ -77,13 +81,26 @@ export function getTodayLocal() {
   return formatLocal(new Date());
 }
 
-export function getOneMonthAgo() {
-  const now = new Date();
-  const lastDayPrevMonth = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    0,
-  ).getDate();
-  const day = Math.min(now.getDate(), lastDayPrevMonth);
-  return formatLocal(new Date(now.getFullYear(), now.getMonth() - 1, day));
+function parseLocalDate(value: string): Date {
+  const [year, month, day] = value.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
+export const minDate = formatLocal(
+  new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    new Date().getDate() - MAX_RANGE_OFFSET_DAYS,
+  ),
+);
+
+export function getMaxEndDate(startDate: string) {
+  const start = parseLocalDate(startDate);
+  return formatLocal(
+    new Date(
+      start.getFullYear(),
+      start.getMonth(),
+      start.getDate() + MAX_RANGE_OFFSET_DAYS,
+    ),
+  );
 }

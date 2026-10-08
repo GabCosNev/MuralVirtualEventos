@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useEditPostForm } from "../hooks/posts/useEditPostForm";
 import { useDeletePost } from "../hooks/posts/useDeletePost";
 import { eventTypeLabel } from "../utils/eventCustom";
-import { getOneMonthAgo } from "../utils/formatDate";
+import { minDate, getMaxEndDate } from "../utils/formatDate";
 import {
   inputStyle,
   buttonModalReturn,
@@ -19,8 +19,6 @@ interface EditPostModalProps {
   refetch: () => void;
 }
 
-const minDate = getOneMonthAgo();
-
 export function EditPostModal({
   postId,
   open,
@@ -28,7 +26,7 @@ export function EditPostModal({
   refetch,
 }: EditPostModalProps) {
   const [mode, setMode] = useState<"edit" | "confirm-delete">("edit");
-  const form = useEditPostForm(postId);
+  const editPost = useEditPostForm(postId);
   const {
     remove,
     isLoading: isDeleting,
@@ -49,7 +47,7 @@ export function EditPostModal({
   }
 
   async function handleSave() {
-    const success = await form.handleSubmit();
+    const success = await editPost.handleSubmit();
     if (success) onOpenChange(false);
   }
 
@@ -90,8 +88,8 @@ export function EditPostModal({
                   <input
                     id="title"
                     type="text"
-                    value={form.title}
-                    onChange={(e) => form.setTitle(e.target.value)}
+                    value={editPost.title}
+                    onChange={(e) => editPost.setTitle(e.target.value)}
                     className={inputStyle}
                     placeholder="Título da publicação"
                   />
@@ -103,9 +101,9 @@ export function EditPostModal({
                   </label>
                   <select
                     id="eventType"
-                    value={form.eventType}
+                    value={editPost.eventType}
                     onChange={(e) =>
-                      form.setEventType(e.target.value as EventType)
+                      editPost.setEventType(e.target.value as EventType)
                     }
                     className={inputStyle}
                   >
@@ -134,8 +132,11 @@ export function EditPostModal({
                       id="startDateInput"
                       type="date"
                       min={minDate}
-                      value={form.startDateInput}
-                      onChange={(e) => form.setStartDateInput(e.target.value)}
+                      value={editPost.startDateInput}
+                      onChange={(e) => {
+                        editPost.setStartDateInput(e.target.value);
+                        editPost.setEndDateInput("");
+                      }}
                       className={inputStyle}
                     />
                   </div>
@@ -149,8 +150,10 @@ export function EditPostModal({
                     <input
                       id="startTimeInput"
                       type="time"
-                      value={form.startTimeInput}
-                      onChange={(e) => form.setStartTimeInput(e.target.value)}
+                      value={editPost.startTimeInput}
+                      onChange={(e) =>
+                        editPost.setStartTimeInput(e.target.value)
+                      }
                       className={inputStyle}
                     />
                   </div>
@@ -167,8 +170,15 @@ export function EditPostModal({
                     <input
                       id="endDateInput"
                       type="date"
-                      value={form.endDateInput}
-                      onChange={(e) => form.setEndDateInput(e.target.value)}
+                      disabled={!editPost.startDateInput}
+                      min={editPost.startDateInput}
+                      max={
+                        editPost.startDateInput
+                          ? getMaxEndDate(editPost.startDateInput)
+                          : undefined
+                      }
+                      value={editPost.endDateInput}
+                      onChange={(e) => editPost.setEndDateInput(e.target.value)}
                       className={inputStyle}
                     />
                   </div>
@@ -182,8 +192,8 @@ export function EditPostModal({
                     <input
                       id="endTimeInput"
                       type="time"
-                      value={form.endTimeInput}
-                      onChange={(e) => form.setEndTimeInput(e.target.value)}
+                      value={editPost.endTimeInput}
+                      onChange={(e) => editPost.setEndTimeInput(e.target.value)}
                       className={inputStyle}
                     />
                   </div>
@@ -197,23 +207,23 @@ export function EditPostModal({
               </label>
               <textarea
                 id="content"
-                value={form.content}
-                onChange={(e) => form.setContent(e.target.value)}
+                value={editPost.content}
+                onChange={(e) => editPost.setContent(e.target.value)}
                 rows={4}
                 className={`${inputStyle} resize-none`}
                 placeholder="Descreva o evento..."
               />
             </div>
 
-            {form.error && (
-              <p className="text-sm text-red-500 mt-2">{form.error}</p>
+            {editPost.error && (
+              <p className="text-sm text-red-500 mt-2">{editPost.error}</p>
             )}
 
             <div className="flex justify-end gap-2 mt-4">
               <button
                 type="button"
                 onClick={() => handleOpenChange(false)}
-                disabled={form.isLoading}
+                disabled={editPost.isLoading}
                 className={buttonModalReturn}
               >
                 Voltar
@@ -221,17 +231,17 @@ export function EditPostModal({
               <button
                 type="button"
                 onClick={() => setMode("confirm-delete")}
-                disabled={form.isLoading}
+                disabled={editPost.isLoading}
                 className={buttonModalDenied}
               >
                 Excluir
               </button>
               <button
                 type="submit"
-                disabled={form.isLoading}
+                disabled={editPost.isLoading}
                 className={buttonModalConfirm}
               >
-                {form.isLoading ? "Salvando..." : "Salvar"}
+                {editPost.isLoading ? "Salvando..." : "Salvar"}
               </button>
             </div>
           </form>

@@ -18,6 +18,7 @@ export const Periodo = {
 } as const;
 
 export type Periodo = (typeof Periodo)[keyof typeof Periodo];
+const MAX_RANGE_OFFSET_DAYS = 2;
 
 @Injectable()
 export class PostsService {
@@ -150,13 +151,10 @@ export class PostsService {
   }
 
   private getDataMinima(): Date {
-    const agora = new Date();
-
-    const ultimoDiaMesAnterior = new Date(agora.getFullYear(), agora.getMonth(), 0).getDate();
-
-    const dia = Math.min(agora.getDate(), ultimoDiaMesAnterior);
-
-    return new Date(agora.getFullYear(), agora.getMonth() - 1, dia, 0, 0, 0, 0);
+    const minima = new Date();
+    minima.setDate(minima.getDate() - MAX_RANGE_OFFSET_DAYS);
+    minima.setHours(0, 0, 0, 0);
+    return minima;
   }
 
   private validData(
@@ -179,12 +177,24 @@ export class PostsService {
     }
 
     if (startDateCombinada < this.getDataMinima()) {
-      throw new BadRequestException('A data de início não pode ser anterior a 1 mês atrás.');
+      throw new BadRequestException(
+        `A data de início não pode ser anterior a ${MAX_RANGE_OFFSET_DAYS + 1} dias atrás.`,
+      );
     }
 
     if (endDateCombinada <= startDateCombinada) {
       throw new BadRequestException(
         'A data do término do evento deve ser posterior à data de início.',
+      );
+    }
+
+    const limiteEndDate = new Date(startDateCombinada);
+    limiteEndDate.setDate(limiteEndDate.getDate() + MAX_RANGE_OFFSET_DAYS);
+    limiteEndDate.setHours(23, 59, 59, 999);
+
+    if (endDateCombinada > limiteEndDate) {
+      throw new BadRequestException(
+        `A data de término não pode passar de ${MAX_RANGE_OFFSET_DAYS + 1} dias após a data de início.`,
       );
     }
 
