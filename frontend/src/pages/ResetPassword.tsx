@@ -1,10 +1,7 @@
 import { Link } from "react-router-dom";
 import { useResetPassword } from "../hooks/auth/useResetPassword";
-import {
-  buttonEffectConfirm,
-  buttonRegisterLogin,
-  inputStyle,
-} from "../utils/styles";
+import { buttonEffectConfirm, buttonRegisterLogin } from "../utils/styles";
+import { PasswordInput } from "../components/PasswordInput";
 
 export function ResetPassword() {
   const {
@@ -62,12 +59,10 @@ export function ResetPassword() {
                 Nova senha
               </label>
 
-              <input
+              <PasswordInput
                 id="newPassword"
-                type="password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className={inputStyle}
               />
             </div>
 
@@ -79,12 +74,10 @@ export function ResetPassword() {
                 Confirmar nova senha
               </label>
 
-              <input
+              <PasswordInput
                 id="confirmPassword"
-                type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className={inputStyle}
               />
             </div>
 

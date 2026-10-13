@@ -1,6 +1,7 @@
 import { Loader2 } from "lucide-react";
 import { useEditUserForm } from "../hooks/users/useEditUserForm";
 import { buttonEffectConfirm } from "../utils/styles";
+import { PasswordInput } from "@/components/PasswordInput";
 
 export function Edit() {
   const {
@@ -78,11 +79,9 @@ export function Edit() {
                   Senha atual
                 </label>
 
-                <input
-                  type="password"
+                <PasswordInput
                   value={actualPassword}
                   onChange={(e) => setActualPassword(e.target.value)}
-                  className="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                 />
               </div>
 
@@ -91,11 +90,9 @@ export function Edit() {
                   Nova senha
                 </label>
 
-                <input
-                  type="password"
+                <PasswordInput
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                 />
               </div>
 
@@ -104,11 +101,9 @@ export function Edit() {
                   Confirmar nova senha
                 </label>
 
-                <input
-                  type="password"
+                <PasswordInput
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                 />
               </div>
             </div>
