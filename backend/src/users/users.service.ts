@@ -12,8 +12,8 @@ import bcrypt from 'bcrypt';
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async update(currentUserId: number, dto: UpdateUserDto) {
-    const user = await this.findUserOrThrow(currentUserId);
+  async update(userId: number, dto: UpdateUserDto) {
+    const user = await this.findUserOrThrow(userId);
 
     if (user.role === 'ADMIN') {
       throw new ForbiddenException('Conta de demonstração não pode ser editada');
@@ -29,7 +29,7 @@ export class UsersService {
       dto.password = await bcrypt.hash(dto.password, 10);
     }
     return this.prisma.user.update({
-      where: { id: currentUserId },
+      where: { id: userId },
       data: {
         name: dto.name,
         avatar: dto.avatar,
@@ -44,16 +44,18 @@ export class UsersService {
       },
     });
   }
-  async remove(currentUserId: number, targetUserId: number, isAdmin: boolean) {
-    await this.findUserOrThrow(targetUserId);
+  async removeMe(userId: number, password: string): Promise<void> {
+    const user = await this.findUserOrThrow(userId);
 
-    if (!isAdmin && currentUserId !== targetUserId) {
-      throw new ForbiddenException('Você não tem permissão para deletar esse usuário');
+    if (user.role === 'ADMIN') {
+      throw new ForbiddenException('Conta de demonstração não pode ser removida');
     }
 
-    return this.prisma.user.delete({
-      where: { id: targetUserId },
-    });
+    if (!(await bcrypt.compare(password, user.password))) {
+      throw new BadRequestException('Senha inválida');
+    }
+
+    await this.prisma.user.delete({ where: { id: userId } });
   }
   private async findUserOrThrow(userId: number) {
     const user = await this.prisma.user.findUnique({
