@@ -101,12 +101,9 @@ export class PostsService {
     });
   }
 
-  async remove(userId: number, postId: number) {
+  async remove(userId: number, postId: number): Promise<void> {
     await this.findPostAndVerifyOwner(postId, userId);
-
-    return this.prisma.post.delete({
-      where: { id: postId },
-    });
+    await this.prisma.post.delete({ where: { id: postId } });
   }
   async review(postId: number, dto: ReviewPostDto) {
     const post = await this.prisma.post.findUnique({

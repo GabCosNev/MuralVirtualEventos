@@ -27,10 +27,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     fetchCurrentUser();
   }, []);
 
+  function clearSession() {
+    setAuth({ user: null, isLoading: false });
+  }
+
   useEffect(() => {
-    registerLogoutHandler(() => {
-      setAuth({ user: null, isLoading: false });
-    });
+    registerLogoutHandler(clearSession);
   }, []);
 
   function login(user: User) {
@@ -41,7 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await api.post("/auth/logout");
     } finally {
-      setAuth({ user: null, isLoading: false });
+      clearSession();
     }
   }
 
@@ -56,6 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isLoading: auth.isLoading,
         login,
         logout,
+        clearSession,
         updateUser,
         isAdmin: auth.user?.role === "ADMIN",
       }}

@@ -10,3 +10,7 @@ export const updateMe = async (dto: UpdateUser): Promise<User> => {
   const { data } = await api.patch<User>("/users/me", dto);
   return data;
 };
+
+export const deleteAccount = async (password: string): Promise<void> => {
+  await api.delete("/users/me", { data: { password } });
+};

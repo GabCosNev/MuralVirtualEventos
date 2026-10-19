@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { getMe, updateMe } from "../../services/users.services";
+import { useNavigate } from "react-router-dom";
+import { getMe, updateMe, deleteAccount } from "../../services/users.services";
 import { useAuth } from "../auth/useAuth";
 import { toast } from "sonner";
 
@@ -15,7 +16,14 @@ export function useEditUserForm() {
   const [error, setError] = useState("");
   const [isFetching, setIsFetching] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const { updateUser } = useAuth();
+
+  const [view, setView] = useState<"edit" | "confirmDelete">("edit");
+  const [deletePassword, setDeletePassword] = useState("");
+  const [deleteError, setDeleteError] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const { updateUser, clearSession, isAdmin } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchUser() {
@@ -69,6 +77,44 @@ export function useEditUserForm() {
     }
   }
 
+  function openDeleteView() {
+    setDeletePassword("");
+    setDeleteError("");
+    setView("confirmDelete");
+  }
+
+  function cancelDelete() {
+    setDeletePassword("");
+    setDeleteError("");
+    setView("edit");
+  }
+
+  async function handleDelete() {
+    if (!deletePassword) {
+      return setDeleteError("Digite sua senha");
+    }
+
+    setDeleteError("");
+    setIsDeleting(true);
+    try {
+      await deleteAccount(deletePassword);
+      clearSession();
+      toast.success("Conta excluída");
+      navigate("/login", { replace: true });
+    } catch (e: unknown) {
+      const err = e as {
+        response?: { data?: { message?: string | string[] } };
+      };
+      const message = err.response?.data?.message;
+      setDeleteError(
+        Array.isArray(message)
+          ? message[0]
+          : (message ?? "Erro ao excluir conta"),
+      );
+      setIsDeleting(false);
+    }
+  }
+
   return {
     name,
     setName,
@@ -86,5 +132,14 @@ export function useEditUserForm() {
     isFetching,
     isLoading,
     handleSubmit,
+    isAdmin,
+    view,
+    deletePassword,
+    setDeletePassword,
+    deleteError,
+    isDeleting,
+    openDeleteView,
+    cancelDelete,
+    handleDelete,
   };
 }

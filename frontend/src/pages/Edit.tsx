@@ -1,7 +1,9 @@
 import { Loader2 } from "lucide-react";
 import { useEditUserForm } from "../hooks/users/useEditUserForm";
 import { buttonEffectConfirm } from "../utils/styles";
-import { PasswordInput } from "@/components/PasswordInput";
+import { PasswordInput } from "../components/PasswordInput";
+import { useAuth } from "../hooks/auth/useAuth";
+import { DeleteAccountView } from "../components/DeleteAccountView";
 
 export function Edit() {
   const {
@@ -21,13 +23,36 @@ export function Edit() {
     isFetching,
     isLoading,
     handleSubmit,
+    view,
+    deletePassword,
+    setDeletePassword,
+    deleteError,
+    isDeleting,
+    openDeleteView,
+    cancelDelete,
+    handleDelete,
   } = useEditUserForm();
+
+  const { isAdmin } = useAuth();
 
   if (isFetching) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="animate-spin text-white w-8 h-8" />
       </div>
+    );
+  }
+
+  if (view === "confirmDelete") {
+    return (
+      <DeleteAccountView
+        password={deletePassword}
+        onPasswordChange={setDeletePassword}
+        error={deleteError}
+        isLoading={isDeleting}
+        onConfirm={handleDelete}
+        onCancel={cancelDelete}
+      />
     );
   }
 
@@ -119,6 +144,16 @@ export function Edit() {
           >
             {isLoading ? "Salvando..." : "Salvar alterações"}
           </button>
+
+          {!isAdmin && (
+            <button
+              type="button"
+              onClick={openDeleteView}
+              className="text-sm text-red-600 font-medium cursor-pointer hover:underline text-center"
+            >
+              Excluir minha conta
+            </button>
+          )}
         </div>
       </div>
     </div>

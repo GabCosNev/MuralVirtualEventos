@@ -19,7 +19,7 @@ api.interceptors.response.use(
 
     const isAuthRoute = originalRequest.url?.includes("/auth/");
     const isSilent =
-      originalRequest.headers?.["X-Silent-Auth-Check"] === "true"; // 👈 novo
+      originalRequest.headers?.["X-Silent-Auth-Check"] === "true";
 
     if (
       error.response?.status === 401 &&

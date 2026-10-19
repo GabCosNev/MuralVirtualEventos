@@ -6,6 +6,7 @@ export interface AuthContextData {
   isLoading: boolean;
   login: (user: User) => void;
   logout: () => Promise<void>;
+  clearSession: () => void;
   updateUser: (user: User) => void;
   isAdmin: boolean;
 }

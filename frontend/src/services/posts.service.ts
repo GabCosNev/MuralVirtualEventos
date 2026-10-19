@@ -49,9 +49,8 @@ export const getPostPending = async (): Promise<Post[]> => {
   return data;
 };
 
-export const deletePost = async (id: number): Promise<Post> => {
-  const { data } = await api.delete<Post>(`/posts/${id}`);
-  return data;
+export const deletePost = async (id: number): Promise<void> => {
+  await api.delete(`/posts/${id}`);
 };
 
 export const getPostById = async (id: number): Promise<Post> => {
