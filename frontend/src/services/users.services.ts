@@ -14,3 +14,14 @@ export const updateMe = async (dto: UpdateUser): Promise<User> => {
 export const deleteAccount = async (password: string): Promise<void> => {
   await api.delete("/users/me", { data: { password } });
 };
+
+export const uploadAvatar = async (file: File): Promise<{ avatar: string }> => {
+  const formData = new FormData();
+  formData.append("avatar", file);
+
+  const { data } = await api.patch<{ avatar: string }>(
+    "/users/me/avatar",
+    formData,
+  );
+  return data;
+};

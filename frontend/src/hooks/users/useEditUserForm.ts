@@ -1,7 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getMe, updateMe, deleteAccount } from "../../services/users.services";
+import {
+  getMe,
+  updateMe,
+  deleteAccount,
+  uploadAvatar,
+} from "../../services/users.services";
 import { useAuth } from "../auth/useAuth";
+import { cropImageToFile, type CropArea } from "../../utils/cropImage";
 import { toast } from "sonner";
 
 export function useEditUserForm() {
@@ -22,6 +28,10 @@ export function useEditUserForm() {
   const [deleteError, setDeleteError] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
 
+  const [avatarError, setAvatarError] = useState("");
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
+
   const { updateUser, clearSession, isAdmin } = useAuth();
   const navigate = useNavigate();
 
@@ -41,6 +51,12 @@ export function useEditUserForm() {
     fetchUser();
   }, []);
 
+  useEffect(() => {
+    return () => {
+      if (cropSrc) URL.revokeObjectURL(cropSrc);
+    };
+  }, [cropSrc]);
+
   function handleTogglePasswordChange() {
     setIsChangingPassword((prev) => !prev);
     setActualPassword("");
@@ -58,8 +74,8 @@ export function useEditUserForm() {
     setIsLoading(true);
     try {
       const payload = isChangingPassword
-        ? { name, avatar, actualPassword, password, confirmPassword }
-        : { name, avatar };
+        ? { name, actualPassword, password, confirmPassword }
+        : { name };
 
       const response = await updateMe(payload);
       updateUser(response);
@@ -75,6 +91,56 @@ export function useEditUserForm() {
     } finally {
       setIsLoading(false);
     }
+  }
+
+  async function handleAvatarChange(file: File): Promise<boolean> {
+    setAvatarError("");
+    setIsUploadingAvatar(true);
+    try {
+      const result = await uploadAvatar(file);
+      setAvatar(result.avatar);
+      updateUser(await getMe());
+      toast.success("Foto atualizada");
+      return true;
+    } catch (e: unknown) {
+      const err = e as {
+        response?: { data?: { message?: string | string[] } };
+      };
+      const message = err.response?.data?.message;
+      setAvatarError(
+        Array.isArray(message)
+          ? message[0]
+          : (message ?? "Erro ao enviar a imagem"),
+      );
+      return false;
+    } finally {
+      setIsUploadingAvatar(false);
+    }
+  }
+
+  function openCrop(file: File) {
+    setAvatarError("");
+    setCropSrc(URL.createObjectURL(file));
+  }
+
+  function cancelCrop() {
+    setAvatarError("");
+    setCropSrc(null);
+  }
+
+  async function confirmCrop(area: CropArea) {
+    if (!cropSrc) return;
+
+    let file: File;
+    try {
+      file = await cropImageToFile(cropSrc, area);
+    } catch {
+      setAvatarError("Não foi possível processar a imagem");
+      return;
+    }
+
+    const ok = await handleAvatarChange(file);
+    if (ok) setCropSrc(null);
   }
 
   function openDeleteView() {
@@ -119,7 +185,6 @@ export function useEditUserForm() {
     name,
     setName,
     avatar,
-    setAvatar,
     isChangingPassword,
     handleTogglePasswordChange,
     actualPassword,
@@ -141,5 +206,11 @@ export function useEditUserForm() {
     openDeleteView,
     cancelDelete,
     handleDelete,
+    avatarError,
+    isUploadingAvatar,
+    cropSrc,
+    openCrop,
+    cancelCrop,
+    confirmCrop,
   };
 }

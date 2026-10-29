@@ -1,16 +1,23 @@
-import { Loader2 } from "lucide-react";
+import { useRef, type ChangeEvent } from "react";
+import { Loader2, User as UserIcon } from "lucide-react";
 import { useEditUserForm } from "../hooks/users/useEditUserForm";
 import { buttonEffectConfirm } from "../utils/styles";
 import { PasswordInput } from "../components/PasswordInput";
 import { useAuth } from "../hooks/auth/useAuth";
 import { DeleteAccountView } from "../components/DeleteAccountView";
+import { AvatarCropModal } from "../components/AvatarCropModal";
 
 export function Edit() {
   const {
     name,
     setName,
     avatar,
-    setAvatar,
+    avatarError,
+    isUploadingAvatar,
+    cropSrc,
+    openCrop,
+    cancelCrop,
+    confirmCrop,
     isChangingPassword,
     handleTogglePasswordChange,
     actualPassword,
@@ -34,6 +41,13 @@ export function Edit() {
   } = useEditUserForm();
 
   const { isAdmin } = useAuth();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  function onFileSelected(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (file) openCrop(file);
+    e.target.value = "";
+  }
 
   if (isFetching) {
     return (
@@ -64,6 +78,56 @@ export function Edit() {
         </div>
 
         <div className="px-6 py-8 flex flex-col gap-5">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-4">
+              {avatar ? (
+                <img
+                  src={avatar}
+                  alt="Sua foto de perfil"
+                  className="w-20 h-20 rounded-full object-cover border border-gray-300"
+                />
+              ) : (
+                <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center">
+                  <UserIcon className="w-10 h-10 text-gray-500" />
+                </div>
+              )}
+
+              <div className="flex flex-row flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isUploadingAvatar || isAdmin}
+                  className="bg-[var(--color-primary)] text-white text-sm font-medium rounded-lg px-4 py-2 cursor-pointer hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Trocar foto
+                </button>
+
+                {/* Visual apenas: ainda sem funcionalidade */}
+                {avatar && (
+                  <button
+                    type="button"
+                    disabled={isUploadingAvatar || isAdmin}
+                    className="bg-red-600 text-white text-sm font-medium rounded-lg px-4 py-2 cursor-pointer hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Remover foto
+                  </button>
+                )}
+              </div>
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={onFileSelected}
+                className="hidden"
+              />
+            </div>
+
+            {!cropSrc && avatarError && (
+              <p className="text-red-500 text-sm">{avatarError}</p>
+            )}
+          </div>
+
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700">Nome</label>
 
@@ -71,20 +135,6 @@ export function Edit() {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
-            />
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700">
-              Avatar (URL)
-            </label>
-
-            <input
-              type="text"
-              value={avatar}
-              onChange={(e) => setAvatar(e.target.value)}
-              placeholder="https://..."
               className="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
             />
           </div>
@@ -156,6 +206,16 @@ export function Edit() {
           )}
         </div>
       </div>
+
+      {cropSrc && (
+        <AvatarCropModal
+          imageSrc={cropSrc}
+          isLoading={isUploadingAvatar}
+          error={avatarError}
+          onConfirm={confirmCrop}
+          onCancel={cancelCrop}
+        />
+      )}
     </div>
   );
 }
