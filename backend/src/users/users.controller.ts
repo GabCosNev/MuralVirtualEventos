@@ -1,4 +1,16 @@
-import { Controller, Patch, Delete, Body, UseGuards, Get, Res } from '@nestjs/common';
+import {
+  Controller,
+  Patch,
+  Delete,
+  Body,
+  UseGuards,
+  Get,
+  Res,
+  UseInterceptors,
+  UploadedFile,
+  ParseFilePipe,
+  FileTypeValidator,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtGuard } from '../auth/guards/jwt.guard';
@@ -7,6 +19,8 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { JwtPayload } from '../auth/types/jwt-payload.type';
 import type { Response } from 'express';
 import { DeleteAccountDto } from './dto/delete-account.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { IMAGE_MAX_SIZE_BYTES, IMAGE_MIME_REGEX } from '../common/images/image-upload.constants';
 
 @UseGuards(JwtGuard, RolesGuard)
 @Controller('users')
@@ -16,6 +30,25 @@ export class UsersController {
   @Patch('me')
   update(@CurrentUser() user: JwtPayload, @Body() dto: UpdateUserDto) {
     return this.usersService.update(user.id, dto);
+  }
+
+  @Patch('me/avatar')
+  @UseInterceptors(
+    FileInterceptor('avatar', {
+      limits: { fileSize: IMAGE_MAX_SIZE_BYTES, files: 1 },
+    }),
+  )
+  uploadAvatar(
+    @CurrentUser() user: JwtPayload,
+    @UploadedFile(
+      new ParseFilePipe({
+        fileIsRequired: true,
+        validators: [new FileTypeValidator({ fileType: IMAGE_MIME_REGEX })],
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
+    return this.usersService.updateAvatar(user.id, file);
   }
 
   @Delete('me')
