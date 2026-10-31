@@ -8,7 +8,6 @@ export interface User {
 
 export interface UpdateUser {
   name?: string;
-  avatar?: string;
   actualPassword?: string;
   password?: string;
   confirmPassword?: string;
