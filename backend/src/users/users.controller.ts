@@ -62,6 +62,10 @@ export class UsersController {
     res.clearCookie('access_token', { path: '/' });
     res.clearCookie('refresh_token', { path: '/auth/refresh' });
   }
+  @Delete('me/avatar')
+  async removeAvatar(@CurrentUser() user: JwtPayload): Promise<void> {
+    await this.usersService.removeAvatar(user.id);
+  }
 
   @Get('me')
   getMe(@CurrentUser() user: JwtPayload) {

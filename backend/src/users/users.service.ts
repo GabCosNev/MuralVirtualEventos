@@ -128,6 +128,28 @@ export class UsersService {
     return { avatar: uploaded.url };
   }
 
+  async removeAvatar(userId: number): Promise<void> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { role: true, avatarPublicId: true },
+    });
+
+    if (!user) throw new NotFoundException('Usuário não encontrado');
+
+    if (user.role === 'ADMIN') {
+      throw new ForbiddenException('Conta de demonstração não pode ser editada');
+    }
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { avatar: null, avatarPublicId: null },
+    });
+
+    if (user.avatarPublicId) {
+      await this.deleteImageSafely(user.avatarPublicId);
+    }
+  }
+
   private async deleteImageSafely(publicId: string): Promise<void> {
     try {
       await this.cloudinary.deleteImage(publicId);
