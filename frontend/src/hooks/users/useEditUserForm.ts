@@ -5,10 +5,19 @@ import {
   updateMe,
   deleteAccount,
   uploadAvatar,
+  removeAvatar,
 } from "../../services/users.services";
 import { useAuth } from "../auth/useAuth";
 import { cropImageToFile, type CropArea } from "../../utils/cropImage";
 import { toast } from "sonner";
+
+function getErrorMessage(e: unknown, fallback: string): string {
+  const err = e as {
+    response?: { data?: { message?: string | string[] } };
+  };
+  const message = err.response?.data?.message;
+  return Array.isArray(message) ? message[0] : (message ?? fallback);
+}
 
 export function useEditUserForm() {
   const [name, setName] = useState("");
@@ -29,11 +38,19 @@ export function useEditUserForm() {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const [avatarError, setAvatarError] = useState("");
-  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [cropSrc, setCropSrc] = useState<string | null>(null);
+  const [pendingAvatarFile, setPendingAvatarFile] = useState<File | null>(null);
+  const [pendingAvatarPreview, setPendingAvatarPreview] = useState<
+    string | null
+  >(null);
+  const [pendingRemoveAvatar, setPendingRemoveAvatar] = useState(false);
 
   const { updateUser, clearSession, isAdmin } = useAuth();
   const navigate = useNavigate();
+
+  const avatarPreview = pendingRemoveAvatar
+    ? ""
+    : (pendingAvatarPreview ?? avatar);
 
   useEffect(() => {
     async function fetchUser() {
@@ -42,8 +59,7 @@ export function useEditUserForm() {
         setName(response.name);
         setAvatar(response.avatar ?? "");
       } catch (e: unknown) {
-        const err = e as { response?: { data?: { message?: string } } };
-        setError(err.response?.data?.message ?? "Erro ao carregar perfil");
+        setError(getErrorMessage(e, "Erro ao carregar perfil"));
       } finally {
         setIsFetching(false);
       }
@@ -57,6 +73,18 @@ export function useEditUserForm() {
     };
   }, [cropSrc]);
 
+  useEffect(() => {
+    return () => {
+      if (pendingAvatarPreview) URL.revokeObjectURL(pendingAvatarPreview);
+    };
+  }, [pendingAvatarPreview]);
+
+  function clearPendingAvatar() {
+    setPendingAvatarFile(null);
+    setPendingAvatarPreview(null);
+    setPendingRemoveAvatar(false);
+  }
+
   function handleTogglePasswordChange() {
     setIsChangingPassword((prev) => !prev);
     setActualPassword("");
@@ -66,12 +94,14 @@ export function useEditUserForm() {
 
   async function handleSubmit() {
     setError("");
+    setAvatarError("");
 
     if (isChangingPassword && password !== confirmPassword) {
       return setError("As senhas não coincidem");
     }
 
     setIsLoading(true);
+
     try {
       const payload = isChangingPassword
         ? { name, actualPassword, password, confirmPassword }
@@ -84,37 +114,31 @@ export function useEditUserForm() {
       setPassword("");
       setConfirmPassword("");
       setIsChangingPassword(false);
+    } catch (e: unknown) {
+      setError(getErrorMessage(e, "Erro ao atualizar perfil"));
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      if (pendingAvatarFile) {
+        const result = await uploadAvatar(pendingAvatarFile);
+        setAvatar(result.avatar);
+        clearPendingAvatar();
+        updateUser(await getMe());
+      } else if (pendingRemoveAvatar) {
+        await removeAvatar();
+        setAvatar("");
+        clearPendingAvatar();
+        updateUser(await getMe());
+      }
       toast.success("Perfil atualizado com sucesso!");
     } catch (e: unknown) {
-      const err = e as { response?: { data?: { message?: string } } };
-      setError(err.response?.data?.message ?? "Erro ao atualizar perfil");
+      setAvatarError(
+        `Perfil salvo, mas a foto não foi atualizada: ${getErrorMessage(e, "erro ao enviar a imagem")}`,
+      );
     } finally {
       setIsLoading(false);
-    }
-  }
-
-  async function handleAvatarChange(file: File): Promise<boolean> {
-    setAvatarError("");
-    setIsUploadingAvatar(true);
-    try {
-      const result = await uploadAvatar(file);
-      setAvatar(result.avatar);
-      updateUser(await getMe());
-      toast.success("Foto atualizada");
-      return true;
-    } catch (e: unknown) {
-      const err = e as {
-        response?: { data?: { message?: string | string[] } };
-      };
-      const message = err.response?.data?.message;
-      setAvatarError(
-        Array.isArray(message)
-          ? message[0]
-          : (message ?? "Erro ao enviar a imagem"),
-      );
-      return false;
-    } finally {
-      setIsUploadingAvatar(false);
     }
   }
 
@@ -131,16 +155,22 @@ export function useEditUserForm() {
   async function confirmCrop(area: CropArea) {
     if (!cropSrc) return;
 
-    let file: File;
     try {
-      file = await cropImageToFile(cropSrc, area);
+      const file = await cropImageToFile(cropSrc, area);
+      setPendingAvatarFile(file);
+      setPendingAvatarPreview(URL.createObjectURL(file));
+      setPendingRemoveAvatar(false);
+      setCropSrc(null);
     } catch {
       setAvatarError("Não foi possível processar a imagem");
-      return;
     }
+  }
 
-    const ok = await handleAvatarChange(file);
-    if (ok) setCropSrc(null);
+  function handleRemoveAvatar() {
+    setAvatarError("");
+    setPendingAvatarFile(null);
+    setPendingAvatarPreview(null);
+    setPendingRemoveAvatar(avatar !== "");
   }
 
   function openDeleteView() {
@@ -168,15 +198,7 @@ export function useEditUserForm() {
       toast.success("Conta excluída");
       navigate("/login", { replace: true });
     } catch (e: unknown) {
-      const err = e as {
-        response?: { data?: { message?: string | string[] } };
-      };
-      const message = err.response?.data?.message;
-      setDeleteError(
-        Array.isArray(message)
-          ? message[0]
-          : (message ?? "Erro ao excluir conta"),
-      );
+      setDeleteError(getErrorMessage(e, "Erro ao excluir conta"));
       setIsDeleting(false);
     }
   }
@@ -184,7 +206,7 @@ export function useEditUserForm() {
   return {
     name,
     setName,
-    avatar,
+    avatarPreview,
     isChangingPassword,
     handleTogglePasswordChange,
     actualPassword,
@@ -207,10 +229,10 @@ export function useEditUserForm() {
     cancelDelete,
     handleDelete,
     avatarError,
-    isUploadingAvatar,
     cropSrc,
     openCrop,
     cancelCrop,
     confirmCrop,
+    handleRemoveAvatar,
   };
 }

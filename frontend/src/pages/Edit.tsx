@@ -1,5 +1,5 @@
 import { useRef, type ChangeEvent } from "react";
-import { Loader2, User as UserIcon } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useEditUserForm } from "../hooks/users/useEditUserForm";
 import { buttonEffectConfirm } from "../utils/styles";
 import { PasswordInput } from "../components/PasswordInput";
@@ -11,13 +11,13 @@ export function Edit() {
   const {
     name,
     setName,
-    avatar,
+    avatarPreview,
     avatarError,
-    isUploadingAvatar,
     cropSrc,
     openCrop,
     cancelCrop,
     confirmCrop,
+    handleRemoveAvatar,
     isChangingPassword,
     handleTogglePasswordChange,
     actualPassword,
@@ -80,15 +80,15 @@ export function Edit() {
         <div className="px-6 py-8 flex flex-col gap-5">
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-4">
-              {avatar ? (
+              {avatarPreview ? (
                 <img
-                  src={avatar}
+                  src={avatarPreview}
                   alt="Sua foto de perfil"
                   className="w-20 h-20 rounded-full object-cover border border-gray-300"
                 />
               ) : (
-                <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center">
-                  <UserIcon className="w-10 h-10 text-gray-500" />
+                <div className="w-20 h-20 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-center text-white text-xs font-medium leading-tight px-2">
+                  Não tem foto
                 </div>
               )}
 
@@ -96,17 +96,17 @@ export function Edit() {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  disabled={isUploadingAvatar || isAdmin}
+                  disabled={isLoading || isAdmin}
                   className="bg-[var(--color-primary)] text-white text-sm font-medium rounded-lg px-4 py-2 cursor-pointer hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Trocar foto
                 </button>
 
-                {/* Visual apenas: ainda sem funcionalidade */}
-                {avatar && (
+                {avatarPreview && (
                   <button
                     type="button"
-                    disabled={isUploadingAvatar || isAdmin}
+                    onClick={handleRemoveAvatar}
+                    disabled={isLoading || isAdmin}
                     className="bg-red-600 text-white text-sm font-medium rounded-lg px-4 py-2 cursor-pointer hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Remover foto
@@ -123,7 +123,7 @@ export function Edit() {
               />
             </div>
 
-            {!cropSrc && avatarError && (
+            {avatarError && (
               <p className="text-red-500 text-sm">{avatarError}</p>
             )}
           </div>
@@ -210,7 +210,7 @@ export function Edit() {
       {cropSrc && (
         <AvatarCropModal
           imageSrc={cropSrc}
-          isLoading={isUploadingAvatar}
+          isLoading={false}
           error={avatarError}
           onConfirm={confirmCrop}
           onCancel={cancelCrop}
