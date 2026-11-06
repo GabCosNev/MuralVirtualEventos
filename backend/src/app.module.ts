@@ -6,7 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { PostsModule } from './posts/posts.module';
 import { UsersModule } from './users/users.module';
 import { CleanupModule } from './cleanup/cleanup.module';
-import { AskModule } from './ask/ask.module';
+import { GroqSearchModule } from './groq-search/groq-search.module';
 
 @Module({
   imports: [
@@ -17,7 +17,7 @@ import { AskModule } from './ask/ask.module';
     PostsModule,
     UsersModule,
     CleanupModule,
-    AskModule,
+    GroqSearchModule,
   ],
 })
 export class AppModule {}
