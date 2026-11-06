@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { PostsModule } from './posts/posts.module';
 import { UsersModule } from './users/users.module';
 import { CleanupModule } from './cleanup/cleanup.module';
+import { AskModule } from './ask/ask.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { CleanupModule } from './cleanup/cleanup.module';
     PostsModule,
     UsersModule,
     CleanupModule,
+    AskModule,
   ],
 })
 export class AppModule {}

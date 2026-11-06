@@ -1,0 +1,9 @@
+import { Module } from '@nestjs/common';
+import { AskService } from './ask.service';
+import { AskController } from './ask.controller';
+
+@Module({
+  providers: [AskService],
+  controllers: [AskController],
+})
+export class AskModule {}
