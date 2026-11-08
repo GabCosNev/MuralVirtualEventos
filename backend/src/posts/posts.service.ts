@@ -7,7 +7,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { EventType, PostStatus } from '../../generated/prisma';
+import { EventType, PostStatus, Prisma } from '../../generated/prisma';
 import { ReviewPostDto } from './dto/review-post.dto';
 import { JwtPayload } from '../auth/types/jwt-payload.type';
 
@@ -19,6 +19,7 @@ export const Periodo = {
 
 export type Periodo = (typeof Periodo)[keyof typeof Periodo];
 const MAX_RANGE_OFFSET_DAYS = 2;
+const SEARCH_CANDIDATES_LIMIT = 50;
 
 @Injectable()
 export class PostsService {
@@ -47,7 +48,7 @@ export class PostsService {
       where: {
         status: PostStatus.APPROVED,
         endDate: { gte: new Date() },
-        ...(eventType && { eventType }),
+        ...this.approvedWhere(eventType),
         ...(intervaloPeriodo && { startDate: intervaloPeriodo }),
       },
       include: {
@@ -60,6 +61,14 @@ export class PostsService {
         },
       },
       orderBy: { startDate: 'asc' },
+    });
+  }
+  async findApprovedForSearch(eventType?: EventType) {
+    return this.prisma.post.findMany({
+      where: this.approvedWhere(eventType),
+      select: { id: true, title: true, content: true, eventType: true },
+      orderBy: { startDate: 'asc' },
+      take: SEARCH_CANDIDATES_LIMIT,
     });
   }
   async findMyPosts(userId: number) {
@@ -229,5 +238,12 @@ export class PostsService {
     }
 
     return { gte: inicio, lte: fim };
+  }
+  private approvedWhere(eventType?: EventType): Prisma.PostWhereInput {
+    return {
+      status: PostStatus.APPROVED,
+      endDate: { gte: new Date() },
+      ...(eventType && { eventType }),
+    };
   }
 }
