@@ -2,7 +2,7 @@
 
 O **Muralix** é uma aplicação web Full Stack para divulgação e gerenciamento de eventos através de um mural virtual.
 
-Os usuários podem cadastrar eventos, que passam por um processo de moderação antes de serem disponibilizados publicamente.
+Os usuários podem cadastrar eventos, que passam por um processo de moderação antes de serem disponibilizados publicamente. Além disso, a aplicação conta com uma **busca inteligente integrada a um LLM (Large Language Model)**, permitindo que os usuários encontrem eventos relevantes por meio de consultas em linguagem natural.
 
 ## Como usar
 
@@ -31,7 +31,7 @@ Após o cadastro, é necessário verificar o endereço de e-mail para acessar a 
 
 ## O que é
 
-O Muralix funciona como um mural virtual para publicação de eventos.
+O Muralix funciona como um mural virtual para publicação e descoberta de eventos.
 
 A aplicação possui dois tipos de usuário:
 
@@ -39,6 +39,8 @@ A aplicação possui dois tipos de usuário:
 * **ADMIN:** analisa os eventos enviados e decide se serão aprovados ou rejeitados.
 
 Somente eventos aprovados são exibidos no mural público.
+
+Além da navegação tradicional, o Muralix oferece uma experiência de busca inteligente utilizando inteligência artificial, permitindo localizar eventos de acordo com a intenção e o contexto da pesquisa.
 
 ## Funcionalidades
 
@@ -50,7 +52,26 @@ Somente eventos aprovados são exibidos no mural público.
 * Visualização do status das publicações
 * Exibição do motivo de rejeição
 * Reenvio de eventos rejeitados para nova análise
+* Busca inteligente de eventos utilizando LLM
+* Interpretação de consultas em linguagem natural
+* Identificação e filtragem de eventos relevantes conforme a pesquisa
+* Exibição de respostas contextualizadas com os resultados encontrados
 * Proteção contra requisições automatizadas com Cloudflare Turnstile
+
+## Busca inteligente com IA
+
+O Muralix utiliza um **LLM (Large Language Model)** para proporcionar uma experiência de busca mais intuitiva.
+
+Diferentemente de uma busca tradicional baseada exclusivamente em palavras-chave, o usuário pode pesquisar eventos utilizando linguagem natural, descrevendo o que procura.
+
+A integração com o modelo de linguagem permite:
+
+* Interpretar a intenção da pesquisa.
+* Identificar eventos relacionados à consulta.
+* Filtrar publicações relevantes.
+* Apresentar uma resposta contextualizada juntamente com os eventos encontrados.
+
+O objetivo é facilitar a descoberta de eventos e tornar a navegação pelo mural mais eficiente.
 
 ## Regras de negócio
 
@@ -86,6 +107,11 @@ Eventos encerrados deixam de ser exibidos entre os eventos atuais do mural.
 ### Banco de dados
 
 * PostgreSQL
+
+### Inteligência Artificial
+
+* LLM (Large Language Model)
+* Integração com modelo de linguagem para interpretação de consultas e busca inteligente de eventos
 
 ### Outros
 
