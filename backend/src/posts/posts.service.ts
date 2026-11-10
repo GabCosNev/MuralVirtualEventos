@@ -71,6 +71,16 @@ export class PostsService {
       take: SEARCH_CANDIDATES_LIMIT,
     });
   }
+
+  async findApprovedByIds(ids: number[]) {
+    return this.prisma.post.findMany({
+      where: { ...this.approvedWhere(), id: { in: ids } },
+      include: {
+        author: { select: { id: true, name: true, avatar: true } },
+      },
+      orderBy: { startDate: 'asc' },
+    });
+  }
   async findMyPosts(userId: number) {
     return this.prisma.post.findMany({
       where: { authorId: userId },
