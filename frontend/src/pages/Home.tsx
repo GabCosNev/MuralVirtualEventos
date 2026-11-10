@@ -14,56 +14,66 @@ import { PostDetailModal } from "../components/PostDetailModal";
 import { paginationButton } from "../utils/styles";
 import { EventTypeFilter } from "../components/EventTypeFilter";
 import { PeriodFilter } from "../components/PeriodFilter";
+import { useSearchPosts } from "../hooks/posts/useSearchPosts";
+import { PostSearch } from "../components/PostSearch";
 
 export function Home() {
   const { isAdmin } = useAuth();
+
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+
   const [filtroEvento, setFiltroEvento] = useState<EventType | undefined>(
     undefined,
   );
+
   const [filtroPeriodo, setFiltroPeriodo] = useState<Periodo | undefined>(
     undefined,
   );
+
   const { posts, isFetching, error } = useApprovedPosts(
     filtroEvento,
     filtroPeriodo,
   );
+
   const totalPages = getTotalPages(posts.length);
   const postsOnPage = getPageItems(posts, currentPage);
   const pageWindow = getPageWindow(currentPage, totalPages);
 
+  const {
+    answer,
+    posts: searchResultPosts,
+    isSearching,
+    error: searchError,
+    search,
+    clear,
+  } = useSearchPosts();
+
+  const isSearchActive = answer !== null;
+
   return (
     <div className="p-6 pb-20">
-      {isFetching && (
-        <p className="text-center text-white/60">Carregando publicações...</p>
+      <PostSearch
+        isSearching={isSearching}
+        hasSearch={isSearchActive}
+        error={searchError}
+        onSearch={search}
+        onClear={clear}
+      />
+
+      {isSearching && (
+        <p className="text-center text-white/60">
+          Buscando... pode levar alguns segundos.
+        </p>
       )}
 
-      {error && <p className="text-center text-red-500">{error}</p>}
-
-      {!isFetching && !error && (
+      {isSearchActive ? (
         <>
-          <EventTypeFilter
-            filtroEvento={filtroEvento}
-            onChange={(evento) => {
-              setFiltroEvento(evento);
-              setCurrentPage(1);
-            }}
-          />
-          <PeriodFilter
-            filtroPeriodo={filtroPeriodo}
-            onChange={(periodo) => {
-              setFiltroPeriodo(periodo);
-              setCurrentPage(1);
-            }}
-          />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
-            {currentPage === 1 && !isAdmin && (
-              <CreatePostCard onClick={() => setIsModalOpen(true)} />
-            )}
+          <p className="text-center text-white mb-4">{answer}</p>
 
-            {postsOnPage.map((post) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
+            {searchResultPosts.map((post) => (
               <PostCard
                 key={post.id}
                 post={post}
@@ -72,58 +82,113 @@ export function Home() {
               />
             ))}
 
-            {postsOnPage.length === 0 && !(currentPage === 1 && !isAdmin) && (
+            {searchResultPosts.length === 0 && (
               <p className="text-center text-white/60 col-span-full">
                 Nenhuma publicação encontrada.
               </p>
             )}
           </div>
+        </>
+      ) : (
+        <>
+          {isFetching && (
+            <p className="text-center text-white/60">
+              Carregando publicações...
+            </p>
+          )}
 
-          {totalPages > 0 && (
-            <div className="fixed bottom-0 left-0 w-full flex justify-center items-center gap-2 py-4 bg-[#0b1026]/70 backdrop-blur-md border-t border-white/5">
-              {" "}
-              <button
-                onClick={() => setCurrentPage(1)}
-                disabled={currentPage === 1}
-                className={paginationButton}
-              >
-                {"<<"}
-              </button>
-              <button
-                onClick={() => setCurrentPage((page) => page - 1)}
-                disabled={currentPage === 1}
-                className={paginationButton}
-              >
-                {"<"}
-              </button>
-              {pageWindow.map((page) => (
-                <button
-                  key={page}
-                  onClick={() => setCurrentPage(page)}
-                  className={`px-3 py-1 rounded-md text-sm transition-colors ${
-                    page === currentPage
-                      ? "bg-white/20 font-semibold text-white"
-                      : "hover:bg-white/10 text-white"
-                  }`}
-                >
-                  {page}
-                </button>
-              ))}
-              <button
-                onClick={() => setCurrentPage((page) => page + 1)}
-                disabled={currentPage === totalPages}
-                className={paginationButton}
-              >
-                {">"}
-              </button>
-              <button
-                onClick={() => setCurrentPage(totalPages)}
-                disabled={currentPage === totalPages}
-                className={paginationButton}
-              >
-                {">>"}
-              </button>
-            </div>
+          {error && <p className="text-center text-red-500">{error}</p>}
+
+          {!isFetching && !error && (
+            <>
+              <EventTypeFilter
+                filtroEvento={filtroEvento}
+                onChange={(evento) => {
+                  setFiltroEvento(evento);
+                  setCurrentPage(1);
+                }}
+              />
+
+              <PeriodFilter
+                filtroPeriodo={filtroPeriodo}
+                onChange={(periodo) => {
+                  setFiltroPeriodo(periodo);
+                  setCurrentPage(1);
+                }}
+              />
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
+                {currentPage === 1 && !isAdmin && (
+                  <CreatePostCard onClick={() => setIsModalOpen(true)} />
+                )}
+
+                {postsOnPage.map((post) => (
+                  <PostCard
+                    key={post.id}
+                    post={post}
+                    onClick={() => setSelectedPost(post)}
+                    showStatusBanner={false}
+                  />
+                ))}
+
+                {postsOnPage.length === 0 &&
+                  !(currentPage === 1 && !isAdmin) && (
+                    <p className="text-center text-white/60 col-span-full">
+                      Nenhuma publicação encontrada.
+                    </p>
+                  )}
+              </div>
+
+              {totalPages > 0 && (
+                <div className="fixed bottom-0 left-0 w-full flex justify-center items-center gap-2 py-4 bg-[#0b1026]/70 backdrop-blur-md border-t border-white/5">
+                  <button
+                    onClick={() => setCurrentPage(1)}
+                    disabled={currentPage === 1}
+                    className={paginationButton}
+                  >
+                    {"<<"}
+                  </button>
+
+                  <button
+                    onClick={() => setCurrentPage((page) => page - 1)}
+                    disabled={currentPage === 1}
+                    className={paginationButton}
+                  >
+                    {"<"}
+                  </button>
+
+                  {pageWindow.map((page) => (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`px-3 py-1 rounded-md text-sm transition-colors ${
+                        page === currentPage
+                          ? "bg-white/20 font-semibold text-white"
+                          : "hover:bg-white/10 text-white"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+
+                  <button
+                    onClick={() => setCurrentPage((page) => page + 1)}
+                    disabled={currentPage === totalPages}
+                    className={paginationButton}
+                  >
+                    {">"}
+                  </button>
+
+                  <button
+                    onClick={() => setCurrentPage(totalPages)}
+                    disabled={currentPage === totalPages}
+                    className={paginationButton}
+                  >
+                    {">>"}
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </>
       )}
