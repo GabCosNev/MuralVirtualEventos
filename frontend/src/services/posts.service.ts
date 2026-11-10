@@ -6,6 +6,7 @@ import {
   type UpdatePost,
   type EventType,
   type Periodo,
+  type SearchResult,
 } from "../types";
 
 export const createPost = async (dto: CreatePost): Promise<Post> => {
@@ -55,5 +56,14 @@ export const deletePost = async (id: number): Promise<void> => {
 
 export const getPostById = async (id: number): Promise<Post> => {
   const { data } = await api.get<Post>(`/posts/${id}`);
+  return data;
+};
+
+export const searchPosts = async (question: string): Promise<SearchResult> => {
+  const { data } = await api.post<SearchResult>(
+    "/search",
+    { question },
+    { timeout: 60_000 },
+  );
   return data;
 };

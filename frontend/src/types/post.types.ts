@@ -41,3 +41,8 @@ export interface UpdatePost {
   startDate?: string;
   endDate?: string;
 }
+
+export interface SearchResult {
+  answer: string;
+  posts: Post[];
+}
